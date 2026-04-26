@@ -1,0 +1,71 @@
+{
+  "overview": {
+    "outcome": "career_page_no_vacancies",
+    "outcome_reason": "Career page confirmed but no open vacancies at this time.",
+    "jobs_found": false,
+    "total_jobs_found": 0,
+    "job_urls": [],
+    "job_found_on_urls": [],
+    "listing_ui": null,
+    "job_alert": false,
+    "job_alert_note": null,
+    "job_alert_urls": [],
+    "career_page_confirmed": true,
+    "no_vacancy_urls": [
+      "https://www.donningtonhouse.co.uk/job-vacencies"
+    ],
+    "blocked_platform_urls": {},
+    "external_redirect_urls": [],
+    "embedded_urls": [],
+    "navigation_blocked_urls": [],
+    "navigation_issues": [],
+    "not_job_related_urls": [],
+    "access_issue_urls": [],
+    "unknown_urls": [],
+    "total_urls_processed": 1
+  },
+  "career_pages_analysis": [
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.donningtonhouse.co.uk/job-vacencies",
+      "status": "jobs_related_no_vacancies",
+      "current_url": "https://www.donningtonhouse.co.uk/job-vacencies",
+      "error": null,
+      "extracted_content": "top of page\n[BUTTON: Skip to Main Content]\nCareers\nThanks for your interest in joining the Donnington House Ltd team\nPlease contact Sophie for further details at\nsophie@donningtonhouse.co.uk → mailto:sophie@donningtonhouse.co.uk\nbottom of page\nCQC logo → https://www.cqc.org.uk/?referer=widget3\nDonnington House Care Home\nCQC overall rating\nRequires improvement\n20 October 2022\nSee the report → https://www.cqc.org.uk/location/1-109931856?referer=widget3",
+      "extracted_url": "https://www.donningtonhouse.co.uk/job-vacencies",
+      "token_used": {
+        "input_token": 1932,
+        "output_token": 1323,
+        "total_token": 3255
+      },
+      "llm_analysis": {
+        "page_category": "jobs_related_no_vacancies",
+        "confidence": 0.8,
+        "reasoning": "Careers page contains only a contact email and a 'See the report' link; no job listings or links to view vacancies are present.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "job_alert": false,
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    }
+  ]
+}

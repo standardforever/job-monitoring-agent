@@ -1,0 +1,298 @@
+{
+  "ats_detected": false,
+  "ats_provider": null,
+  "ats_provider_known": null,
+  "ats_category": "document_application",
+  "confidence": "high",
+  "detection_method": "all_document_urls",
+  "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+  "non_ats_reason": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+  "requires_scraping": false,
+  "apply_url": null,
+  "indicators_found": [],
+  "page_access_status": null,
+  "external_job_boards": [],
+  "checked_urls": [],
+  "raw_checks": [
+    {
+      "url": "https://coventry2021.co.uk/media/jr3jojzq/facilities-officer-job-description-final.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/wkqp25uw/city-of-culture-job-description-visitor-experience-assistants.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/lgdfwgy4/job-description_production-coordinator_nov21.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/ddcb1mwt/production-manager-jd-final-24th-november-2021.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/i2jjaczm/job-description-event-operations-manager-final-24th-nov-2021.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/sublkd01/technical-manager-jd-final-24th-nov-2021.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/crwfeuej/deputy-technical-manager-jd-final-24th-nov-21.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/ftsi45xd/stores-manager-jd-final-24th-november-2021.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/ta5boef1/casual-duty-manager-coventry-glides-and-general-24th-november-2021.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://coventry2021.co.uk/media/u01pnh1c/executive-assistant-job-description-november-2021.pdf",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/vdfpoix1/facilities-officer-job-description-final.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/24rlgwow/city-of-culture-job-description-visitor-experience-assistants.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/a3yfcoqy/job-description_production-coordinator_nov21.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/i3icaes5/production-manager-jd-final-24th-november-2021.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/fuggomz1/job-description-event-operations-manager-final-24th-nov-2021.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/z2lj24kf/technical-manager-jd-final-24th-nov-2021.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/mgwi2haw/deputy-technical-manager-jd-final-24th-nov-2021.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/53ajrtae/stores-manager-jd-final-24th-november-2021.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/wqxlozvo/casual-duty-manager-coventry-glides-and-general-24th-november-2021-final.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    },
+    {
+      "url": "https://www.coventry2021.co.uk/media/qcipy21j/executive-assistant-job-description-november-2021.docx",
+      "method": "document_url_check",
+      "result": {
+        "is_ats": false,
+        "confidence": "high",
+        "ats_provider": null,
+        "ats_category": "document_application",
+        "reasoning": "All 20 job URL(s) are document files (PDF/Word) — company posts jobs as downloadable files, not via an ATS.",
+        "apply_url": null,
+        "requires_scraping": false,
+        "detection_method": "all_document_urls"
+      }
+    }
+  ]
+}

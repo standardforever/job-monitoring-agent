@@ -1,0 +1,145 @@
+{
+  "overview": {
+    "outcome": "navigation_blocked",
+    "outcome_reason": "Navigation was required but could not be completed (email link, non-web URL, or max steps reached).",
+    "jobs_found": false,
+    "total_jobs_found": 0,
+    "job_urls": [],
+    "job_found_on_urls": [],
+    "listing_ui": null,
+    "job_alert": false,
+    "job_alert_note": null,
+    "job_alert_urls": [],
+    "career_page_confirmed": false,
+    "no_vacancy_urls": [],
+    "blocked_platform_urls": {},
+    "external_redirect_urls": [],
+    "embedded_urls": [],
+    "navigation_blocked_urls": [
+      "https://www.claptongirlsacademy.com/support-staff-vacancies"
+    ],
+    "navigation_issues": [
+      {
+        "source_url": "https://www.claptongirlsacademy.com/support-staff-vacancies",
+        "reason": "already_visited_url",
+        "target_url": "https://www.claptongirlsacademy.com/recruitment",
+        "target_button": "CLICK HERE FOR LATEST VACANCIES",
+        "error": null
+      }
+    ],
+    "not_job_related_urls": [],
+    "access_issue_urls": [],
+    "unknown_urls": [
+      "https://www.claptongirlsacademy.com/recruitment"
+    ],
+    "total_urls_processed": 2
+  },
+  "career_pages_analysis": [
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.claptongirlsacademy.com/recruitment",
+      "status": "jobs_page",
+      "current_url": "https://www.claptongirlsacademy.com/recruitment",
+      "error": null,
+      "extracted_content": "[link] → https://www.claptongirlsacademy.com/recruitment\n[BUTTON: Close Announcement]\nCLICK HERE FOR LATEST VACANCIES\nClapton Girls' Academy → https://www.claptongirlsacademy.com/\n[link] → mailto:cga@clapton.hackney.sch.uk\n[link] → https://www.youtube.com/ClaptonGirlsAcademy\n[link] → https://www.instagram.com/claptongirls\n[link] → https://www.facebook.com/ClaptonGirlsAcademy\n[link] → https://www.tiktok.com/@clapton.girls.academy?is_from_webapp=1&sender_device=pc\n[IMAGE: Web banners.jpg]\nArrive with a dream, leave with a future. → https://www.claptongirlsacademy.com/\n\nH1: Teaching Vacancies\n\nClapton Girls' Academy → https://www.claptongirlsacademy.com/\n[link] → mailto:cga@clapton.hackney.sch.uk\n[link] → https://www.youtube.com/ClaptonGirlsAcademy\n[link] → https://www.instagram.com/claptongirls\n[link] → https://www.facebook.com/ClaptonGirlsAcademy\n[link] → https://www.tiktok.com/@clapton.girls.academy?is_from_webapp=1&sender_device=pc\n\nH2: Our current teaching vacancies are listed below.\n\n\nH3: If the job you are looking for is not posted here, sign up to receive our job alerts and be the first to know about new opportunities.\n\n\nH2: If you have any queries about the posts advertised please contact us at: recruitment@clapton.hackney.sch.uk\n\n\nH3: Clapton Girls' Academy\n\nClapton Girls' Academy is a non selective, outstanding and world class academy for girls aged 11-19 in the heart of Hackney. Our students make oustanding progress and our sixth form is placed in the top 10% of all sixth forms nationally.\n\nH1: Quicklinks\n\n\nH3: Click for:\n\nHoliday & Term dates → https://www.claptongirlsacademy.com/calendar\ncga Donate → https://cafdonate.cafonline.org/30204\nParentPay → https://www.parentpay.com/\nSatchelOne → https://www.satchelone.com/login?userType=student\nwork with us → https://www.claptongirlsacademy.com/recruitment\nContact Us → https://www.claptongirlsacademy.com/contact-us\nUnifrog → https://www.unifrog.org/\nAccelerated Reader → https://global-zone61.renaissance-go.com/identityservice/sso/Account/Login?ReturnUrl=%2Fidentityservice%2Fsso%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dstudentportallinux%26redirect_uri%3Dhttps%253A%252F%252Fglobal-zone61.renaissance-go.com%252Fstudentportal%252Fsignin-oidc%26response_type%3Did_token%26scope%3Dopenid%2520ren.profile%26response_mode%3Dform_post%26nonce%3D638301934371298410.MmQxZjEyZmUtYjk5NC00OGZlLTgxYzItZTBiYjQ3MWFjNDJiNjdkOTc1MjctMWU5OS00NGE2LTkyZWEtOTQzOWE5YmVkNjIw%26acr_values%3Dtenant%253A1893886%26state%3DCfDJ8PfHb2fWiHBJn1LpqAd49_9J-CbP0Tt2jJIeVXzEJOqwKVWWM8Hduup30DR-ImtINs3oZidBC8BuHORb1lUtXaQhQRXe38gVZoLQH4Arrt28KYqo0erLv5iEgLR9P79wT6ytLH8y8-pSV1029d6GS-V22OJHSJOc37P6VRtqUkOChSAcWL7XBptgcT8Qn19YrjMmkpS3WWZMCmf0XaWowgkfYUWazpnRMfvKsces0hlpv5fm-HVpvClIFhY80SJaCdSbI5gEbILnRCxgPaI_YCU2toiBeN-rWybHIKFA8BBsIURcvQTobxr1DpE3UcB6Ri-NofIuiBo5dY9uVQYIXOqAkR9zL4NYDFLf16sa7hVDDrwO-USwX9qTtQ2TzCkSWaJpC2vMn6ovK1EDO-7XZjKj8ybTflwzrhR4UPgXrCQmgf1o6ghaoG3KzEk8oUWviw%26x-client-SKU%3DID_NETSTANDARD2_0%26x-client-ver%3D5.5.0.0\nOffice 365 login → https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client-request-id=41600344-c2f6-4b00-9c79-1c132582a1ba&client_id=4765445b-32c6-49b0-83e6-1d93765276ca&mkt=en-US&nonce=638043639455641534.NGM1OGI0ZGQtYTVjNS00MDFlLWFkZDctYWMwNmJiMTAxNzIxMmMyNmJkYzctYjBiMC00ODRhLTg1NTEtNWI0MTI4MWQ3MjM2&redirect_uri=https%3A%2F%2Fwww.office.com%2Flandingv2&response_mode=form_post&response_type=code%20id_token&scope=openid%20profile%20https%3A%2F%2Fwww.office.com%2Fv2%2FOfficeHome.All&sso_reload=true&state=_vw0ZPEvl165NvsssBojmgi2aUo5xXgxnp3ZtiCr7KCoVnDI69hnJdVT43q25fSHbgbIlj64MrIox83w3vSEYLqPnlAkKvSGhQ7fmh13_sKSXYNBKwZdEFqpjPg6zRDJSXgaOO6dY-DujTof-Dl3a6xOmsYxYA04U252BO65ifvqrCrS14pw1WeW83gsprDInXzMeC_7xGWRjRiYDbS0E1EDuk8lJ4yFBApPGkVMLNjOHT0V-PVLIU3DjO7wNVWQTT8tW9Lm0vd1YR2QQCjXN0hDMvg1C75BWbbDYR469nU&ui_locales=en-US&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=6.16.0.0\n[IMAGE: Quotes.jpg]\n[IMAGE: Quotes3.jpg]\n[IMAGE: Quotes2.jpg]\n[IMAGE: Quotes6.jpg]\n[IMAGE: Quotes10.jpg]\n[IMAGE: Quotes Indesign4.png]\n[IMAGE: Blessing quote.png]\n[IMAGE: Quotes12.jpg]\n[IMAGE: Quotes Indesign2.png]\n[IMAGE: Quotes7.jpg]\n[IMAGE: Quotes11.jpg]\n[IMAGE: Quotes13.jpg]\n[IMAGE: Quotes4.jpg]\n[IMAGE: Quotes Indesign3.png]\n[IMAGE: Quotes9.jpg]\n[IMAGE: Quotes5.jpg]\n[IMAGE: Quotes8.jpg]\n[IMAGE: Open Evening quotes3.png]\n[IMAGE: Open Evening quotes.png]\n[IMAGE: Open Evening quotes2.png]\n[IMAGE: What our staff say.jpg]\n[IMAGE: What our staff say2.jpg]\n[IMAGE: What our staff say3.jpg]\n[IMAGE: What our staff say4.jpg]\n[IMAGE: What our staff say5.jpg]\n[IMAGE: What our staff say6.jpg]\n[IMAGE: What our staff say7.jpg]\n[IMAGE: What our staff say8.jpg]\n[IMAGE: What our staff say9.jpg]\n[IMAGE: What our staff say10.jpg]\n[IMAGE: What our staff say12.jpg]\n[IMAGE: What our staff say13.jpg]\n[IMAGE: What our staff say14.jpg]\n[IMAGE: What our staff say11.jpg]\n[IMAGE: What our staff say.jpg]\n[IMAGE: What our staff say3.jpg]\n[IMAGE: P7 (Large).png]\n[IMAGE: P8 (Large).png]\n[IMAGE: P5 (Large).png]\n[IMAGE: P6 (Large).png]\n[IMAGE: P2+(Large).png]\n[IMAGE: P1+(Large).png]\n[IMAGE: P4+(Large).png]\n[IMAGE: P3+(Large).png]\n[IMAGE: What our staff say15.jpg]\n[IMAGE: What our staff say16.jpg]\n[IMAGE: What our staff say17.jpg]\n[IMAGE: What our staff say18.jpg]\n[IMAGE: What our staff say19.jpg]\n[IMAGE: What our staff say20.jpg]\n[IMAGE: What our staff say21.jpg]\n[IMAGE: What our staff say22.jpg]\n[IMAGE: What our staff say23.jpg]\n[IMAGE: What our staff say24.jpg]\n[IMAGE: What our staff say25.jpg]\n[IMAGE: What our staff say26.jpg]\n[IMAGE: What our staff say27.jpg]\n[IMAGE: What our staff say28.jpg]\n[IMAGE: What our staff say29.jpg]\n[IMAGE: What our staff say4.jpg]\n[IMAGE: What our staff say2.jpg]\n\nH1: Contact Us\n\nLaura Place, Hackney E5 0RB\nPhone:\n020 8985 6641\nemail:\ncga@clapton.hackney.sch.uk\n[link] → mailto:cga@clapton.hackney.sch.uk\n[link] → https://www.youtube.com/ClaptonGirlsAcademy\n[link] → https://www.instagram.com/claptongirls\n[link] → https://www.facebook.com/ClaptonGirlsAcademy\n[link] → https://www.tiktok.com/@clapton.girls.academy?is_from_webapp=1&sender_device=pc",
+      "extracted_url": "https://www.claptongirlsacademy.com/teaching-vacancies",
+      "token_used": {
+        "input_token": 5181,
+        "output_token": 2417,
+        "total_token": 7598
+      },
+      "llm_analysis": {
+        "page_category": "jobs_listed",
+        "confidence": 0.6,
+        "reasoning": "The page title and body indicate teaching vacancies are listed below, suggesting job listings are presented on the page, but no individual listings are present in the provided content.",
+        "job_alert": true,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false,
+      "navigation_history": [
+        {
+          "step": 0,
+          "from_url": "https://www.claptongirlsacademy.com/recruitment",
+          "target_url": "https://www.claptongirlsacademy.com/teaching-vacancies",
+          "target_button": "Click for teaching vacancies",
+          "reasoning": "Page is a recruitment hub with no listed vacancies on page; provides links to teaching and support staff vacancies and a sign-up for job alerts.",
+          "status": "navigated",
+          "landed_url": "https://www.claptongirlsacademy.com/teaching-vacancies",
+          "error": null
+        }
+      ]
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.claptongirlsacademy.com/support-staff-vacancies",
+      "status": "already_visited_url",
+      "current_url": "https://www.claptongirlsacademy.com/support-staff-vacancies",
+      "error": null,
+      "extracted_content": "[link] → https://www.claptongirlsacademy.com/recruitment\n[BUTTON: Close Announcement]\nCLICK HERE FOR LATEST VACANCIES\nClapton Girls' Academy → https://www.claptongirlsacademy.com/\n[link] → mailto:cga@clapton.hackney.sch.uk\n[link] → https://www.youtube.com/ClaptonGirlsAcademy\n[link] → https://www.instagram.com/claptongirls\n[link] → https://www.facebook.com/ClaptonGirlsAcademy\n[link] → https://www.tiktok.com/@clapton.girls.academy?is_from_webapp=1&sender_device=pc\n[IMAGE: DSC_0006.JPG]\nArrive with a dream, leave with a future. → https://www.claptongirlsacademy.com/\n\nH1: Support Staff Vacancies\n\nClapton Girls' Academy → https://www.claptongirlsacademy.com/\n[link] → mailto:cga@clapton.hackney.sch.uk\n[link] → https://www.youtube.com/ClaptonGirlsAcademy\n[link] → https://www.instagram.com/claptongirls\n[link] → https://www.facebook.com/ClaptonGirlsAcademy\n[link] → https://www.tiktok.com/@clapton.girls.academy?is_from_webapp=1&sender_device=pc\n\nH2: Our current support staff vacancies are listed below.\n\n\nH3: If the job you are looking for is not posted here, sign up to receive our job alerts and be the first to know about new opportunities.\n\n\nH2: If you have any queries about the posts advertised please contact us at: recruitment@clapton.hackney.sch.uk\n\n\nH3: Clapton Girls' Academy\n\nClapton Girls' Academy is a non selective, outstanding and world class academy for girls aged 11-19 in the heart of Hackney. Our students make oustanding progress and our sixth form is placed in the top 10% of all sixth forms nationally.\n\nH1: Quicklinks\n\n\nH3: Click for:\n\nHoliday & Term dates → https://www.claptongirlsacademy.com/calendar\ncga Donate → https://cafdonate.cafonline.org/30204\nParentPay → https://www.parentpay.com/\nSatchelOne → https://www.satchelone.com/login?userType=student\nwork with us → https://www.claptongirlsacademy.com/recruitment\nContact Us → https://www.claptongirlsacademy.com/contact-us\nUnifrog → https://www.unifrog.org/\nAccelerated Reader → https://global-zone61.renaissance-go.com/identityservice/sso/Account/Login?ReturnUrl=%2Fidentityservice%2Fsso%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dstudentportallinux%26redirect_uri%3Dhttps%253A%252F%252Fglobal-zone61.renaissance-go.com%252Fstudentportal%252Fsignin-oidc%26response_type%3Did_token%26scope%3Dopenid%2520ren.profile%26response_mode%3Dform_post%26nonce%3D638301934371298410.MmQxZjEyZmUtYjk5NC00OGZlLTgxYzItZTBiYjQ3MWFjNDJiNjdkOTc1MjctMWU5OS00NGE2LTkyZWEtOTQzOWE5YmVkNjIw%26acr_values%3Dtenant%253A1893886%26state%3DCfDJ8PfHb2fWiHBJn1LpqAd49_9J-CbP0Tt2jJIeVXzEJOqwKVWWM8Hduup30DR-ImtINs3oZidBC8BuHORb1lUtXaQhQRXe38gVZoLQH4Arrt28KYqo0erLv5iEgLR9P79wT6ytLH8y8-pSV1029d6GS-V22OJHSJOc37P6VRtqUkOChSAcWL7XBptgcT8Qn19YrjMmkpS3WWZMCmf0XaWowgkfYUWazpnRMfvKsces0hlpv5fm-HVpvClIFhY80SJaCdSbI5gEbILnRCxgPaI_YCU2toiBeN-rWybHIKFA8BBsIURcvQTobxr1DpE3UcB6Ri-NofIuiBo5dY9uVQYIXOqAkR9zL4NYDFLf16sa7hVDDrwO-USwX9qTtQ2TzCkSWaJpC2vMn6ovK1EDO-7XZjKj8ybTflwzrhR4UPgXrCQmgf1o6ghaoG3KzEk8oUWviw%26x-client-SKU%3DID_NETSTANDARD2_0%26x-client-ver%3D5.5.0.0\nOffice 365 login → https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client-request-id=41600344-c2f6-4b00-9c79-1c132582a1ba&client_id=4765445b-32c6-49b0-83e6-1d93765276ca&mkt=en-US&nonce=638043639455641534.NGM1OGI0ZGQtYTVjNS00MDFlLWFkZDctYWMwNmJiMTAxNzIxMmMyNmJkYzctYjBiMC00ODRhLTg1NTEtNWI0MTI4MWQ3MjM2&redirect_uri=https%3A%2F%2Fwww.office.com%2Flandingv2&response_mode=form_post&response_type=code%20id_token&scope=openid%20profile%20https%3A%2F%2Fwww.office.com%2Fv2%2FOfficeHome.All&sso_reload=true&state=_vw0ZPEvl165NvsssBojmgi2aUo5xXgxnp3ZtiCr7KCoVnDI69hnJdVT43q25fSHbgbIlj64MrIox83w3vSEYLqPnlAkKvSGhQ7fmh13_sKSXYNBKwZdEFqpjPg6zRDJSXgaOO6dY-DujTof-Dl3a6xOmsYxYA04U252BO65ifvqrCrS14pw1WeW83gsprDInXzMeC_7xGWRjRiYDbS0E1EDuk8lJ4yFBApPGkVMLNjOHT0V-PVLIU3DjO7wNVWQTT8tW9Lm0vd1YR2QQCjXN0hDMvg1C75BWbbDYR469nU&ui_locales=en-US&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=6.16.0.0\n[IMAGE: Quotes.jpg]\n[IMAGE: Quotes3.jpg]\n[IMAGE: Quotes2.jpg]\n[IMAGE: Quotes6.jpg]\n[IMAGE: Quotes10.jpg]\n[IMAGE: Quotes Indesign4.png]\n[IMAGE: Blessing quote.png]\n[IMAGE: Quotes12.jpg]\n[IMAGE: Quotes Indesign2.png]\n[IMAGE: Quotes7.jpg]\n[IMAGE: Quotes11.jpg]\n[IMAGE: Quotes13.jpg]\n[IMAGE: Quotes4.jpg]\n[IMAGE: Quotes Indesign3.png]\n[IMAGE: Quotes9.jpg]\n[IMAGE: Quotes5.jpg]\n[IMAGE: Quotes8.jpg]\n[IMAGE: Open Evening quotes3.png]\n[IMAGE: Open Evening quotes.png]\n[IMAGE: Open Evening quotes2.png]\n[IMAGE: What our staff say.jpg]\n[IMAGE: What our staff say2.jpg]\n[IMAGE: What our staff say3.jpg]\n[IMAGE: What our staff say4.jpg]\n[IMAGE: What our staff say5.jpg]\n[IMAGE: What our staff say6.jpg]\n[IMAGE: What our staff say7.jpg]\n[IMAGE: What our staff say8.jpg]\n[IMAGE: What our staff say9.jpg]\n[IMAGE: What our staff say10.jpg]\n[IMAGE: What our staff say12.jpg]\n[IMAGE: What our staff say13.jpg]\n[IMAGE: What our staff say14.jpg]\n[IMAGE: What our staff say11.jpg]\n[IMAGE: What our staff say.jpg]\n[IMAGE: What our staff say3.jpg]\n[IMAGE: P7 (Large).png]\n[IMAGE: P8 (Large).png]\n[IMAGE: P5 (Large).png]\n[IMAGE: P6 (Large).png]\n[IMAGE: P2+(Large).png]\n[IMAGE: P1+(Large).png]\n[IMAGE: P4+(Large).png]\n[IMAGE: P3+(Large).png]\n[IMAGE: What our staff say15.jpg]\n[IMAGE: What our staff say16.jpg]\n[IMAGE: What our staff say17.jpg]\n[IMAGE: What our staff say18.jpg]\n[IMAGE: What our staff say19.jpg]\n[IMAGE: What our staff say20.jpg]\n[IMAGE: What our staff say21.jpg]\n[IMAGE: What our staff say22.jpg]\n[IMAGE: What our staff say23.jpg]\n[IMAGE: What our staff say24.jpg]\n[IMAGE: What our staff say25.jpg]\n[IMAGE: What our staff say26.jpg]\n[IMAGE: What our staff say27.jpg]\n[IMAGE: What our staff say28.jpg]\n[IMAGE: What our staff say29.jpg]\n[IMAGE: What our staff say4.jpg]\n[IMAGE: What our staff say2.jpg]\n\nH1: Contact Us\n\nLaura Place, Hackney E5 0RB\nPhone:\n020 8985 6641\nemail:\ncga@clapton.hackney.sch.uk\n[link] → mailto:cga@clapton.hackney.sch.uk\n[link] → https://www.youtube.com/ClaptonGirlsAcademy\n[link] → https://www.instagram.com/claptongirls\n[link] → https://www.facebook.com/ClaptonGirlsAcademy\n[link] → https://www.tiktok.com/@clapton.girls.academy?is_from_webapp=1&sender_device=pc",
+      "extracted_url": "https://www.claptongirlsacademy.com/support-staff-vacancies",
+      "token_used": {
+        "input_token": 5206,
+        "output_token": 1506,
+        "total_token": 6712
+      },
+      "llm_analysis": {
+        "page_category": "navigation_required",
+        "confidence": 0.62,
+        "reasoning": "The page headers state vacancies are listed below, but no actual job postings are shown on the page. It does provide a link to the recruitment/latest vacancies page, indicating navigation to job listings rather than listing jobs itself.",
+        "job_alert": true,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": "https://www.claptongirlsacademy.com/recruitment",
+          "button": "CLICK HERE FOR LATEST VACANCIES",
+          "element_type": "button"
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false,
+      "navigation_history": [
+        {
+          "step": 0,
+          "from_url": "https://www.claptongirlsacademy.com/support-staff-vacancies",
+          "target_url": "https://www.claptongirlsacademy.com/recruitment",
+          "target_button": "CLICK HERE FOR LATEST VACANCIES",
+          "reasoning": "The page headers state vacancies are listed below, but no actual job postings are shown on the page. It does provide a link to the recruitment/latest vacancies page, indicating navigation to job listings rather than listing jobs itself.",
+          "status": "already_visited_url",
+          "landed_url": null,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "overview": {
+    "outcome": "career_page_no_vacancies_with_job_alert",
+    "outcome_reason": "No open vacancies but career page confirmed — job alert signup available.",
+    "jobs_found": false,
+    "total_jobs_found": 0,
+    "job_urls": [],
+    "job_found_on_urls": [],
+    "listing_ui": null,
+    "job_alert": true,
+    "job_alert_note": "1 page(s) offer a job alert signup: https://careers.donmarwarehouse.com/register-your-interest/new",
+    "job_alert_urls": [
+      "https://careers.donmarwarehouse.com/register-your-interest/new"
+    ],
+    "career_page_confirmed": true,
+    "no_vacancy_urls": [
+      "https://careers.donmarwarehouse.com/"
+    ],
+    "blocked_platform_urls": {},
+    "external_redirect_urls": [],
+    "embedded_urls": [],
+    "navigation_blocked_urls": [
+      "https://careers.donmarwarehouse.com/register-your-interest/new"
+    ],
+    "navigation_issues": [
+      {
+        "source_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+        "reason": "clicked",
+        "target_url": null,
+        "target_button": "Submit",
+        "error": null
+      },
+      {
+        "source_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+        "reason": "already_clicked_button",
+        "target_url": null,
+        "target_button": "Submit",
+        "error": null
+      }
+    ],
+    "not_job_related_urls": [],
+    "access_issue_urls": [],
+    "unknown_urls": [],
+    "total_urls_processed": 2
+  },
+  "career_pages_analysis": [
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://careers.donmarwarehouse.com/",
+      "status": "jobs_related_no_vacancies",
+      "current_url": "https://careers.donmarwarehouse.com/",
+      "error": null,
+      "extracted_content": "Careers at → https://careers.donmarwarehouse.com/\nView Jobs → https://careers.donmarwarehouse.com/?scroll_to=js-careers-jobs-block\n\nH1: Careers at the Donmar Warehouse\n\n\nH2: Current Opportunities\n\nAll Locations\nThere are currently no positions advertised.\nDon't worry if you don't see any roles you want to apply for now. Register your interest to allow us to contact you when a suitable role meeting your criteria comes along.\nRegister Your Interest → https://careers.donmarwarehouse.com/register-your-interest/new\nIf you would like to be kept updated on our upcoming job opportunities, we post all our positions on the majority of theatrical job sites, alongside our own social media accounts, including\nFacebook → https://en-gb.facebook.com/DonmarWarehouse/\n,\nBluesky → https://bsky.app/profile/donmarwarehouse.bsky.social\nand\nInstagram → https://www.instagram.com/donmarwarehouse/\n.\nIf you have any questions, queries or concerns don't hesitate to contact our team at\njobs@donmarwarehouse.com → mailto:jobs@donmarwarehouse.com\n.\n\nH2: General Information\n\nIf you would like these details in an alternative format to support access needs, please kindly email\njobs@donmarwarehouse.com → mailto:%20jobs@donmarwarehouse.com\nPlease note that feedback will only be provided for candidates taken through to the interview stage.\nWe believe that representation matters; diversity of identity, of perspective, of lived experience enriches our work and our lives. We recognise that the Donmar and the wider theatre industry is not representative of contemporary society in terms of workforce, artists and audience. We particularly encourage applications from those who are currently under-represented both at the Donmar and more widely in the industry, and specifically from D/deaf or disabled, or neurodivergent applicants and applicants who experience barriers and inequity due to ethnicity, gender identity and/or socio-economic background.\nWhere application numbers allow, all disabled candidates who demonstrate that they meet the minimum criteria will be invited for an interview*\n*Please note that there may be occasions where it is not practicable or appropriate to interview all disabled people who meet the minimum criteria for the job. In certain recruitment situations such as high-volume we may limit the overall numbers of interviews offered to both disabled people and non-disabled people.\nIn these circumstances we will select the disabled candidates who best meet the minimum criteria for the job rather than all of those that meet the minimum criteria as we would do for non-disabled applicants.\nWe are an active member of PIPA and a Disability Confident employer.\n\nH2: Cookies\n\nWe use cookies to ensure you get the best experience on our website.\n[BUTTON: Accept all]\n[BUTTON: Reject all]\n[BUTTON: Settings]\n\nH2: Cookie preferences\n\n[BUTTON: Close]\nWe use cookies to ensure the basic functionalities of the website and to enhance your online experience. You can choose for each category to opt-in/out whenever you want. For more details relative to cookies and other sensitive data, please read the full\nprivacy policy → https://careers.donmarwarehouse.com/cookie-policy\n.\n[BUTTON: Strictly necessary cookies]\nStrictly necessary cookies\nThese cookies are essential for the proper functioning of our website. Without these cookies, the website may not work properly.\nName\nDomain\nExpiration\nDescription\n_pinpoint_session\npinpointhq.com\nAs soon as browser window is closed\nAllows us to associate file uploads to our file storage provider with your form submissions\nLSW_WEB\ncareers.donmarwarehouse.com\nAs soon as browser window is closed\nAllows our load balancer to send your specific traffic to the same backend server\nLSW_WEB\napp.pinpointhq.com\nAs soon as browser window is closed\nAllows our load balancer to send your specific traffic to the same backend server\ncc_cookie\ncareers.donmarwarehouse.com\nSix months\nSaves your decisions about these cookies so we don't need to ask every time\n[BUTTON: Analytics and Performance cookies]\nAnalytics and Performance cookies\nThese cookies allow the website to remember the choices you have made in the past\nName\nDomain\nExpiration\nDescription\nahoy_visitor\ncareers.donmarwarehouse.com\nTwo years\nWe use an internal metrics collector to understand interactions with our website over time\nahoy_visit\ncareers.donmarwarehouse.com\nFour hours\nWe use an internal metrics collector to understand interactions with our website over time\n[BUTTON: Accept all]\n[BUTTON: Reject all]\n[BUTTON: Save settings]",
+      "extracted_url": "https://careers.donmarwarehouse.com/",
+      "token_used": {
+        "input_token": 2817,
+        "output_token": 2223,
+        "total_token": 5040
+      },
+      "llm_analysis": {
+        "page_category": "jobs_related_no_vacancies",
+        "confidence": 0.72,
+        "reasoning": "The page states there are currently no positions advertised and offers a 'Register Your Interest' option, along with a 'View Jobs' link, but no job listings are shown on the page.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+          "button": "Register Your Interest",
+          "element_type": "link"
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "job_alert": false,
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+      "status": "already_clicked_button",
+      "current_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+      "error": null,
+      "extracted_content": "Careers at → https://careers.donmarwarehouse.com/\nSpeculative Applications\nIf you can't see a role that you want to apply for right now, complete the form to be notified of any roles that come along that meet your criteria.\nYou'll receive an email when you register, and then again once a job comes up that you would be interested in.\n1.\nPersonal Details\nWe'll need these details in order to be able to contact you when a job is made available.\nFirst Name\nLast Name\nEmail Address\nPhone\nPhone country code\nUnited States\n+\n1\nUnited Kingdom\n+\n44\nAfghanistan (‫افغانستان‬‎)\n+\n93\nAlbania (Shqipëri)\n+\n355\nAlgeria (‫الجزائر‬‎)\n+\n213\nAmerican Samoa\n+\n1684\nAndorra\n+\n376\nAngola\n+\n244\nAnguilla\n+\n1264\nAntigua and Barbuda\n+\n1268\nArgentina\n+\n54\nArmenia (Հայաստան)\n+\n374\nAruba\n+\n297\nAustralia\n+\n61\nAustria (Österreich)\n+\n43\nAzerbaijan (Azərbaycan)\n+\n994\nBahamas\n+\n1242\nBahrain (‫البحرين‬‎)\n+\n973\nBangladesh (বাংলাদেশ)\n+\n880\nBarbados\n+\n1246\nBelarus (Беларусь)\n+\n375\nBelgium (België)\n+\n32\nBelize\n+\n501\nBenin (Bénin)\n+\n229\nBermuda\n+\n1441\nBhutan (འབྲུག)\n+\n975\nBolivia\n+\n591\nBosnia and Herzegovina (Босна и Херцеговина)\n+\n387\nBotswana\n+\n267\nBrazil (Brasil)\n+\n55\nBritish Indian Ocean Territory\n+\n246\nBritish Virgin Islands\n+\n1284\nBrunei\n+\n673\nBulgaria (България)\n+\n359\nBurkina Faso\n+\n226\nBurundi (Uburundi)\n+\n257\nCambodia (កម្ពុជា)\n+\n855\nCameroon (Cameroun)\n+\n237\nCanada\n+\n1\nCape Verde (Kabu Verdi)\n+\n238\nCaribbean Netherlands\n+\n599\nCayman Islands\n+\n1345\nCentral African Republic (République centrafricaine)\n+\n236\nChad (Tchad)\n+\n235\nChile\n+\n56\nChina (中国)\n+\n86\nChristmas Island\n+\n61\nCocos (Keeling) Islands\n+\n61\nColombia\n+\n57\nComoros (‫جزر القمر‬‎)\n+\n269\nCongo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)\n+\n243\nCongo (Republic) (Congo-Brazzaville)\n+\n242\nCook Islands\n+\n682\nCosta Rica\n+\n506\nCôte d’Ivoire\n+\n225\nCroatia (Hrvatska)\n+\n385\nCuba\n+\n53\nCuraçao\n+\n599\nCyprus (Κύπρος)\n+\n357\nCzech Republic (Česká republika)\n+\n420\nDenmark (Danmark)\n+\n45\nDjibouti\n+\n253\nDominica\n+\n1767\nDominican Republic (República Dominicana)\n+\n1\nEcuador\n+\n593\nEgypt (‫مصر‬‎)\n+\n20\nEl Salvador\n+\n503\nEquatorial Guinea (Guinea Ecuatorial)\n+\n240\nEritrea\n+\n291\nEstonia (Eesti)\n+\n372\nEthiopia\n+\n251\nFalkland Islands (Islas Malvinas)\n+\n500\nFaroe Islands (Føroyar)\n+\n298\nFiji\n+\n679\nFinland (Suomi)\n+\n358\nFrance\n+\n33\nFrench Guiana (Guyane française)\n+\n594\nFrench Polynesia (Polynésie française)\n+\n689\nGabon\n+\n241\nGambia\n+\n220\nGeorgia (საქართველო)\n+\n995\nGermany (Deutschland)\n+\n49\nGhana (Gaana)\n+\n233\nGibraltar\n+\n350\nGreece (Ελλάδα)\n+\n30\nGreenland (Kalaallit Nunaat)\n+\n299\nGrenada\n+\n1473\nGuadeloupe\n+\n590\nGuam\n+\n1671\nGuatemala\n+\n502\nGuernsey\n+\n44\nGuinea (Guinée)\n+\n224\nGuinea-Bissau (Guiné Bissau)\n+\n245\nGuyana\n+\n592\nHaiti\n+\n509\nHonduras\n+\n504\nHong Kong (香港)\n+\n852\nHungary (Magyarország)\n+\n36\nIceland (Ísland)\n+\n354\nIndia (भारत)\n+\n91\nIndonesia\n+\n62\nIran (‫ایران‬‎)\n+\n98\nIraq (‫العراق‬‎)\n+\n964\nIreland\n+\n353\nIsle of Man\n+\n44\nIsrael (‫ישראל‬‎)\n+\n972\nItaly (Italia)\n+\n39\nJamaica\n+\n1876\nJapan (日本)\n+\n81\nJersey\n+\n44\nJordan (‫الأردن‬‎)\n+\n962\nKazakhstan (Казахстан)\n+\n7\nKenya\n+\n254\nKiribati\n+\n686\nKosovo\n+\n383\nKuwait (‫الكويت‬‎)\n+\n965\nKyrgyzstan (Кыргызстан)\n+\n996\nLaos (ລາວ)\n+\n856\nLatvia (Latvija)\n+\n371\nLebanon (‫لبنان‬‎)\n+\n961\nLesotho\n+\n266\nLiberia\n+\n231\nLibya (‫ليبيا‬‎)\n+\n218\nLiechtenstein\n+\n423\nLithuania (Lietuva)\n+\n370\nLuxembourg\n+\n352\nMacau (澳門)\n+\n853\nMacedonia (FYROM) (Македонија)\n+\n389\nMadagascar (Madagasikara)\n+\n261\nMalawi\n+\n265\nMalaysia\n+\n60\nMaldives\n+\n960\nMali\n+\n223\nMalta\n+\n356\nMarshall Islands\n+\n692\nMartinique\n+\n596\nMauritania (‫موريتانيا‬‎)\n+\n222\nMauritius (Moris)\n+\n230\nMayotte\n+\n262\nMexico (México)\n+\n52\nMicronesia\n+\n691\nMoldova (Republica Moldova)\n+\n373\nMonaco\n+\n377\nMongolia (Монгол)\n+\n976\nMontenegro (Crna Gora)\n+\n382\nMontserrat\n+\n1664\nMorocco (‫المغرب‬‎)\n+\n212\nMozambique (Moçambique)\n+\n258\nMyanmar (Burma) (မြန်မာ)\n+\n95\nNamibia (Namibië)\n+\n264\nNauru\n+\n674\nNepal (नेपाल)\n+\n977\nNetherlands (Nederland)\n+\n31\nNew Caledonia (Nouvelle-Calédonie)\n+\n687\nNew Zealand\n+\n64\nNicaragua\n+\n505\nNiger (Nijar)\n+\n227\nNigeria\n+\n234\nNiue\n+\n683\nNorfolk Island\n+\n672\nNorth Korea (조선 민주주의 인민 공화국)\n+\n850\nNorthern Mariana Islands\n+\n1670\nNorway (Norge)\n+\n47\nOman (‫عُمان‬‎)\n+\n968\nPakistan (‫پاکستان‬‎)\n+\n92\nPalau\n+\n680\nPalestine (‫فلسطين‬‎)\n+\n970\nPanama (Panamá)\n+\n507\nPapua New Guinea\n+\n675\nParaguay\n+\n595\nPeru (Perú)\n+\n51\nPhilippines\n+\n63\nPoland (Polska)\n+\n48\nPortugal\n+\n351\nPuerto Rico\n+\n1\nQatar (‫قطر‬‎)\n+\n974\nRéunion (La Réunion)\n+\n262\nRomania (România)\n+\n40\nRussia (Россия)\n+\n7\nRwanda\n+\n250\nSaint Barthélemy (Saint-Barthélemy)\n+\n590\nSaint Helena\n+\n290\nSaint Kitts and Nevis\n+\n1869\nSaint Lucia\n+\n1758\nSaint Martin (Saint-Martin (partie française))\n+\n590\nSaint Pierre and Miquelon (Saint-Pierre-et-Miquelon)\n+\n508\nSaint Vincent and the Grenadines\n+\n1784\nSamoa\n+\n685\nSan Marino\n+\n378\nSão Tomé and Príncipe (São Tomé e Príncipe)\n+\n239\nSaudi Arabia (‫المملكة العربية السعودية‬‎)\n+\n966\nSenegal (Sénégal)\n+\n221\nSerbia (Србија)\n+\n381\nSeychelles\n+\n248\nSierra Leone\n+\n232\nSingapore\n+\n65\nSint Maarten\n+\n1721\nSlovakia (Slovensko)\n+\n421\nSlovenia (Slovenija)\n+\n386\nSolomon Islands\n+\n677\nSomalia (Soomaaliya)\n+\n252\nSouth Africa\n+\n27\nSouth Korea (대한민국)\n+\n82\nSouth Sudan (‫جنوب السودان‬‎)\n+\n211\nSpain (España)\n+\n34\nSri Lanka (ශ්‍රී ලංකාව)\n+\n94\nSudan (‫السودان‬‎)\n+\n249\nSuriname\n+\n597\nSvalbard and Jan Mayen\n+\n47\nSwaziland\n+\n268\nSweden (Sverige)\n+\n46\nSwitzerland (Schweiz)\n+\n41\nSyria (‫سوريا‬‎)\n+\n963\nTaiwan (台灣)\n+\n886\nTajikistan\n+\n992\nTanzania\n+\n255\nThailand (ไทย)\n+\n66\nTimor-Leste\n+\n670\nTogo\n+\n228\nTokelau\n+\n690\nTonga\n+\n676\nTrinidad and Tobago\n+\n1868\nTunisia (‫تونس‬‎)\n+\n216\nTurkey (Türkiye)\n+\n90\nTurkmenistan\n+\n993\nTurks and Caicos Islands\n+\n1649\nTuvalu\n+\n688\nU.S. Virgin Islands\n+\n1340\nUganda\n+\n256\nUkraine (Україна)\n+\n380\nUnited Arab Emirates (‫الإمارات العربية المتحدة‬‎)\n+\n971\nUnited Kingdom\n+\n44\nUnited States\n+\n1\nUruguay\n+\n598\nUzbekistan (Oʻzbekiston)\n+\n998\nVanuatu\n+\n678\nVatican City (Città del Vaticano)\n+\n39\nVenezuela\n+\n58\nVietnam (Việt Nam)\n+\n84\nWallis and Futuna\n+\n681\nWestern Sahara (‫الصحراء الغربية‬‎)\n+\n212\nYemen (‫اليمن‬‎)\n+\n967\nZambia\n+\n260\nZimbabwe\n+\n263\nÅland Islands\n+\n358\nLinkedIn URL\n2.\nTeams\nPlease let us know what type of opportunities you're interested in.\nDepartments\nSelect...\nDiversity and Inclusion\nIn order to achieve this, the Donmar works to ensure that all job applicants, employees and participants are treated equally and encouraged to develop and maximise their true potential, irrespective of their background.\nWe recognise that the Donmar and the wider theatre industry is not representative of contemporary society in terms of workforce, artists and audience. To help us to be as representative as possible, we collect information about everyone who applies to work with us. Our aim is to embrace diversity, difference, ambition and excellence. To achieve this, it is useful for us to know a certain amount about who you are. The information that you provide us with will be managed confidential.\nPlease note, all information disclosed in the second segment of this form will remain confidential within the hiring team and no details will be shared with the hiring panel.\nIf you prefer to self-define for any of the listed questions, please email your responses to\njobs@donmarwarehouse.com → mailto:jobs@donmarwarehouse.com\n. We also welcome any feedback you may have relating to this form.\nWhat is your gender identity?\nSelect...\nFemale (including Trans women)\nMale (including Trans men)\nNon-Binary\nIntersex\nPrefer Not To Say\nPrefer to self-define\nIs this the gender which you were assigned at birth?\nSelect...\nYes\nNo\nPrefer Not To Say\nHow would you best describe your ethnicity?\nSelect...\nAsian, Asian British or Asian Welsh: East Asian\nAsian, Asian British or Asian Welsh: South Asian\nAsian, Asian British or Asian Welsh: Prefer to Self Define (see below)\nBlack, Black British, Black Welsh, Caribbean or African: African\nBlack, Black British, Black Welsh, Caribbean or African: Caribbean\nBlack, Black British, Black Welsh, Caribbean or African: Prefer to Self Define\nLatin American, Latin American British, Latin America Welsh, Latinx, Hispanic\nMiddle Eastern, North African, Middle Eastern or North African British, Middle Eastern or North African Welsh\nMixed or Multiple ethnic groups: White and East Asian\nMixed or Multiple ethnic groups: White and South Asian\nMixed or Multiple ethnic groups: White and Black African\nMixed or Multiple ethnic groups: White and Black Caribbean\nMixed or Multiple ethnic groups: Prefer to Self Define\nWhite: English, Welsh, Scottish, Northern Irish or British\nWhite: Irish\nWhite: Gypsy or Irish Traveller\nWhite: Roma\nWhite: Prefer to Self Define\nPrefer not to say\nPrefer to Self Define\nWhat age bracket do you belong to?\nSelect...\n0-19\n20-34\n35-49\n50-64\n64-74\n75+\nPrefer Not To Say\nDo you identify as D/deaf or disabled or have a long term health condition? (N.B. this may include, but not limited to, physical or invisible disabilities, cognitive or learning difficulties and other chronic conditions)\nSelect...\nYes\nNo\nPrefer Not To Say\nDo you identify as neuro-divergent?\nSelect...\nYes\nNo\nPrefer Not To Say\n3.\nSubmit\nYou can\nview our privacy notice → https://careers.donmarwarehouse.com/privacy-policy\nfor more information.\nAllow us to process your personal information.\n[BUTTON: Submit]\n\nH2: Cookie preferences\n\n[BUTTON: Close]\nWe use cookies to ensure the basic functionalities of the website and to enhance your online experience. You can choose for each category to opt-in/out whenever you want. For more details relative to cookies and other sensitive data, please read the full\nprivacy policy → https://careers.donmarwarehouse.com/cookie-policy\n.\n[BUTTON: Strictly necessary cookies]\nStrictly necessary cookies\nThese cookies are essential for the proper functioning of our website. Without these cookies, the website may not work properly.\nName\nDomain\nExpiration\nDescription\n_pinpoint_session\npinpointhq.com\nAs soon as browser window is closed\nAllows us to associate file uploads to our file storage provider with your form submissions\nLSW_WEB\ncareers.donmarwarehouse.com\nAs soon as browser window is closed\nAllows our load balancer to send your specific traffic to the same backend server\nLSW_WEB\napp.pinpointhq.com\nAs soon as browser window is closed\nAllows our load balancer to send your specific traffic to the same backend server\ncc_cookie\ncareers.donmarwarehouse.com\nSix months\nSaves your decisions about these cookies so we don't need to ask every time\n[BUTTON: Analytics and Performance cookies]\nAnalytics and Performance cookies\nThese cookies allow the website to remember the choices you have made in the past\nName\nDomain\nExpiration\nDescription\nahoy_visitor\ncareers.donmarwarehouse.com\nTwo years\nWe use an internal metrics collector to understand interactions with our website over time\nahoy_visit\ncareers.donmarwarehouse.com\nFour hours\nWe use an internal metrics collector to understand interactions with our website over time\n[BUTTON: Accept all]\n[BUTTON: Reject all]\n[BUTTON: Save settings]",
+      "extracted_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+      "token_used": {
+        "input_token": 5137,
+        "output_token": 2160,
+        "total_token": 7297
+      },
+      "llm_analysis": {
+        "page_category": "navigation_required",
+        "confidence": 0.75,
+        "reasoning": "The page provides a speculative applications form to be notified of future roles but contains no actual job listings or job detail pages.",
+        "job_alert": true,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": "Submit",
+          "element_type": "button"
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "job_alert": true,
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false,
+      "navigation_history": [
+        {
+          "step": 0,
+          "from_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+          "target_url": null,
+          "target_button": "Submit",
+          "reasoning": "The page hosts a speculative applications form to register interest in future roles but does not display any job listings or a direct link to view all jobs; it primarily acts as a navigation/entry point to the careers content.",
+          "status": "clicked",
+          "landed_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+          "error": null
+        },
+        {
+          "step": 1,
+          "from_url": "https://careers.donmarwarehouse.com/register-your-interest/new",
+          "target_url": null,
+          "target_button": "Submit",
+          "reasoning": "The page provides a speculative applications form to be notified of future roles but contains no actual job listings or job detail pages.",
+          "status": "already_clicked_button",
+          "landed_url": null,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

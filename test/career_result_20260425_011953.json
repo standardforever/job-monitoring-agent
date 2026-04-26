@@ -1,0 +1,910 @@
+{
+  "overview": {
+    "outcome": "jobs_found",
+    "outcome_reason": "7 job(s) found across 1 career page(s).",
+    "jobs_found": true,
+    "total_jobs_found": 7,
+    "job_urls": [
+      "https://www.sevenoaksschool.org/vacancies/head-of-french-full-time-from-september-2026/",
+      "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYAl2d_NbtS3oXEGjXwezULkae_n68i9Odr_qFrhZxuC17ue3wnbgZEJpMPpe3j1_4&iframe=True",
+      "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYP5vKSqbheqvlLNemLwW_pYp2JI5nEq7fKDwNHt2pF0ZL6Ht7TaA4o5toHYEBlXCM&iframe=True",
+      "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNaZW04L4n97N9TzgLJWpNgtrauDJYvKvNWmni_7RVgsvV6qfSZnYMRCruNpwqNqYmw&iframe=True",
+      "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYxAUtFcnQIQPecjwCGPWTmTGZXWhg_H09nBVxE65jBnn-PGkorPlplRTB2RjObR94&iframe=True",
+      "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYB_Xkm-lhHBDoYQ40PMtMtoiKE0cJ1bD6FVqBViQmCPnFb1cFXNrAAEVhbvbWDdvQ&iframe=True",
+      "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNbTln66qxJmI74bR8k5CVnNcwxwxSHc3v-8e4Qw4JvwSg_KC2H6NTFOA-TXKP-V-RU&iframe=True"
+    ],
+    "job_found_on_urls": [
+      "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/"
+    ],
+    "listing_ui": {
+      "ui_category": "external_redirect",
+      "filter_present": false,
+      "filter_types": [],
+      "sort_present": false,
+      "sort_types": [],
+      "pagination_present": false,
+      "pagination_type": null,
+      "next_page_url": null
+    },
+    "career_page_confirmed": true,
+    "no_vacancy_urls": [
+      "https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/how-to-apply-university-programs-and-mentoring/"
+    ],
+    "blocked_platform_urls": {},
+    "external_redirect_urls": [],
+    "embedded_urls": [],
+    "navigation_blocked_urls": [
+      "https://www.sevenoaksschool.org/about-us/history-of-the-school/"
+    ],
+    "navigation_issues": [
+      {
+        "source_url": "https://www.sevenoaksschool.org/about-us/history-of-the-school/",
+        "reason": "already_visited_url",
+        "target_url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+        "target_button": "Work at Sevenoaks",
+        "error": null
+      }
+    ],
+    "not_job_related_urls": [
+      "https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/",
+      "https://www.sevenoaksschool.org/about-us/",
+      "https://www.sevenoaksschool.org/academic/the-ib/about/",
+      "https://www.sevenoaksschool.org/about-us/sevenoaks-family/",
+      "https://www.sevenoaksschool.org/about-us/location-and-campus/overview/",
+      "https://www.sevenoaksschool.org/about-us/our-staff/",
+      "https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/",
+      "https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/",
+      "https://www.sevenoaksschool.org/about-us/location-and-campus/",
+      "https://www.sevenoaksschool.org/about-us/isi-inspection-report/",
+      "https://www.sevenoaksschool.org/pastoral/the-pastoral-team/",
+      "https://www.sevenoaksschool.org/about-us/headmasters-welcome/",
+      "https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/",
+      "https://www.sevenoaksschool.org/about-us/our-institutes/",
+      "https://www.sevenoaksschool.org/about-us/policies-reports/",
+      "https://www.sevenoaksschool.org/about-us/our-governors/"
+    ],
+    "access_issue_urls": [],
+    "unknown_urls": [],
+    "total_urls_processed": 19
+  },
+  "career_pages_analysis": [
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/#content-wrap\nAbout Us → https://www.sevenoaksschool.org/about-us/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\n\nH1: Hiring our facilities\n\n[link] → https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/#flexible-blocks\nA number of our boarding houses are available for hire during school holidays. These are on campus or within walking distance of the school, and offer comfortable accommodation in traditional and modern houses.\nWith our performing arts and leisure centres on campus, we are able to offer bespoke and specialist courses utilising these facilities, and boarding guests may have access to these areas as part of their residential stay.\nOur performing arts centre, The Space, offers four unique audience spaces, a recording studio, teaching rooms, a foyer, bar and gallery area. It can be hired during school holidays, subject to availability. For more information, visit The Space website.\nVisit The Space → https://www.thespacesevenoaks.co.uk/\n\nH2: Catering for events\n\nWe have a large professional catering team who can offer all meals and refreshments throughout the day. Menus can be agreed in advance. Our menus consist of freshly prepared seasonal produce, with hot options at every meal.\nFor more information, please email\nevents@sevenoaksschool.org → mailto:events@sevenoaksschool.org\n.\n\nH2: Need catering?\n\n\nH3: Events and Lettings\n\nevents@sevenoaksschool.org → mailto:events@sevenoaksschool.org\n[link] → tel:\n\nH2: Disabled access\n\nDisabled parking is available in Duke’s Meadow car park, at Claridge House, or on The Flat (via Duke’s Meadow entrance). Please do let us know in advance if you require disabled parking or wheelchair access to the school, The Space or The Sennocke Centre.\n\nH2: Where Next?\n\nHiring our facilities → https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/\nRead more\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/overview/\nRead more\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/",
+      "token_used": {
+        "input_token": 2497,
+        "output_token": 816,
+        "total_token": 3313
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.76,
+        "reasoning": "The page describes hiring facilities and related services; there are no job postings or vacancies listed.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+      "status": "jobs_listed_on_page",
+      "current_url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/#content-wrap\nAbout Us\n\nH1: Work at Sevenoaks\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\nAt Sevenoaks we are proud of our talented, friendly and committed staff and are looking for people who want to help us achieve our ambitious and exciting vision for the future. We employ around 500 staff, offering a diverse range of career opportunities, and would love you to come and join us.\nSevenoaks School enjoys the distinction of being one of the UK’s longest established schools, offering an innovative approach to education, an ethos of lifelong learning, strong pastoral care and a culture of mutual respect. We provide an excellent co-curricular programme and social events for students and staff, and both academic and support staff benefit from this culture.\nWe believe that having a diverse staff body enhances our school community and we warmly welcome applicants from all backgrounds. We employ staff in academic, pastoral and co-curricular roles and also in administration and professional support, IT and operations, in the school sports centre, the health centre, our estates department, performing arts centre, summer programmes and other areas.\nWe celebrate the rich interests and skills of our staff and pupils, with clubs and activities including climbing, yoga, football, tennis, netball, choral and orchestral groups, prayer and reflection, creative writing, Pride Society and many more.\nOur co-educational day and boarding school has a beautiful 100-acre campus, next to Knole and in the centre of Sevenoaks. The first-class facilities include a state-of-the-art performing arts centre, a sports centre with swimming pool, a theatre, eight boarding houses and a health centre.\n\nH2: Our benefits\n\nCar parking on site\nCycle to work scheme\nDelicious lunches provided daily\nEmployee Assistance Programme\nEye test and glasses vouchers\nFee remission policy (terms apply)\nFree or reduced price tickets to events in The Space performing arts centre\nFree life assurance\nGym membership including use of the swimming pool\nLong service award\nSevenoaks School Savers voluntary benefit scheme\nSupport for training and development\nTrained Mental Health First Aiders\n\nH3: For academic staff\n\nAccommodation, where available\nMembership of a Pensions Scheme\n\nH3: For support staff\n\nMembership of our GPP pension scheme\nHoliday entitlement of 27 days per annum, increasing to 30 days per annum after 3 years of service (excluding bank holidays)\nDiscretionary leave for school shutdown over Christmas\n\nH2: Academic vacancies\n\n\nH3: Head of French, Full-time from September 2026\n\nDepartment\nModern Languages\nType\nPermanent\nClosing date\n30 April 2026\nApply here → https://www.sevenoaksschool.org/vacancies/head-of-french-full-time-from-september-2026/\n\nH2: Support vacancies\n\n\nH3: Estates Project Coordinator (Full-Time, All Year Round)\n\nType\nPermanent\nClosing date\n30 April 2026\nApply here → https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYAl2d_NbtS3oXEGjXwezULkae_n68i9Odr_qFrhZxuC17ue3wnbgZEJpMPpe3j1_4&iframe=True\n\nH3: Casual Lifeguard/Leisure Attendant (Part-Time, All Year Round)\n\nType\nCasual\nClosing date\n30 April 2026\nApply here → https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYP5vKSqbheqvlLNemLwW_pYp2JI5nEq7fKDwNHt2pF0ZL6Ht7TaA4o5toHYEBlXCM&iframe=True\n\nH3: Venue Technician (Full-Time, All Year Round)\n\nType\nPermanent\nClosing date\n3 May 2026\nApply here → https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNaZW04L4n97N9TzgLJWpNgtrauDJYvKvNWmni_7RVgsvV6qfSZnYMRCruNpwqNqYmw&iframe=True\n\nH3: Casual Fitness Instructor (Part-Time, All Year Round)\n\nType\nPermanent\nClosing date\n4 May 2026\nApply here → https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYxAUtFcnQIQPecjwCGPWTmTGZXWhg_H09nBVxE65jBnn-PGkorPlplRTB2RjObR94&iframe=True\n\nH3: KAN & Ambition Mentor\n\nType\nCasual\nClosing date\n7 May 2026\nApply here → https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYB_Xkm-lhHBDoYQ40PMtMtoiKE0cJ1bD6FVqBViQmCPnFb1cFXNrAAEVhbvbWDdvQ&iframe=True\n\nH3: Speculative Applications\n\nType\nCasual\nClosing date\n7 January 2027\nApply here → https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNbTln66qxJmI74bR8k5CVnNcwxwxSHc3v-8e4Qw4JvwSg_KC2H6NTFOA-TXKP-V-RU&iframe=True\n\nH2: Where Next?\n\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nRead more\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+      "token_used": {
+        "input_token": 4158,
+        "output_token": 4044,
+        "total_token": 8202
+      },
+      "llm_analysis": {
+        "page_category": "jobs_listed",
+        "confidence": 0.76,
+        "reasoning": "The page lists multiple vacancies under Academic and Support sections with 'Apply here' links for each, indicating active job listings.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [
+          {
+            "title": "Head of French, Full-time from September 2026",
+            "job_url": "https://www.sevenoaksschool.org/vacancies/head-of-french-full-time-from-september-2026/"
+          },
+          {
+            "title": "Estates Project Coordinator (Full-Time, All Year Round)",
+            "job_url": "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYAl2d_NbtS3oXEGjXwezULkae_n68i9Odr_qFrhZxuC17ue3wnbgZEJpMPpe3j1_4&iframe=True"
+          },
+          {
+            "title": "Casual Lifeguard/Leisure Attendant (Part-Time, All Year Round)",
+            "job_url": "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYP5vKSqbheqvlLNemLwW_pYp2JI5nEq7fKDwNHt2pF0ZL6Ht7TaA4o5toHYEBlXCM&iframe=True"
+          },
+          {
+            "title": "Venue Technician (Full-Time, All Year Round)",
+            "job_url": "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNaZW04L4n97N9TzgLJWpNgtrauDJYvKvNWmni_7RVgsvV6qfSZnYMRCruNpwqNqYmw&iframe=True"
+          },
+          {
+            "title": "Casual Fitness Instructor (Part-Time, All Year Round)",
+            "job_url": "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYxAUtFcnQIQPecjwCGPWTmTGZXWhg_H09nBVxE65jBnn-PGkorPlplRTB2RjObR94&iframe=True"
+          },
+          {
+            "title": "KAN & Ambition Mentor",
+            "job_url": "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYB_Xkm-lhHBDoYQ40PMtMtoiKE0cJ1bD6FVqBViQmCPnFb1cFXNrAAEVhbvbWDdvQ&iframe=True"
+          },
+          {
+            "title": "Speculative Applications",
+            "job_url": "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNbTln66qxJmI74bR8k5CVnNcwxwxSHc3v-8e4Qw4JvwSg_KC2H6NTFOA-TXKP-V-RU&iframe=True"
+          }
+        ],
+        "listing_ui": {
+          "ui_category": "external_redirect",
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [
+        "https://www.sevenoaksschool.org/vacancies/head-of-french-full-time-from-september-2026/",
+        "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYAl2d_NbtS3oXEGjXwezULkae_n68i9Odr_qFrhZxuC17ue3wnbgZEJpMPpe3j1_4&iframe=True",
+        "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYP5vKSqbheqvlLNemLwW_pYp2JI5nEq7fKDwNHt2pF0ZL6Ht7TaA4o5toHYEBlXCM&iframe=True",
+        "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNaZW04L4n97N9TzgLJWpNgtrauDJYvKvNWmni_7RVgsvV6qfSZnYMRCruNpwqNqYmw&iframe=True",
+        "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYxAUtFcnQIQPecjwCGPWTmTGZXWhg_H09nBVxE65jBnn-PGkorPlplRTB2RjObR94&iframe=True",
+        "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNYB_Xkm-lhHBDoYQ40PMtMtoiKE0cJ1bD6FVqBViQmCPnFb1cFXNrAAEVhbvbWDdvQ&iframe=True",
+        "https://app.vacancy-filler.co.uk/salescrm/Careers/CareersPage.aspx?e=LMo8nnTwYNbTln66qxJmI74bR8k5CVnNcwxwxSHc3v-8e4Qw4JvwSg_KC2H6NTFOA-TXKP-V-RU&iframe=True"
+      ],
+      "embedded_jobs_present": false,
+      "listing_ui": {
+        "ui_category": "external_redirect",
+        "filter_present": false,
+        "filter_types": [],
+        "sort_present": false,
+        "sort_types": [],
+        "pagination_present": false,
+        "pagination_type": null,
+        "next_page_url": null
+      }
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/headmasters-welcome/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/headmasters-welcome/#content-wrap\nAbout Us\n\nH1: Meet the Headmaster\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\nA very warm welcome to Sevenoaks, a world-leading, co-educational day and boarding school whose community is both local and global. I h\nope you find the\nschool as inspirational and exciting as I do.\nFounded in 1432, Sevenoaks School enjoys the distinction of being among the UK’s oldest schools, with a tradition of innovation and excellence.\nWe have been co-educational for almost 50 years, and in 1978 we became one of the first schools in the UK to adopt the International Baccalaureate Diploma Programme in the Sixth Form.\n“We develop inquiring, knowledgeable and caring young people, empowered with the skills to create a better and more peaceful world.”\nThe IB Diploma is the best Sixth Form education available in the world. It offers the breadth of studying six subjects as well as an extended essay and a critical thinking course. It also pulls together aspects of creativity, action and service, to develop well-rounded young adults with a range of skills and aptitudes; it is superb preparation for university and life.\nOur impressive IB Diploma average is consistently eight to ten points above the world average and our students go on to study at top universities around the world. The majority go to Oxbridge, London and other Russell Group universities, and with our global outlook we see around 20 per cent of our students going to international universities, increasingly to Ivy League and other colleges in North America.\nYet a Sevenoaks education is about much more than results. We instil the love of learning for its own sake and genuine academic endeavour. We encourage collaboration, communication and teamwork, not just competition.\nWe develop inquiring, caring and knowledgeable young people, empowered with the skills to create a better and more peaceful world.\nOur state-of-the-art facilities, together with high-level instruction, provide rich opportunities for students to participate in a wide variety of sports, the performing arts, and many other co-curricular activities.\nWe ensure all our students flourish through outstanding pastoral care, and breadth and balance across the curriculum and co-curriculum. Ultimately, our fundamental measure of success is that our students leave Sevenoaks as happy, empowered and dynamic young adults ready to thrive in the next stage of their lives. Our\nteam of specialist tutors, boarding house staff and divisional heads ensure our pupils receive expert care and support, which creates mutual respect and friendliness between students and staff.\nI encourage you to visit us to experience Sevenoaks for yourself.\n\nH2: About the Headmaster\n\nMr Jesse Elzinga has been Headmaster of Sevenoaks School since September 2020. Since then, he has managed the school through the pandemic, overseen our successful exam results and supported the wellbeing of the school community, including as part of Harvard University’s groundbreaking Human Flourishing Program.\nHis aims for the school’s future include widening access to a Sevenoaks School education through more financially assisted places. As a recipient of bursary support himself he knows that access to exceptional education can transform life opportunities. He is also working towards the school becoming carbon neutral, developing partnerships with other leading IB schools and furthering Sevenoaks School’s global outlook.\nHe is committed to the school’s award-winning ethos of service and partnerships which connects us to our local community and supports communities around the world.\nJesse joined Sevenoaks from Reading Blue Coat School, Berkshire, where he had been Headmaster since 2016. Before this, he was Director of Studies at Harrow where he broadened their academic curriculum. He also worked at St Edward’s School, Oxford, as Director of Studies, IB Coordinator and residential Assistant Housemaster, and Whitgift School as a teacher of Theology and Philosophy, Assistant Head of Sixth Form and Theory of Knowledge Coordinator. He has a BA Honours cum laude in Comparative Religion and Philosophy from Harvard University, and his subsequent MSt from Oxford University focused on ethical philosophy.\nJesse was a three-time national champion rower at Harvard and Oxford. He then became a competitive cyclist, twice racing against Sir Bradley Wiggins at the British Time Trial Championships (although Jesse is keen to point out that Sir Bradley won by a significant margin on both occasions!). Jesse is also an Ironman triathlete and marathoner, and he can be spotted early morning running in Knole Park.\nJesse’s wife Elaina works in the investments team at the Wellcome Trust, and they enjoy cooking and travelling, are Friends of the Royal Opera House and supporting members of England Rugby Club. They live in Sevenoaks with their three daughters, and they are also Sevenoaks parents.\nlime-video-button → https://vimeo.com/725575228\n\nH2: Where Next?\n\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nRead more\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/headmasters-welcome/",
+      "token_used": {
+        "input_token": 3342,
+        "output_token": 1330,
+        "total_token": 4672
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.75,
+        "reasoning": "Page contains no job postings or vacancies; it is an about page focusing on the headmaster and school leadership.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+          "button": null,
+          "element_type": "link"
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/academic/the-ib/about/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/academic/the-ib/about/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/academic/the-ib/about/#content-wrap\nThe IB\n\nH1: About the IB\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nAbout the IB → https://www.sevenoaksschool.org/academic/the-ib/about/\nThe Core of the IB → https://www.sevenoaksschool.org/academic/the-ib/the-ib-core/\nThe IB at Sevenoaks → https://www.sevenoaksschool.org/academic/the-ib/overview/\n\nH2: How the IB Diploma Works\n\nWorldwide, the IB Diploma is now taken by over 160,000 students from nearly 140 countries.\nThe breadth of the Diploma Programme encourages an interdisciplinary style of learning. Students develop expert knowledge in the topics that most interest them, but are also encouraged to look beyond the traditional boundaries between academic disciplines, think critically across the curriculum and to appreciate and analyse multiple perspectives. Despite this breadth, the six courses are all Ofqual-rated as being comparable at least to A-levels in their depth, and this strength of breadth and depth is one of the reasons why IB students are very effectively prepared for university and for the future workplace.\nIn order to obtain the Diploma students must take one subject from each of Groups 1-6, choosing three at Higher Level (HL) and three at Standard Level (SL). The choice of HL subjects allows students to pursue areas of personal interest, to play to their strengths, and to meet specialist requirements for university entrance. The IB also provides the opportunity for students to specialise in the Humanities, in the Sciences or in Languages by allowing them to choose a second subject from Group 2, 3 or 4 instead of an Arts subject in Group 6.\n\nH3: English\n\nEnglish Literature, including selected texts from World Literature; or, combined with Theatre to form a Literature and Performance course (SL only).\n\nH3: Languages\n\nA Modern Foreign Language, or Latin, or Classical Greek\n\nH3: Individuals and Societies (Humanities)\n\nEconomics, Geography, History, Philosophy, Psychology\n\nH3: Experimental Sciences\n\nBiology, Chemistry, Physics\n\nH3: Mathematics\n\nAnalysis and Approaches, or Applications and Interpretations\n\nH3: Arts\n\nMusic, Theatre, Visual Arts. A second subject chosen from Group 2, 3 or 4 can be taken instead of an Arts subject.\n\nH3: The IB Core\n\nThe IB Core consists of Creativity, Activity and Service (CAS), Theory of Knowledge (TOK) and the Extended Essay (EE). Students are required to complete a course in Theory of Knowledge, to write an Extended Essay of 4000 words on a subject of their choice, and to complete a programme of activities in the areas of Creativity, Action and Service.\nRead more → https://www.sevenoaksschool.org/academic/the-ib/the-ib-core/\n\nH3: IB GRADES\n\nEach subject is graded on a scale of 1 (minimum) to 7 (maximum). The maximum score of 45 points includes three points for exceptional work in TOK and an excellent Extended Essay.\n\nH2: Helpful links\n\nThe IB at Sevenoaks booklet arrow-inside-circle → https://viewer.joomag.com/the-ib-at-sevenoaks-2022/0174960001604490817?short&\n\nH2: The IB and Universities\n\nUniversities really like the IB; by maintaining its standards, free from state interference, the IB has succeeded in achieving a consistency of assessment unparalleled elsewhere. Its 45-point scale enables universities to make more nuanced offers to candidates than are possible under other schemes.\nIB students start their undergraduate careers with numeracy, literacy and language competency, a broad understanding of a range of disciplines, and strong employability skills such as teamwork and problem-solving. They are experienced at managing a varied workload and can question, reflect and think critically. As a consequence, the offer and acceptance rates for IB students are notably higher than those for other post-16 qualifications, and in the US, it is a sought-after passport to top universities. Sevenoaks has been a flagship school for the IB for many years. The IB provides what parents, universities and employers want – access to top universities, very impressive students and well-rounded, resourceful employees – but just as importantly, it encourages inquiry, reflection and delight in learning. Students leave us with a modern and international worldview and a desire to shape and to improve the world.\n\nH2: Where Next?\n\nOur Academic Ethos → https://www.sevenoaksschool.org/academic/our-academic-ethos/\nRead more\nUniversity Destinations → https://www.sevenoaksschool.org/academic/beyond-sevenoaks/university-destinations/\nRead more\nBeyond Sevenoaks → https://www.sevenoaksschool.org/academic/beyond-sevenoaks/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/academic/the-ib/about/",
+      "token_used": {
+        "input_token": 3001,
+        "output_token": 955,
+        "total_token": 3956
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.75,
+        "reasoning": "The page discusses the IB program at Sevenoaks and related content, with no job listings or career/hiring information present.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/sevenoaks-family/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/sevenoaks-family/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/sevenoaks-family/#content-wrap\nAbout Us\n\nH1: Sevenoaks Family of Schools\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\nWe are delighted to welcome Bickley Park to the Sevenoaks Family of Schools – Sevenoaks School, Solefield School and its newest member Bickley Park School.\nWith this exciting development, our family now offers an exceptional independent education within the south\n‑\neast, supporting children from age 2½ to 18 with world\n‑\nclass learning, outstanding pastoral\ncare\nand a broad,\nenriching co\n‑\ncurricular programme. The addition of Bickley Park strengthens our shared mission: securing a resilient future for independent education\nwithin the region and offering a breadth of choice for local families.\n\nH2: our vision\n\nThe Sevenoaks Family of Schools aims to create an environment where every child can flourish, both academically and personally. We foster a love of learning, academic excellence, and development of character, while embracing the future of education with innovation and flexibility.\nTogether, we enhance the educational choices available for children, providing them with a rich and diverse pathway to success.\n\nH2: READ OUR BROCHURE\n\nOur newest partner has enjoyed a warm and longstanding relationship with Sevenoaks School. Bickley Park has sent more pupils to Sevenoaks than any other prep school outside our local area. Its close ties and shared ethos make this a natural addition to the family.\nOur aligned values and commitment to educational excellence ensure that, as the family grows, we do so with clear purpose and unity. This partnership will enable further innovation, collaboration and development across all our schools.\n\nH3: What does this mean for pupils?\n\nAs our partnership evolves, pupils will be able to take greater advantage of state-of-the-art facilities whether pursuing the sciences, humanities, the arts, or sports.\nOur combined resources and expertise will enhance educational opportunities and ensure continuity of progress for pupils so that children are even better prepared for the move from prep school through to senior school, whether at Sevenoaks School or elsewhere, and for life beyond.\nOur senior students will be able to enjoy more leadership and mentoring opportunities working with younger pupils.\nEnhanced professional development will provide more enrichment for teachers to the benefit of pupils in all our schools.\n\nH3: What does this mean for parents?\n\nThe Sevenoaks Family of Schools gives parents the reassurance of a consistent, high-quality education for their children at every stage of their academic journey. From early years through to senior school, we are ensuring that every child’s needs are met, providing parents with choice in independent education, peace of mind and long-term stability.\n\nH3: What does this mean for the community?\n\nWe will continue to run our well-established Service and Partnership programme with other schools and in the local community. This includes hosting sporting events and the Schools Triathlon, running our annual Science Week and allowing schools to use our facilities for swimming and many other activities.\n\nH3: What does this mean for the Family?\n\nA growing area of collaboration within the Family is the development of outdoor learning at Solefield School. Sevenoaks School played a key role in helping to create Solefield’s new Forest School, which opened last term and has quickly become a much loved space for exploration and discovery.\nSolefield pupils now enjoy regular sessions in the woodland environment, where they learn through hands-on experiences such as identifying leaves, studying habitats and, of course, spending time in the ever popular mud kitchen.\nThis partnership extends beyond the site itself. Each Thursday, a dedicated Sevenoaks service group visits the Forest School to support activities and work alongside the younger pupils. The older students help to guide nature based learning, encourage curiosity and confidence outdoors, and model positive leadership and teamwork.\nThis shared approach to outdoor learning not only enriches the pupils’ experience but also strengthens the sense of community across the Sevenoaks Family of Schools.\n\nH2: faq\n\n\nH4: What is the Sevenoaks Family of Schools?\n\n[SVG: arrow-inside-circle]\nThe Sevenoaks Family of Schools brings together three well-established and respected independent schools with closely aligned values. It has been created to share\nexpertise\nand resources, while supporting the long-term strength of each school. Its aim is to enrich opportunities for pupils and create an environment where every child can flourish academically and personally.\n\nH4: Which schools are members of the Sevenoaks Family of Schools?\n\n[SVG: arrow-inside-circle]\nBickley Park will join Sevenoaks School and\nSolefield\nSchool as the latest member of the\nSevenoaks Family of Schools.\n\nH4: What are the benefits for Bickley Park joining the Sevenoaks Family of Schools?\n\n[SVG: arrow-inside-circle]\nResilience, strength and opportunity.\nAt a time where educational choice is more important than ever, this collaboration is designed to offer Bickley families a broader, more cohesive and resilient ‘future-proofed’ approach to independent schooling. Bickley Park will continue to be the warm, friendly, family-centred school that all parents and carers know and love.\n\nH4: What are the benefits to pupils and families of being part of the Sevenoaks Family of Schools?\n\n[SVG: arrow-inside-circle]\nBeing part of the S\nevenoaks Family of Schools\nprovides reassurance of a strong and sustainable future for\nindependent education in our region\n.\nPupils will\nbenefit\nfrom shared\nexpertise\nand wider opportunities to enrich their learning and personal development, whilst continuing to receive a first-class education, with\neach\nschool\nmaintaining\nits\nown approach and ethos.\n\nH4: Will school fees change?\n\n[SVG: arrow-inside-circle]\nEach school within the Sevenoaks Family of Schools\nretains\noperational and financial independence\n. Each school\nwill continue to set\nits\nown fees through\nits\nnormal annual budgetary process.\n\nH4: Will there be automatic entry to Sevenoaks School for Bickley Park pupils?\n\n[SVG: arrow-inside-circle]\nEntry to Sevenoaks School is not automatic. Any child wishing to join Sevenoaks School will continue to be assessed by Sevenoaks School in the usual way.\nHistorically, many pupils from Bickley Park have successfully progressed to Sevenoaks School, and we look forward to many more doing so in future.\n\nH4: Will the admissions process at Sevenoaks School change?\n\n[SVG: arrow-inside-circle]\nSevenoaks School’s admissions process will remain the same. Sevenoaks School will continue to welcome applications from a wide range of prep and primary schools, locally,\nnationally\nand internationally, recognising the value of a diverse student bod\ny.\n\nH2: Hear from the Heads\n\n“In an era where educational choice is more important than ever, this merger is designed to offer a broader, more cohesive, and more resilient approach to independent schooling.”\nJesse Elzinga -\nHeadmaster, Sevenoaks School\n“By joining forces, we are uniting three leading independent schools with a shared vision of providing the highest standard of education, with the flexibility to meet the diverse needs of all our students.”\nJesse Elzinga -\nHeadmaster, Sevenoaks School\n“Collaboration between our schools means a blending of the best practices from each institution. This includes sharing expertise in areas such as teaching, pastoral care, and facilities, to create a richer, more diverse learning environment for students.”\nHelen McClure -\nHeadmistress, Solefield School\n“Together, we will continue to uphold the values that have defined our schools - academic rigour, character development, and a commitment to nurturing the individual needs of every child.”\nHelen McClure -\nHeadmistress, Solefield School\n“The longstanding and warm relationship Bickley Park has with Sevenoaks School is the perfect foundation for a collaboration of this sort and sets us in good stead to deepen the synergy of our shared values, academic excellence and exceptional pastoral care, foundations on which we will continue to build.”\nTom Quilter -\nHeadmaster, Bickley Park School\n“Driven by a shared vision centred on educational excellence and kindness, we are delighted to be joining the Sevenoaks Family of Schools. Together, we will continue to deliver the highest standards of education, combined with the flexibility to meet the needs of every pupil.”\nTom Quilter -\nHeadmaster, Bickley Park School\n[SVG: quote-mark]\n\nH2: Where Next?\n\nAdmissions Welcome → https://www.sevenoaksschool.org/admissions/welcome/\nRead more\nAbout our Curriculum → https://www.sevenoaksschool.org/academic/our-curriculum/overview/\nRead more\nInstitute of Service and Partnerships → https://www.sevenoaksschool.org/service-and-partnerships/the-institute-of-service-and-partnerships/\nRead more\n\nH2: Extracted selector links\n- [link] link -> https://joom.ag/Qzvd",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/sevenoaks-family/",
+      "token_used": {
+        "input_token": 4154,
+        "output_token": 1432,
+        "total_token": 5586
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.68,
+        "reasoning": "The page discusses the Sevenoaks Family of Schools and partnerships (including Bickley Park) with no job postings, vacancies, or hiring information.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/location-and-campus/overview/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/location-and-campus/overview/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/location-and-campus/overview/#content-wrap\nAbout Us → https://www.sevenoaksschool.org/about-us/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\n\nH1: Location and Campus\n\n[link] → https://www.sevenoaksschool.org/about-us/location-and-campus/overview/#flexible-blocks\nThe school has occupied its present site for most of its 600-year history. Nestled next to a thousand-acre deer park, the campus benefits from abundant gardens, inspiring views of Knole and the North Downs and award-winning facilities. Positioned at the top of Sevenoaks High Street, it is easily accessible and beautifully situated.\n“A wonderfully happy location!”\nSevenoaks student, quoted in The Good Schools Guide\n\nH2: A stunning location in the heart of Kent\n\nOur campus of some 100 acres sits in a splendid setting on the edge of Sevenoaks in west Kent. Surrounded by trees, it is a pleasant environment in which students can feel at home. The outdoor spaces are attractive, green and spacious, enhanced by sustainable planting, while the variety of buildings, learning areas and social spaces is characteristic of this historic but forward-looking school.\n\nH2: A striking blend of old and new architecture\n\nThe school grounds stretch behind the upper High Street of Sevenoaks and are bisected by the ancient path to Knole. The centre of the campus comprises Old School (1732), the oldest extant school building and home to the Mathematics department, flanked by the\nSevenoaks Almshouses → https://www.sevenoaksalmshouses.org/\n, which were founded with the school. The unusual Palladian buildings, constructed with Kentish ragstone and ragstone galletting, were based on a design by Lord Burlington.\n\nH2: Hear from our people\n\n“We are fortunate to have a beautiful campus, one that offers a chance to appreciate the restorative and motivational power of nature…improving wellbeing and lowering stress levels, helping people become more inspired, creative and socially connected.”\n-\nMr Jesse Elzinga, Headmaster\n\nH2: Our campus\n\nAt the northern end of the campus lie the\nClassics,\nGeography\nand\nPsychology\ndepartment\ns\nand\nthe Lower School common room\n, hall,\nplayground\nand lawn\n.\nThe central campus area is completed with the Johnson Library and the Swanzy buildings (English and Drama), around a courtyard of benches, birches and olive trees. Nearby are the Dining Hall, Modern Languages, Philosophy, Economics and the Middle School Common Rooms. These surround our oldest quadrangle, Jockey’s Platch.\nA modern quadrangle, the Flat, landscaped with trees and benches, sits below Jockey’s Platch, enclosed by the state-of-the-art Science and Technology Centre, the Sixth Form Global Study Centre, Art department, The Space (our award-winning performing arts centre) and The Sennocke Centre for PE and Sport. Behind these are the Duke’s Meadow pitches, running track and cross-country trail, bordering Knole Park. Further pitches are at Solefields a short distance away.\nTwo boarding houses can be found in this area: Sennocke House and GIH, both within their own gardens. The remaining houses in our boarding community can be found on the other side of the A225 Tonbridge Road: Park Grange, Aisher House, the IC and New House close to the main campus, while Johnsons and School House are a short walk away.\nDespite the size of the campus, a busy, friendly, informal atmosphere prevails throughout. Students of all age groups feel comfortable together and new pupils quickly find their way around.\n30\nbuildings, 100+ classrooms, 14 sports pitches, 12 lawns, 6 ponds, 1000s of trees\n\nH2: The gardens\n\nEleven beautiful gardens are looked after by our dedicated Grounds and Gardens team. They plant new trees every year and maintain a range of shrubs, lawns, herbaceous borders, flowerbeds and ponds. The trees, plants and green spaces at Sevenoaks contribute to biodiversity and enrich the lives of all students and staff. We also have an allotment on campus, tended by students.\nSevenoaks School\nwas\nawarded a Certificate of Excellence by RHS\nSouth East\nin Bloom.\n\nH2: The town\n\nSevenoaks School is situated at the top of the bustling historic High Street, within walking distance of shops, coffee bars and restaurants. Behind the school is Knole, one of England’s largest country houses, set within a thousand-acre deer park and managed by the National Trust. The park is open to the public for walking, running and recreation, and is accessible from the school grounds. Sevenoaks station is one mile from the school, and a minibus service is provided for day students arriving by train.\nSevenoaks is a very attractive town and its safe and friendly environment makes it an ideal place for students to study, develop some independence and contribute to the community.\n\nH2: Transport links\n\nAn advantage of Sevenoaks is its transport links. The town is located not far from the A21 and M25, and is only 30 minutes from Central London by train, with excellent rail links to London Charing Cross, Waterloo and London Bridge. Gatwick Airport and the Channel Tunnel are both within a 45-minute journey by car, making travel very easy. Sevenoaks is also less than an hour away from the magnificent Kent and Sussex coastline and the popular towns of Rye, Hastings and Eastbourne.\n\nH2: Where Next?\n\nHiring our facilities → https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/\nRead more\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nRead more\nOur maps → https://www.sevenoaksschool.org/contact/our-maps/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/location-and-campus/overview/",
+      "token_used": {
+        "input_token": 3143,
+        "output_token": 785,
+        "total_token": 3928
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.75,
+        "reasoning": "The page describes location and campus details; no job listings or hiring information are present.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/our-staff/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/our-staff/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/our-staff/#content-wrap\nAbout Us\n\nH1: Leadership team\n\nElizabeth Wells Senior Deputy Head → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-1512\nElizabeth Wells\nSenior Deputy Head\nElizabeth Wells is the Senior Deputy Head. She joined Sevenoaks in 2025 from Bradfield College, a coeducational day and boarding IB school in Berkshire, where she was Deputy Academic Head.\nPrior to this, she was Head of Economics at North London Collegiate School, where she also worked as Head of Middle School and Deputy Safeguarding Lead. She started her teaching career at Highgate School, where she completed her PGCE. She brings a wealth of both academic and pastoral experience to Sevenoaks.\nBefore teaching, Elizabeth worked in the UK Government as an Economic Adviser for both the Ministry of Justice and HM Treasury. She holds two degrees in Economics: a first-class BSc from York and an MPhil from Cambridge. She also earned a Distinction in her MBA from Coventry. Elizabeth enjoys netball and hockey and has coached both sports throughout her career.\nOn joining the school in September 2025, Elizabeth said: “I am delighted to be joining the vibrant and diverse community at Sevenoaks. It’s a particularly exciting time to be joining the school as we continue to build on a fantastic school history with the Sevenoaks 600 strategy. I’m especially looking forward to my family being a part of a global, forward-looking community, and to supporting students and staff in both academic endeavour and flourishing in all aspects of life.”\nChris Taylor Deputy Head Academic → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-1529\n[IMAGE: Deputy Head Academic Mr Chris Taylor]\nChris Taylor\nDeputy Head Academic\nChris attended King’s College School, Wimbledon, read Classics at Trinity College, Oxford and completed a PGCE in Classics at Cambridge.\nChris began his teaching career at Brentwood School, Essex where he became a PGCE mentor, supporting other teachers into the profession. He was also a UCAS coordinator and supported Sixth Form students with the UCAS process. He then moved to Tonbridge Grammar School where he was Head of Classics and Deputy Director of Sixth Form. There he taught the IB Diploma and had sole responsibility for university entrance, managing UCAS applications and supporting Oxbridge and international applicants.\nHe became Head of Classics at Sevenoaks in 2012. He has worked closely with the school’s Institute of Teaching and Learning (ITL) and been in charge of the Model United Nations co-curricular activities. He is a dynamic leader, an incisive thinker and is committed to the academic success of Sevenoaks School.\nTom Danby Interim Deputy Head Co-curriculum → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-335984\nTom Danby\nInterim Deputy Head Co-curriculum\nTom gained his undergraduate degree from Loughborough before completing his Masters at Homerton College, Cambridge.\nAfter a career in Transport Planning, he began his teaching career at St John’s School, Leatherhead before moving to King’s Ely. He was Head of KS4 Geography and Assistant Housemaster before making the move to Sevenoaks in 2015.\nIn his time at Sevenoaks he has coached rugby, football, cricket and most recently golf as well as attending a wide variety of trips. In boarding he has worked in Johnsons, School House and most recently, as Housemaster of Aisher House.\n“The co-curriculum is a cornerstone of a Sevenoaks education. It gives pupils the chance to discover new skills and explore opportunities, enriching their enjoyment of school life and the depth of their learning experience. The greatest challenge for pupils is simply finding enough time to try everything on offer”.\nNichola Haworth Deputy Head Boarding → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-3931\nNichola Haworth\nDeputy Head Boarding\nNichola’s school years were divided between the UK and the UAE. She read Physics at Corpus Christi College, Oxford, then completed her PGCE.\nShe taught at Kimbolton School in Cambridgeshire, before arriving at Sevenoaks in 1998 where she immediately joined the boarding team.\nSince then, Nichola has worked in a number of boarding roles, including Housemistress of the Girls’ International House for 12 years. From 2008 she also held the post of Head of Boarding, leading the team of boarding housemasters and housemistresses, managing boarding staff and working with the various support teams in school. She was appointed Deputy Head Boarding in 2021. Alongside this, she remains an enthusiastic teacher of Physics, is part of the CCF (RAF), helps with DofE training and gets involved with all aspects of boarding life.\n“Boarding is at the heart of so much that we do at Sevenoaks, adding greatly to the diversity of the school, and creating a culture of education that doesn’t end when the last lesson bell rings.”\nJon Lidiard Deputy Head Pastoral → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-3913\nJon Lidiard\nDeputy Head Pastoral\nJon attended boarding school and earned a first-class degree in Classics from Oriel College, Oxford.\nHe began his teaching career as Head of Classics at St Columba’s College in St Albans, an HMC day school, and was subsequently Head of Classics and a housemaster at Sedbergh School, Cumbria.\nJon is a progressive, emerging leader who demonstrates great insight into best practice in top schools. At Sevenoaks his pastoral role sees him maintain a central focus on student flourishing and wellbeing, guided by student voice, and he also leads on all aspects of safeguarding. He continues to enjoy Classics teaching and rugby coaching, as well as running in Knole Park (and beyond!).\n“It remains a great privilege to be Deputy Head Pastoral here at Sevenoaks. The atmosphere is dynamic and inspiring, driven by the energy and ambition which our students exude, while understanding that kindness is at the heart of our community, and their success. My role is a simple one: to ensure that the welfare and best outcomes of all our students remain central to everything we do.”\nHelen Tebay Deputy Head Staff → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-3925\nHelen Tebay\nDeputy Head Staff\nHelen comes from Kent and attended two local schools before studying Mathematics at Cambridge.\nShe taught at Tunbridge Wells Girls’ Grammar School before coming to Sevenoaks in 1997, where she has been a teacher of Mathematics, sports coach, RAF officer, DofE trainer, choir member and enthusiastic supporter of trips, plays, concerts and exhibitions.\nHer previous roles at Sevenoaks include Lower School Tutor, Middle School Divisional Head, Sixth Form Divisional Head and in 2012 she became Deputy Head Pastoral. She was appointed Deputy Head Staff in 2021.\n“Having been involved in so many areas of the school, I know it extensively and truly believe in its ethos. The school is its people and the relationships between all those people is key.\n“It is very important to me is that the staff really know the pupils, make time for them, value them as individuals, care about their happiness and aim to develop the thoughtful, caring side of their characters as well as their intellect and ambition. At the same time I want all staff to thrive in their respective roles, to enjoy working together, to look out for each other and to know they are valued members of the school.”\nLorna Dolan Director of Admissions → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-2849\nLorna Dolan\nDirector of Admissions\nAfter studying English at St John’s College, Oxford, Lorna worked as a theatre agent and reviewer before joining the Financial Times, where her roles included Deputy UK News Editor, Arts Editor and Editor of the Weekend section (now Life & Arts).\nIn 2006 she decided to follow her longstanding vocational desire to teach. She started at Sutton Valence School, then went to Ashford School as Head of English. She joined Sevenoaks as a Sixth Form Divisional Head before becoming Head of Sixth Form Admissions for five years.\nHer husband is a dramaturg and translator for international theatre festivals across Germany and Austria; he and Lorna lived in Hamburg for several years. She has three children, one of whom is an Old Sennockian.\nSally Walmsley Interim Chief Operating Officer → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-3910\nSally Walmsley\nInterim Chief Operating Officer\nSally Walmsley is the Interim Chief Operating Officer. She has worked at Sevenoaks for four years, previously as Deputy Head Co-Curriculum. Sally also teaches Biology and leads on innovation across the school.\nSally is an ISI inspector, and prior to teaching she was in-house legal counsel for an investment advisory business, where she ran their legal provision across three countries, managed professional services teams and office moves, and was involved in the opening of international offices. She left the law to pursue a career in teaching and became a teacher of Biology at St Swithun’s in Winchester, where she was in due course Head of Debating, a Housemistress and Head of Sixth Form.\nSally attended boarding school and read Physiological Sciences at Exeter College, Oxford. While at Oxford, Sally was in the winning Varsity Match sailing team. In her free time she continues to enjoy being active outside, preferably on the water, and she also enjoys playing tennis and running.\nSally champions the importance of a holistic education, and is passionate about developing and sustaining a vibrant and values-led school community.\nDarren Davies Chief Commercial Officer → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-7612\nDarren Davies\nChief Commercial Officer\nAlthough initially a civil engineer, Darren eventually migrated towards financial management and the manufacturing sector with Unipart International Ltd before moving into school management as Bursar and Group COO of a number of premier independent schools.\nA Chartered Accountant with an MSc from Liverpool in Strategic and Operational Management, Darren now focuses primarily on commercial development and has helped a number of organisations within both the private and independent school sector to develop commercial opportunities, both in the UK and in a number of countries overseas including Brazil, Uzbekistan, Russia and the UAE.\nJoanna Walker Chief Development Officer → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-195594\nJoanna Walker\nChief Development Officer\nWith over 20 years’ experience in fundraising, finance and philanthropy in the UK and internationally, Joanna is a giving specialist with deep insight into philanthropy from all sides.\nJoanna has worked with donors and clients on their philanthropy at Charities Aid Foundation, Chichester Festival Theatre and UBS Wealth Management. At Impetus Trust, Joanna was a founding member of the Education Endowment Foundation steering group and is passionate about bringing her skills to help widen access to the world-leading education that Sevenoaks provides. Joanna is also a member of the Development Committee of Sussex Community Foundation.\nRebecca Dunstan Director of Marketing and Communications → https://www.sevenoaksschool.org/about-us/our-staff/#staff-popup-195035\nRebecca Dunstan\nDirector of Marketing and Communications\nRebecca has led Sevenoaks School’s marketing and communications since 2019.\nShe has more than 25 years’ experience in marketing, communications, public relations and brand management, working both agency and in-house. Her background is in delivering innovative marketing and communications strategies for leading education, consumer and business brands.\nAward-winning campaigns include, ‘The 3D Mummy’ for the British Museum and SGI, and ‘Understanding RoHS and WEEE’ for Premier Farnell.\nShe is a Mental Health First Aider, and a member of the EDI Steering Committee at Sevenoaks.\n\nH2: Where Next?\n\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nRead more\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nRead more\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/our-staff/",
+      "token_used": {
+        "input_token": 4787,
+        "output_token": 770,
+        "total_token": 5557
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.8,
+        "reasoning": "The page is a staff directory (Leadership team and other staff) with bios; it does not list jobs or recruitment content.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/how-to-apply-university-programs-and-mentoring/",
+      "status": "jobs_related_no_vacancies",
+      "current_url": "https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/how-to-apply-university-programs-and-mentoring/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/how-to-apply-university-programs-and-mentoring/#content-wrap\nSecondary partnerships\n\nH1: How to apply to KAN\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nAmbition Programme → https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/lat-ambition-programme/\nSecondary Partnerships Overview → https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/secondary-partnerships-overview/\nKent Academies Network (KAN) → https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/kan/\nHow to apply to KAN → https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/how-to-apply-university-programs-and-mentoring/\nFind out more about the application process for prospective KAN students and mentors.\n\nH2: KAN student application process\n\n\nH4: The application process\n\n[SVG: arrow-inside-circle]\nTo apply students must complete\nthis form → https://forms.office.com/e/m8ZvzvdJPw\n. The information asked helps us decide who will be able to get the most out of the opportunities available. As part of this we ask students to submit a personal statement (500-1000 words) explaining why they feel they are suitable for the scheme. We want to hear about their drive, ambition and dreams. Selected students will then be invited to a short interview, which is held online at their school.\nKAN student code of conduct → https://www.sevenoaksschool.org/wp-content/uploads/2024/01/KAN_student_code_of_conduct.pdf\n\nH4: When writing your personal statement, consider the following:\n\n[SVG: arrow-inside-circle]\nWhat interests and motivates me?\nWhat do I want to be or have in the future?\nAn example of what I do outside of lessons that shows I have the commitment required to be part of a four year programme.\nSpelling and grammar\nThe KAN teacher-lead at your school will be able to support you in the writing of your personal statement, so do ask them for help.\n\nH4: When preparing for interview, consider the following:\n\n[SVG: arrow-inside-circle]\nCan you articulate why you would like a place on KAN and how you will be able to make the most of the opportunity?\nWhat are your best skills and qualities? What examples (from school or hobbies) demonstrate them?\nRe-read your personal statement and be prepared to talk about anything you mentioned.\nThe interviewers would like to get to know you and are very friendly, so try to be relaxed and enjoy the experience – we know this may be your first time having a formal interview.\nKAN aims to improve student confidence and knowledge, so we are not expecting you already be super confident or to know everything!\n\nH4: If you receive a place on our Aspire University access programme, you will:\n\n[SVG: arrow-inside-circle]\nBe connected with an undergraduate mentor, who you will see termly and communicate with via an online platform.\nCommit to attend two annual meet-up days at Sevenoaks school.\nBe given access to Unifrog, an online tool for exploring options.\nBe able to apply for the Buffini-Chao Discretionary Fund.\n\nH4: If you receive a place in our Core University access programme, you will:\n\n[SVG: arrow-inside-circle]\nReceive the same benefits as on Aspire.\nBe expected to attend two residential events per year. Three days in Spring and four days in Summer.\nThe place on the Core programme is conditional upon your commitment to KAN opportunities, if you are consistently unavailable you may be asked to move to Aspire.\n\nH3: KAN Mentors\n\nKAN aims to develop future leaders in education and social impact who feel part of a wider community and have increased opportunities thanks to the experiences and skills they develop through their commitment to the role.\nOur undergraduate mentors are at the core of KAN. They are the link between any meet-up day or residential week and student success. By being a consistent point of contact with KAN students the mentor-mentee bond that develops over the four years is unique.\nThe recruitment round for this year has now closed.\nIf you have any questions about becoming a KAN mentor or any other aspects of the programme, please email\nkanuap@sevenoaksschool.org → mailto:kanuap@sevenoaksschool.org\n[SVG: watermark]\n\nH2: Become a mentor\n\nJob Description → https://www.sevenoaksschool.org/wp-content/uploads/2024/10/KAN-Job-Description.pdf\nSafeguarding policy → https://www.sevenoaksschool.org/wp-content/uploads/2026/03/Safeguarding-Policy-March-2026.pdf\n\nH3: Buffini-Chao FOundation\n\nWith the generosity of the Buffini-Chao Foundation we are able to offer discretionary grants to current students and mentors.\nApplicants must write a letter of request to\nKANUAP@sevenoaksschool.org → mailto:KANUAP@sevenoaksschool.org\nand complete\nthis form → https://forms.office.com/Pages/ResponsePage.aspx?id=QV6PkmIlokaL3REiHTkVjmdBHQY2dMdMgHn_zSM9-iJUNFVXNUZPSDNWNE5BS0pMUzk3WktQNTVXSy4u\n.\n“It's amazing how close you get to feel to other mentors and the mentees even though you only see each other a few times a year. Everyone makes the effort to make sure no one is left out, and it really makes all the difference. We really get to bond with each other over the course of a residential. ”\nKAN Mentor\n“Working as a mentor for KAN has been one of the most valuable experiences of my life. I love connecting with the students and I’ve also gained lots of important skills myself.”\nKAN Mentor\n[SVG: quote-mark]\n\nH2: Where Next?\n\nService at Sevenoaks → https://www.sevenoaksschool.org/service-and-partnerships/service/\nRead more\nKent Academies Network (KAN) → https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/kan/\nRead more\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/service-and-partnerships/secondary-partnerships/how-to-apply-university-programs-and-mentoring/",
+      "token_used": {
+        "input_token": 3735,
+        "output_token": 1952,
+        "total_token": 5687
+      },
+      "llm_analysis": {
+        "page_category": "jobs_related_no_vacancies",
+        "confidence": 0.65,
+        "reasoning": "Page provides information about applying to KAN and mentoring programs but does not list any job openings; it notes that recruitment rounds have closed, indicating no current vacancies.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": "https://forms.office.com/e/m8ZvzvdJPw",
+          "button": "this form",
+          "element_type": "link"
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/#content-wrap\nAdmissions → https://www.sevenoaksschool.org/admissions/\nEntry at 16+ → https://www.sevenoaksschool.org/admissions/entry-at-16/\n\nH1: How to Apply to Lower Sixth\n\nscroll-down-arrow-ghost → https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/#flexible-blocks\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nIntroduction → https://www.sevenoaksschool.org/admissions/entry-at-16/introduction/\nHow to Apply → https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-16/assessment-and-preparation/\n\nH2: Application Process\n\n1. Visit us\n2. Application\n3. Confirmation\n4. Scholarships\n5. Assessment Days\n6. Results\n7. Accepting your place\nKey dates\n13 June 2026\nOpen Morning\nKey dates\n1 August 2026\nApplication deadline for Lower Sixth 2027\nKey dates\n17 October 2026\nAssessment Day at Sevenoaks for Lower Sixth Entry 2027\nKey dates\n1 December 2026\nDecisions sent for entry to Lower Sixth 2027\n\nH3: 1. Visit us\n\nWe hold a number of Open Mornings and Group Visits throughout the year which give you a general introduction to the school, a tour of the campus and, if appropriate, a visit to a boarding house. Following a visit you can arrange an individual meeting with a member of the Admissions team. We also offer virtual events if you are unable to visit the school in person.\nBook a visit → https://www.sevenoaksschool.org/admissions/visits-and-open-mornings/\n\nH3: 2. Application\n\nThe first step in applying is to complete the application form\nand to pay the registration fee – £420 (VAT inclusive) for a boarding application or £240 (VAT inclusive) for a day application.\nYou can register at any time up to 1 August, just over a year before you wish your child to join us. The deadline for 2026 applications has now passed and we are unable to accept any more applications at this time. We are welcoming applications for 2027 onwards.\nDay application → https://www.sevenoaksschool.org/admissions-repository/register-your-interest/\nBoarding Application → https://www.sevenoaksschool.org/admissions-repository/register-your-interest/\nStudents should normally be aged 16 on 1 September of the year of entry. However, we consider applications from students over the age of 15.5 and under the age of 17.7 on 1 September in the year of entry. Please\ncontact Admissions → mailto:admissions@sevenoaksschool.org\nbefore completing the registration form if your child’s date of birth falls outside the expected dates.\n\nH3: Parents’ contact details\n\nThe information given on the online application form is used for all our communications. It is therefore important that you notify us of any change of email, postal address or circumstances during the application process. This is particularly important if you have applied some years in advance of entry.\n\nH3: 3. Confirmation\n\nBy the end of August the year before your child intends to start at Sevenoaks, we ask you to confirm that you wish to go ahead with the Sixth Form entry process. We also ask you to provide us with more detailed information relevant to your child’s application and their most recent school report. Your child also needs to submit a 600-word personal statement about their academic and co-curricular interests. At this time, we provide further information regarding the entrance tests.\nDay students who wish to apply for\nfinancial assistance → https://www.sevenoaksschool.org/admissions/financial-assistance/\nshould read the policy and apply at this stage. Candidates may also express interest in applying for a scholarship.\n\nH3: References from current school\n\nBefore we can offer a place, we must receive a confidential reference from the candidate’s current school. We will give you notice of our intention to request the reference, which is usually after the candidate has taken the exams.\n\nH3: 4. Scholarships\n\nSevenoaks offers scholarships to honour and celebrate exceptional talent in academia, music, sports, drama and art. Academic scholarships are examined after the assessment day by invitation, based on performance in the entrance exams and school references.\nScholarship Information → https://www.sevenoaksschool.org/admissions/scholarships/\n\nH3: 5. Assessment Days\n\nAll candidates living in or attending school in the UK are expected to come to the assessment day at Sevenoaks School in October. We also hold assessment days in Hong Kong, Singapore and Mumbai. There is a charge for attending an international assessment day to help cover our expenses. Alternative arrangements can be made with the Sixth Form Registrar for candidates to test in their home country if necessary, usually at their current school or a British Council office.\nAll candidates sit three papers: English, Maths, Science and Humanities (combined paper). Applicants wishing to take Higher Level Maths sit an additional Maths extension paper. Candidates also participate in a 40-minute group discussion led by our teachers. For those candidates not testing at the school or at an overseas assessment day, the group discussion is held online.\nMore details → https://www.sevenoaksschool.org/admissions/entry-at-16/assessment-and-preparation/\n\nH3: 6. Results\n\nOffers of places are sent at the start of December.\nSome candidates will be reserved. This means they have passed our tests and have demonstrated that they would be good Sevenoaks students, and we will be pleased to offer them a place if one becomes available later in the process. Parents are advised to keep in touch with the Assistant Director of Admissions (in charge of Sixth Form Admissions) in this situation. We consider our reserve candidates as a pool, not a list. When a place becomes available, we offer it to the most suitable reserved candidate.\n\nH3: 7. Accepting your place\n\nCongratulations! We’re looking forward to seeing you at Sevenoaks soon. There are a range of induction activities for new students and parents to help you prepare to join the school.\nAcceptance of all places must be confirmed by the payment of a deposit (£2000 for day pupils; £5000 for boarding pupils) and the completion of a Form of Acceptance by the date specified in our offer letter. Any candidate who decides not to accept their place should inform us of their decision as soon as possible so the place can be released to a reserved candidate.\n\nH2: Where Next?\n\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-16/assessment-and-preparation/\nRead more\nIntroduction → https://www.sevenoaksschool.org/admissions/entry-at-16/introduction/\nRead more\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-16/assessment-and-preparation/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/admissions/entry-at-16/how-to-apply/",
+      "token_used": {
+        "input_token": 3718,
+        "output_token": 1096,
+        "total_token": 4814
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.72,
+        "reasoning": "The page discusses admissions and the application process for Lower Sixth; there are no job postings or hiring content on the page.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/#content-wrap\nAdmissions → https://www.sevenoaksschool.org/admissions/\nEntry at 11+ → https://www.sevenoaksschool.org/admissions/entry-at-11/\n\nH1: How to Apply to Year 7\n\nscroll-down-arrow-ghost → https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/#flexible-blocks\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nIntroduction → https://www.sevenoaksschool.org/admissions/entry-at-11/introduction/\nHow to Apply → https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-11/assessment-and-preparation/\n\nH2: Application Process\n\n1. Visit Us\n2. Application\n3. Confirmation\n4. Scholarships\n5. Assessment Days\n6. Results\n7. Accepting your place\nKey dates\n13 June 2026\nOpen Morning\nKey dates\n15 September 2026\nApplication deadline for Year 7 2027\nKey dates\n1 October 2025\nApplication deadline for Music Scholarships for Year 7 2026\nKey dates\n5 January 2026\nYear 7 2026 Assessment Day at Sevenoaks\n\nH3: 1. Visit Us\n\nWe hold a number of Open Mornings and Group Visits throughout the year which provide a general introduction to the school and a tour of the campus. Following a visit, you can arrange an individual meeting with a member of the Admissions team. We also offer virtual events if you are unable to visit the school in person.\nBook a visit → https://www.sevenoaksschool.org/admissions/visits-and-open-mornings/\n\nH3: 2. Application\n\nThe first step is to complete the online application form and to pay the registration fee – £240 (VAT inclusive) for a day application. You can register at any time up to 15 September, the year before you wish your child to join us.\nApply Now → https://www.sevenoaksschool.org/admissions-repository/register-your-interest/\nPupils should be aged 11 on 1 September of the year of entry. We are willing to consider candidates who fall outside the standard age boundary by up to three months. Please email\nAdmissions → mailto:admissions@sevenoaksschool.org\nbefore completing the application form if your child’s date of birth falls outside the expected dates.\nLate applicants should first email the\nRegistrar → mailto:regist@sevenoaksschool.org\nbefore filling out the application form.\nClick below to find out which entry point(s) your child is eligible to apply for.\nAGE CHECKER → https://www.sevenoaksschool.org/age-checker/\n\nH3: Parent contact details\n\nThe information given on the online application form is used for all our communications. It is therefore important that you notify us of any change of email, postal address or circumstances during the application process. This is particularly important if you have applied some years in advance of entry.\n\nH3: 3. Confirmation\n\nBetween July and September one year prior to entry, we will ask you to confirm that you wish to go ahead with the Year 7 assessment process. We will also ask you to provide us with more detailed information about your child’s co-curricular passions, as well as any medical conditions, learning support and special educational needs that your child may have. At this time, we will provide further information about the entrance tests. Day students who wish to apply for means-tested\nfinancial assistance → https://www.sevenoaksschool.org/admissions/financial-assistance/\nshould read the policy and apply at the confirmation stage: details of how to make an application for financial assistance will be provided in the confirmation forms.\n\nH3: References from current school\n\nBefore we can offer a place, we must receive a confidential reference from the candidate’s current school. We will write to the school to request a reference once the confirmation forms have been submitted.\n\nH3: 4. Scholarships\n\nIf you would like to apply for a Music Scholarship, you will have the opportunity to do so at the confirmation stage. The Music Scholarship assessments are held in the January of Year 6. Academic Scholarships are awarded on the basis of performance in the entrance exams and group discussion activity, plus the reference from the candidate’s school.\nSCHOLARSHIP INFORMATION → https://www.sevenoaksschool.org/admissions/scholarships/introduction/\n\nH3: 5. Assessment Days\n\nThe first stage of the assessment process is a pre-test in the autumn before entry. Candidates must take the ISEB online pre-test if their school offers this. Where a candidate is attending a school which does not offer the ISEB, but the student has taken the Kent Test or an alternative grammar school test, they may submit this score instead. If an applicant is not attending a school which offers the ISEB and is not already planning to take a grammar school test, we will ask parents to email the Registrar during the confirmation process to discuss the options. We will also consider the school reference at this stage, along with other information such as the co-curricular form that parents have completed. Following the pre-test process, the large majority of candidates will be invited through to the second stage.\nThe second stage takes the form of an assessment day at Sevenoaks in early January. On this day, all candidates will take written examinations in Maths and English (for which past papers are available) and participate in a 40-minute group discussion activity led by Sevenoaks teachers. Our friendly staff aim to make this an enjoyable day; we love to see the candidates making friends with each other and leaving with big grins on their faces.\nMore details → https://www.sevenoaksschool.org/admissions/entry-at-11/assessment-and-preparation/\n\nH3: 6. Results\n\nOffers of places, including Academic and Music Scholarships, are sent by email to all candidates in mid-February of Year 6. Successful applicants will be given the opportunity to spend some time at the school on our Post-Offer Morning. We hope this day will help families to make a final decision, although those who accept places beforehand are very welcome to attend.\nSome candidates will be Reserved. This means they have done well in our assessments and have demonstrated that they would be good Sevenoaks students. Places often become available in early March once the grammar school places have been announced. Parents are advised to keep in touch with Olivia Beck, Head of Year 7 Admissions, in this situation. We consider our reserve candidates as a pool, not a list. When a place becomes available, we offer it to the most suitable reserved candidate.\n\nH3: 7. Accepting your place\n\nCongratulations! We’re looking forward to seeing you at Sevenoaks soon. There are many activities for new students and parents that we will invite you to as part of the induction process.\nAcceptance of all places must be confirmed by the payment of a deposit (£2,000 for day pupils) and the completion of an Acceptance Form by the date in early March specified in our offer letter. Any candidate who decides not to accept their place is requested to inform us of their decision as soon as possible so their place can be released to a candidate on our reserve list.\n\nH2: Where Next?\n\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-11/assessment-and-preparation/\nRead more\nIntroduction → https://www.sevenoaksschool.org/admissions/entry-at-11/introduction/\nRead more\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-11/assessment-and-preparation/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/admissions/entry-at-11/how-to-apply/",
+      "token_used": {
+        "input_token": 3880,
+        "output_token": 1203,
+        "total_token": 5083
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.75,
+        "reasoning": "Page discusses admissions and applying for Year 7; no job postings or hiring content are present.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/location-and-campus/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/location-and-campus/overview/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/location-and-campus/overview/#content-wrap\nAbout Us → https://www.sevenoaksschool.org/about-us/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\n\nH1: Location and Campus\n\n[link] → https://www.sevenoaksschool.org/about-us/location-and-campus/overview/#flexible-blocks\nThe school has occupied its present site for most of its 600-year history. Nestled next to a thousand-acre deer park, the campus benefits from abundant gardens, inspiring views of Knole and the North Downs and award-winning facilities. Positioned at the top of Sevenoaks High Street, it is easily accessible and beautifully situated.\n“A wonderfully happy location!”\nSevenoaks student, quoted in The Good Schools Guide\n\nH2: A stunning location in the heart of Kent\n\nOur campus of some 100 acres sits in a splendid setting on the edge of Sevenoaks in west Kent. Surrounded by trees, it is a pleasant environment in which students can feel at home. The outdoor spaces are attractive, green and spacious, enhanced by sustainable planting, while the variety of buildings, learning areas and social spaces is characteristic of this historic but forward-looking school.\n\nH2: A striking blend of old and new architecture\n\nThe school grounds stretch behind the upper High Street of Sevenoaks and are bisected by the ancient path to Knole. The centre of the campus comprises Old School (1732), the oldest extant school building and home to the Mathematics department, flanked by the\nSevenoaks Almshouses → https://www.sevenoaksalmshouses.org/\n, which were founded with the school. The unusual Palladian buildings, constructed with Kentish ragstone and ragstone galletting, were based on a design by Lord Burlington.\n\nH2: Hear from our people\n\n“We are fortunate to have a beautiful campus, one that offers a chance to appreciate the restorative and motivational power of nature…improving wellbeing and lowering stress levels, helping people become more inspired, creative and socially connected.”\n-\nMr Jesse Elzinga, Headmaster\n\nH2: Our campus\n\nAt the northern end of the campus lie the\nClassics,\nGeography\nand\nPsychology\ndepartment\ns\nand\nthe Lower School common room\n, hall,\nplayground\nand lawn\n.\nThe central campus area is completed with the Johnson Library and the Swanzy buildings (English and Drama), around a courtyard of benches, birches and olive trees. Nearby are the Dining Hall, Modern Languages, Philosophy, Economics and the Middle School Common Rooms. These surround our oldest quadrangle, Jockey’s Platch.\nA modern quadrangle, the Flat, landscaped with trees and benches, sits below Jockey’s Platch, enclosed by the state-of-the-art Science and Technology Centre, the Sixth Form Global Study Centre, Art department, The Space (our award-winning performing arts centre) and The Sennocke Centre for PE and Sport. Behind these are the Duke’s Meadow pitches, running track and cross-country trail, bordering Knole Park. Further pitches are at Solefields a short distance away.\nTwo boarding houses can be found in this area: Sennocke House and GIH, both within their own gardens. The remaining houses in our boarding community can be found on the other side of the A225 Tonbridge Road: Park Grange, Aisher House, the IC and New House close to the main campus, while Johnsons and School House are a short walk away.\nDespite the size of the campus, a busy, friendly, informal atmosphere prevails throughout. Students of all age groups feel comfortable together and new pupils quickly find their way around.\n30\nbuildings, 100+ classrooms, 14 sports pitches, 12 lawns, 6 ponds, 1000s of trees\n\nH2: The gardens\n\nEleven beautiful gardens are looked after by our dedicated Grounds and Gardens team. They plant new trees every year and maintain a range of shrubs, lawns, herbaceous borders, flowerbeds and ponds. The trees, plants and green spaces at Sevenoaks contribute to biodiversity and enrich the lives of all students and staff. We also have an allotment on campus, tended by students.\nSevenoaks School\nwas\nawarded a Certificate of Excellence by RHS\nSouth East\nin Bloom.\n\nH2: The town\n\nSevenoaks School is situated at the top of the bustling historic High Street, within walking distance of shops, coffee bars and restaurants. Behind the school is Knole, one of England’s largest country houses, set within a thousand-acre deer park and managed by the National Trust. The park is open to the public for walking, running and recreation, and is accessible from the school grounds. Sevenoaks station is one mile from the school, and a minibus service is provided for day students arriving by train.\nSevenoaks is a very attractive town and its safe and friendly environment makes it an ideal place for students to study, develop some independence and contribute to the community.\n\nH2: Transport links\n\nAn advantage of Sevenoaks is its transport links. The town is located not far from the A21 and M25, and is only 30 minutes from Central London by train, with excellent rail links to London Charing Cross, Waterloo and London Bridge. Gatwick Airport and the Channel Tunnel are both within a 45-minute journey by car, making travel very easy. Sevenoaks is also less than an hour away from the magnificent Kent and Sussex coastline and the popular towns of Rye, Hastings and Eastbourne.\n\nH2: Where Next?\n\nHiring our facilities → https://www.sevenoaksschool.org/about-us/location-and-campus/hiring-our-facilities/\nRead more\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nRead more\nOur maps → https://www.sevenoaksschool.org/contact/our-maps/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/location-and-campus/overview/",
+      "token_used": {
+        "input_token": 3129,
+        "output_token": 909,
+        "total_token": 4038
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.8,
+        "reasoning": "The page contains location and campus information with no job postings or hiring content.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/isi-inspection-report/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/isi-inspection-report/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/isi-inspection-report/#content-wrap\nAbout Us\n\nH1: ISI inspection report\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\nIn September 2025 Sevenoaks welcomed inspectors from the Independent Schools Inspectorate (ISI), the body responsible for evaluating the quality and standards of independent schools across the UK. Their visit was a thorough and professional process, designed to assess every aspect of school life — from teaching and learning, to pastoral care, leadership, and the overall wellbeing of pupils.\nWe are delighted to share the outstanding findings of their report. Sevenoaks continues to thrive as a school that nurtures enquiring, knowledgeable and caring young people, empowered to make a difference in the world. As well as passing all five areas of compliance and regulatory standards with flying colours, the inspectors were impressed by our global outlook, culture of care, supportive learning environment and expectional academic outcomes.\n\nH2: Read more\n\n<span data-mce-type=\"bookmark\" style=\"display: inline-block; width: 0px; overflow: hidden; line-height: 0;\" class=\"mce_SELRES_start\">﻿</span>\nTo read the full inspection report, please visit our\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\npage, where you’ll also find access to previous reports and related documents.\n“The school’s ethos of enquiry, knowledge, care and inclusivity is thoroughly embedded in school life. Pupils and staff alike understand and embrace these values; they are lived out in the daily experiences of the community. ”\nIndependent Schools Inspectorate\n\nH2: Where Next?\n\nAdmissions Welcome → https://www.sevenoaksschool.org/admissions/welcome/\nRead more\nOur Academic Ethos → https://www.sevenoaksschool.org/academic/our-academic-ethos/\nRead more\nPastoral → https://www.sevenoaksschool.org/pastoral/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/isi-inspection-report/",
+      "token_used": {
+        "input_token": 2734,
+        "output_token": 828,
+        "total_token": 3562
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.78,
+        "reasoning": "The page is about the ISI inspection report; there are no job listings or hiring content present on the page.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/history-of-the-school/",
+      "status": "already_visited_url",
+      "current_url": "https://www.sevenoaksschool.org/about-us/history-of-the-school/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/history-of-the-school/#content-wrap\nAbout Us\n\nH1: History of the School\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\n\nH3: Established by a foundling in the 15th century\n\nIn 1432 William Sevenoke died, bequeathing his London properties to the people of Sevenoaks to establish a free grammar school and almshouses for the poor. This was a very unusual bequest for the early fifteenth century, when many people left their possessions to the Church, and makes Sevenoaks one of the oldest secular school foundations in England.\nSevenoke was a foundling, discovered in the parish of Sevenoaks and brought up by a local landowner. He rose to become Mayor of London in 1418.\n“About the latter ende of the reigne of King Edwarde the thirde, there was found (lying in the streetes at Sennocke) a poore childe.”\n-William Lambarde, A Perambulation of Kent, 1576\n\nH3: An early modern grammar school\n\nThe story of Sevenoke’s origins proved attractive to writers of the early modern period, a time when many other grammar schools were founded in England, and this brought the school to the attention of a national readership.\nThe school flourished between 1550 and 1650, experiencing financial growth, taking boarders and rebuilding the schoolhouse. In 1560, a year after she visited the area, Elizabeth I issued Letters Patent incorporating the school and granting it a seal, now used as our school logo.\nA major redevelopment of the site took place in 1732. The unusual Palladian buildings, constructed with Kentish ragstone, were based on a design by the leading contemporary architect Lord Burlington and are still in use, with Old School still flanked by the\nSevenoaks Almshouses → https://www.sevenoaksalmshouses.org/\n. For their first 100 years the buildings were roofed with pantiles, which would have been reddish in colour, adding to the rustic appearance considered architecturally suitable for a charitable institution.\nIn the 1770s the school is thought to have welcomed its first international student, Huang Ya Dong, probably England’s earliest Chinese school pupil. Sevenoaks was by then taking some fee-paying scholars. The nineteenth century saw a change of governance, the introduction of new facilities and a strengthening academic and sporting record. Student numbers gradually increased into the 1900s and a public school esprit de corps was encouraged.\n“It will hardly be credited, but on Sundays, we all wore top hats.”\n– EJ King-Farlow (OS 1908)\nA period of curricular and co-curricular innovation followed in the mid-twentieth century under the pioneering headship of Kim Taylor (1954-68), who introduced technology classes, encouraged interdisciplinary studies, created a Voluntary Service Unit and opened an international boarding house.\nThe school adopted the IB in 1978; it was the first HMC institution to do this. In 1999 the decision was made to go all-IB in the Sixth Form, moving away from A-levels completely. In 1976 the school admitted girls into the Sixth Form, and in 1984 all entry points were opened to girls so that the school could become fully co-educational. In 2002 Katy Ricks was appointed, the school’s first female Head in its 570-year history.\nToday the school is known for its curriculum innovation, international outlook, voluntary service programme and world-class academic reputation.\nStories from our Archives → https://osonline.sevenoaksschool.org/news-and-stories/school-archive/\nSevenoaks School in literature → https://osonline.sevenoaksschool.org/school-archive/sevenoaks-school-in-literature/\nOur first international pupil → https://osonline.sevenoaksschool.org/school-archive/huang-ya-dong-1780/\n\nH2: Where Next?\n\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nRead more\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/history-of-the-school/",
+      "token_used": {
+        "input_token": 3304,
+        "output_token": 2157,
+        "total_token": 5461
+      },
+      "llm_analysis": {
+        "page_category": "navigation_required",
+        "confidence": 0.65,
+        "reasoning": "Page contains no job listings or details but provides a navigation link to a dedicated jobs page (Work at Sevenoaks).",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+          "button": "Work at Sevenoaks",
+          "element_type": "link"
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false,
+      "navigation_history": [
+        {
+          "step": 0,
+          "from_url": "https://www.sevenoaksschool.org/about-us/history-of-the-school/",
+          "target_url": "https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/",
+          "target_button": "Work at Sevenoaks",
+          "reasoning": "Page contains no job listings or details but provides a navigation link to a dedicated jobs page (Work at Sevenoaks).",
+          "status": "already_visited_url",
+          "landed_url": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/pastoral/the-pastoral-team/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/pastoral/the-pastoral-team/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/pastoral/the-pastoral-team/#content-wrap\nPastoral\n\nH1: The Pastoral Team\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nPastoral Care at Sevenoaks → https://www.sevenoaksschool.org/pastoral/pastoral-care-at-sevenoaks/\nThe Pastoral Team → https://www.sevenoaksschool.org/pastoral/the-pastoral-team/\nEquity, Diversity and Inclusion → https://www.sevenoaksschool.org/pastoral/equity-diversity-inclusion/\nPSHE → https://www.sevenoaksschool.org/pastoral/pshe/\nPastoral care is a team effort. All staff at Sevenoaks are committed to the health, welfare and wellbeing of the students in their care and students know that they are never far away from a helping hand or a supportive ear.\nHowever, many staff have a specific pastoral role, which ensures that students receive direct and where necessary specialist support when they need it.\nOne thing I love about studying at Sevenoaks is how genuinely sweet our teachers are. Whether we forget a book, or are feeling sick and need to go to the Med Centre, the teachers are always understanding.\nSarah, Year 9 boarder\n\nH2: Teams within a team\n\n\nH4: Tutors\n\n[SVG: arrow-inside-circle]\nTutors are the staff members who know each individual student best. They provide day-to-day support for their tutees, maintaining the academic and pastoral overview, as well as liaising with parents and other staff when required. Tutors will get to know what makes their tutees tick, what excites them and what concerns them. Where necessary, they will signpost the students to other means of support and will also work closely with parents.\n\nH4: Divisions\n\n[SVG: arrow-inside-circle]\nTutor groups operate within a section of the school – Lower, Middle or Upper School – but they also sit within Divisions. This enables them to be overseen by a Divisional Head, an important pastoral figure. Divisional Heads are experienced teachers and pastoral specialists, who work closely with the Deputy Head Pastoral and their tutor teams to ensure consistency of student experience across the school, and within each section. They are the ultimate problem-solvers, using their knowledge and experience of the school to manage situations which arise between different members of the school community, with the best interests of the child always at the centre of their work.\nDivisional Heads also lead assemblies and guide and monitor tutors, providing support and training where necessary. They have offices in or near their section’s common room and are a visible and accessible source of support for students. They are there for the students when they experience difficulties, and equally there to congratulate them when they taste success.\n\nH4: The Pastoral Committee\n\n[SVG: arrow-inside-circle]\nAlong with the Deputy Head Boarding and the Head of PSHE, the Divisional Heads are members of the Pastoral Committee, which is chaired by the Deputy Head Pastoral. The Pastoral Committee meets on a weekly basis to address whole-school pastoral issues, consider pastoral strategy, and anticipate pinch points for students across the academic year.\n\nH4: The Safeguarding Team\n\n[SVG: arrow-inside-circle]\nThe safeguarding team, comprising the Designated Safeguarding Lead (DSL) and six Deputy DSLs, ensures that safeguarding remains the primary focus for all staff at the school. In addition to supporting students with safeguarding concerns, the DSLs work proactively with students and staff to monitor trends, pre-empt issues and provide education and guidance around safe and appropriate behaviour.\n\nH4: The PSHE and Learning Support Departments\n\n[SVG: arrow-inside-circle]\nThe PSHE and Learning Support Departments support student welfare and wellbeing through the provision of outstanding collective and individualised support respectively. PSHE is a timetabled, academic subject here at Sevenoaks, but it is also an important arm of our pastoral provision, responding to current concerns and trends and always focused on supporting students and their parents as they navigate the challenges and complexities of the modern world.\n\nH4: The Health Centre\n\n[SVG: arrow-inside-circle]\nThe Health Centre sits at the heart of the school and provides 24/7 care to our day and boarding students. In collaboration with the school GP, physio and counselling team, a dedicated team of Nurses provide medical and mental health support, as well as a calm, safe space for students who need time out to talk, recover or receive support. Our team of five counsellors offers a combination of drop-in and regular sessions, on a one-to-one and confidential basis.\n\nH2: Where Next?\n\nEquity, Diversity and Inclusion → https://www.sevenoaksschool.org/pastoral/equity-diversity-inclusion/\nRead more\nPSHE → https://www.sevenoaksschool.org/pastoral/pshe/\nRead more\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/pastoral/the-pastoral-team/",
+      "token_used": {
+        "input_token": 3015,
+        "output_token": 1261,
+        "total_token": 4276
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.6,
+        "reasoning": "Page describes the pastoral team and related departments; no job postings or recruitment content on the page.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/headmasters-welcome/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/headmasters-welcome/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/headmasters-welcome/#content-wrap\nAbout Us\n\nH1: Meet the Headmaster\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\nA very warm welcome to Sevenoaks, a world-leading, co-educational day and boarding school whose community is both local and global. I h\nope you find the\nschool as inspirational and exciting as I do.\nFounded in 1432, Sevenoaks School enjoys the distinction of being among the UK’s oldest schools, with a tradition of innovation and excellence.\nWe have been co-educational for almost 50 years, and in 1978 we became one of the first schools in the UK to adopt the International Baccalaureate Diploma Programme in the Sixth Form.\n“We develop inquiring, knowledgeable and caring young people, empowered with the skills to create a better and more peaceful world.”\nThe IB Diploma is the best Sixth Form education available in the world. It offers the breadth of studying six subjects as well as an extended essay and a critical thinking course. It also pulls together aspects of creativity, action and service, to develop well-rounded young adults with a range of skills and aptitudes; it is superb preparation for university and life.\nOur impressive IB Diploma average is consistently eight to ten points above the world average and our students go on to study at top universities around the world. The majority go to Oxbridge, London and other Russell Group universities, and with our global outlook we see around 20 per cent of our students going to international universities, increasingly to Ivy League and other colleges in North America.\nYet a Sevenoaks education is about much more than results. We instil the love of learning for its own sake and genuine academic endeavour. We encourage collaboration, communication and teamwork, not just competition.\nWe develop inquiring, caring and knowledgeable young people, empowered with the skills to create a better and more peaceful world.\nOur state-of-the-art facilities, together with high-level instruction, provide rich opportunities for students to participate in a wide variety of sports, the performing arts, and many other co-curricular activities.\nWe ensure all our students flourish through outstanding pastoral care, and breadth and balance across the curriculum and co-curriculum. Ultimately, our fundamental measure of success is that our students leave Sevenoaks as happy, empowered and dynamic young adults ready to thrive in the next stage of their lives. Our\nteam of specialist tutors, boarding house staff and divisional heads ensure our pupils receive expert care and support, which creates mutual respect and friendliness between students and staff.\nI encourage you to visit us to experience Sevenoaks for yourself.\n\nH2: About the Headmaster\n\nMr Jesse Elzinga has been Headmaster of Sevenoaks School since September 2020. Since then, he has managed the school through the pandemic, overseen our successful exam results and supported the wellbeing of the school community, including as part of Harvard University’s groundbreaking Human Flourishing Program.\nHis aims for the school’s future include widening access to a Sevenoaks School education through more financially assisted places. As a recipient of bursary support himself he knows that access to exceptional education can transform life opportunities. He is also working towards the school becoming carbon neutral, developing partnerships with other leading IB schools and furthering Sevenoaks School’s global outlook.\nHe is committed to the school’s award-winning ethos of service and partnerships which connects us to our local community and supports communities around the world.\nJesse joined Sevenoaks from Reading Blue Coat School, Berkshire, where he had been Headmaster since 2016. Before this, he was Director of Studies at Harrow where he broadened their academic curriculum. He also worked at St Edward’s School, Oxford, as Director of Studies, IB Coordinator and residential Assistant Housemaster, and Whitgift School as a teacher of Theology and Philosophy, Assistant Head of Sixth Form and Theory of Knowledge Coordinator. He has a BA Honours cum laude in Comparative Religion and Philosophy from Harvard University, and his subsequent MSt from Oxford University focused on ethical philosophy.\nJesse was a three-time national champion rower at Harvard and Oxford. He then became a competitive cyclist, twice racing against Sir Bradley Wiggins at the British Time Trial Championships (although Jesse is keen to point out that Sir Bradley won by a significant margin on both occasions!). Jesse is also an Ironman triathlete and marathoner, and he can be spotted early morning running in Knole Park.\nJesse’s wife Elaina works in the investments team at the Wellcome Trust, and they enjoy cooking and travelling, are Friends of the Royal Opera House and supporting members of England Rugby Club. They live in Sevenoaks with their three daughters, and they are also Sevenoaks parents.\nlime-video-button → https://vimeo.com/725575228\n\nH2: Where Next?\n\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nRead more\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/headmasters-welcome/",
+      "token_used": {
+        "input_token": 3370,
+        "output_token": 1095,
+        "total_token": 4465
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.8,
+        "reasoning": "This page is a headmaster welcome/bio with no job listings or vacancies displayed.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/#content-wrap\nAdmissions → https://www.sevenoaksschool.org/admissions/\nEntry at 13+ → https://www.sevenoaksschool.org/admissions/entry-at-13/\n\nH1: How to Apply to Year 9\n\n[link] → https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/#flexible-blocks\n\nH2: Application Process\n\n1. Visit us\n2. Application\n3. Scholarships\n4. Financial Assistance\nKey dates\n13 June 2026\nOpen Morning\nKey dates\n15 September 2026\nApplication deadline for Year 9 2029 Early Decision\nKey dates\n1 November 2026\nApplication deadline for Year 9 2028 Later Decision\n\nH3: 1. Visit us\n\nWe hold a number of Open Mornings and Group Visits throughout the year which give a general introduction to the school, a tour of the campus and, if appropriate, a visit to a boarding house. Following a visit, you can arrange an individual meeting with a member of the Admissions team. We also offer virtual events if you are unable to visit the school in person.\nBook a visit → https://www.sevenoaksschool.org/admissions/visits-and-open-mornings/\n\nH3: 2. Application\n\nStudents should normally be aged 13 on 1 September of the year of entry. We are willing to consider candidates whose date of birth falls up to three months outside the standard age boundary. Please contact\nAdmissions → mailto:admissions@sevenoaksschool.org\nb\nefore completing the application form if your child’s date of birth falls outside the expected dates.\nClick below to find out which entry point(s) your child is eligible to apply for.\nAge checker → https://www.sevenoaksschool.org/admissions-repository/age-checker/\nApplicants for Year 9 have two assessment options: Early Decision and Later Decision. Early Decision applications are open only to pupils who will stay in their current school for Years 7 and 8. The deadline for registration is 15 September three years ahead (the start of Year 6 in the UK system).\nLater Decision applicants will need to register by 1 November of Year 7, nearly two years in advance of joining. A substantial number of places will be held open for Later Decision candidates.\nApplications for 2026 and 2027 (all applications) and for 2028 (Early Decision) have now closed. We are currently taking applications for 2029 onwards (Early Decision) and for 2028 onwards (Later Decision).\nPlease click below for more information about how to apply.\nYear 9 Early Decision → https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/how-to-apply-for-year-9-2027-early-decision-2/\nYear 9 Later Decision → https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/how-to-apply-for-year-9-2027-later-decision/\n\nH3: 3. Scholarships\n\nSevenoaks offers honorary scholarships at Year 9 entry to celebrate exceptional talent in academia, music, sport, drama and art.\nScholarship information → https://www.sevenoaksschool.org/admissions/scholarships/\n\nH3: 4. Financial Assistance\n\nCandidates for Day places who meet the eligibility criteria may make an application for means-tested Financial Assistance at the confirmation stage of the admissions process. Financial Assistance is not available for Boarding candidates.\nfinancial assistance → https://www.sevenoaksschool.org/admissions/financial-assistance/\n\nH2: Where Next?\n\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-13/assessment-and-preparation/\nRead more\nIntroduction → https://www.sevenoaksschool.org/admissions/entry-at-13/introduction/\nRead more\nAssessment and Preparation → https://www.sevenoaksschool.org/admissions/entry-at-13/assessment-and-preparation/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/admissions/entry-at-13/how-to-apply/",
+      "token_used": {
+        "input_token": 3006,
+        "output_token": 987,
+        "total_token": 3993
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.65,
+        "reasoning": "The page is an admissions guide for Year 9 entry and contains no job postings or hiring information.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/our-institutes/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/our-institutes/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/our-institutes/#content-wrap\nAbout Us\n\nH1: Our Institutes\n\n[SVG: watermark]\nRelated pages\n[SVG: down chevron]\nISI inspection report → https://www.sevenoaksschool.org/about-us/isi-inspection-report/\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nOur Institutes → https://www.sevenoaksschool.org/about-us/our-institutes/\nLocation and Campus → https://www.sevenoaksschool.org/about-us/location-and-campus/\nWork at Sevenoaks → https://www.sevenoaksschool.org/about-us/work-at-sevenoaks/\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nSevenoaks Family of Schools → https://www.sevenoaksschool.org/about-us/sevenoaks-family/\nPolicies and Reports → https://www.sevenoaksschool.org/about-us/policies-reports/\nIn 2016, we launched three Institutes designed to power our educational principles and connect our students to the world beyond school.\n\nH2: Higher Education and Professional Insight\n\nThe Institute of Higher Education and Professional Insight offers an evolving and wide-ranging programme to inform and inspire our students. They have access to strong links with university admissions tutors and a rich network of alumni and employers, which helps them explore how to realise their ambitions. Our students are accepted at a range of top universities and go onto vibrant careers, with many returning to Sevenoaks to inspire the next generation.\n“Higher Education support and guidance at Sevenoaks is an integrated part of the holistic education offered here.”\nWendy Heydorn, Director of the Institute of Higher Education and Professional Insight\nFind out more → https://www.sevenoaksschool.org/academic/beyond-sevenoaks/higher-education/\n\nH2: Service and Partnerships\n\nThe Institute of Service and Partnerships builds on our historic and significant tradition of service education. Our aim is to empower students with a critical understanding of social and environmental challenges, to enable them to serve their school community and beyond, and to appreciate the power of social entrepreneurship to drive positive change.\nFind out more → https://www.sevenoaksschool.org/service-and-partnerships/the-institute-of-service-and-partnerships/\n\nH2: Teaching and Learning\n\nThe Institute of Teaching and Learning is the school’s educational research hub. It leads and facilitates investigations by staff into different areas of education and learning to help shape the development of our broad curriculum, and inform teaching practice across the school. Through research, innovative thought and meaningful collaboration with other educational organisations, we aim to constantly improve the teaching and learning taking place in the classroom and beyond.\nFind out more → https://www.sevenoaksschool.org/academic/institute-of-teaching-and-learning/\n“The Institute of Service and Partnerships aims to create positive, inclusive and sustainable social change through educational innovation and collaboration.”\nKatherine O’Donnell -\nDirector of the Institute of Service and Partnerships\n“The ITL works hard to bring into focus elements of research-informed classroom practice that are shown to be effective. ”\nMark Beverley -\nDirector of the Institute of Teaching and Learning\n“It is also particularly alive to our holistic approach to education, in which elements of affective experience and personal, emotional development are rendered just as prominently as aspects traditionally referred to as cognitive or ‘academic’.”\nMark Beverley -\nDirector of the Institute of Teaching and Learning\n[SVG: quote-mark]\n\nH2: Where Next?\n\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nRead more\nAbout the ITL → https://www.sevenoaksschool.org/academic/institute-of-teaching-and-learning/overview/\nRead more\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/our-institutes/",
+      "token_used": {
+        "input_token": 3028,
+        "output_token": 1076,
+        "total_token": 4104
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.8,
+        "reasoning": "The page describes the school’s Institutes and related information; no job postings or hiring information are present.",
+        "job_alert": false,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/policies-reports/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/policies-reports/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/policies-reports/#content-wrap\n\nH1: Policies and Reports\n\n[SVG: watermark]\n\nH2: Policies\n\nAdmissions Policy 2026 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2026/04/Admissions-Policy-2026-update.pdf\nAttendance Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/01/Attendance-Policy-2024.pdf\nBehaviour Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/01/Behaviour-Policy-2025-26-Update.pdf\nCommunications Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2023/06/Communications_Policy_Aug_2018.pdf\nComplaints Procedure donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/01/Complaints-Procedure-2025.pdf\nCurriculum Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2023/06/Curriculum_Policy.pdf\nData Protection Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/11/Data-Protection-Policy-2025v3.1.pdf\nEducational Visits Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2023/12/Educational-Visits-Policy-September-2023.pdf\nEquity, Diversity and Inclusion Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/07/Equity-Diversity-and-Inclusion-Policy-2025.pdf\nFinancial Assistance with Fees Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/07/Financial-Assistance-with-Fees-Policy-July-2025.pdf.pdf\nFirst Aid Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/05/First-Aid-Policy.pdf\nHealth and Safety Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/05/Health-and-Safety-Policy-Statement.pdf\nLearning Support (SEND) Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/05/Learning-Support-SEND-Policy-2025.pdf\nModern Slavery Statement donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2026/01/Modern-Slavery-Statement-2025-2026.pdf\nOnline Safety Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/09/Online-Safety-Policy-Sep-2025.pdf\nRelationships and Sex Education Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2024/11/Relationships-and-Sex-Education-Policy.pdf\nSafeguarding Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/09/Safeguarding-Policy-Sep-2025.pdf\nWhistleblowing Policy donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/05/Whistleblowing-Policy-2025.pdf\n\nH2: ISI Inspection Reports\n\nISI Inspection report 2025 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/11/Sevenoaks-ISI-report-2025.pdf\nISI Inspection Report 2022 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2023/09/Sevenoaks_RCI_report_2022-07-12.pdf\nISI Inspection Report 2018 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2023/09/Sevenoaks-EQI-Report-for-issuing-Jan-2018.pdf\n\nH2: Other documents\n\nParent Contract 2025 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/01/Parent-Contract-2025-contract-only.pdf\nGender Pay Gap Report 2025 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2026/04/Sevenoaks-School-Gender-Pay-Report-at-April-2025.pdf\nGender Pay Gap Report 2024 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2025/04/Sevenoaks-School-Gender-Pay-Report-at-April-2024.pdf\nGender Pay Gap Report 2023 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2024/03/Sevenoaks-School-Gender-Pay-Report-at-April-2023.pdf\nGender Pay Gap Report 2022 donwload-white → https://www.sevenoaksschool.org/wp-content/uploads/2023/08/Gender_Pay_Gap_Report_2022.pdf\nAll school policies are in the respective student and staff handbooks.\nThe following policies and information are available on request to the Deputy Head Pastoral:\nProvision for pupils with SEN and English as an Additional Language (EAL)\nSafeguarding and promoting the health and safety of pupils on activities outside the school\nFirst Aid policy\n\nH2: Where Next?\n\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nRead more\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more\nOur Governors → https://www.sevenoaksschool.org/about-us/our-governors/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/policies-reports/",
+      "token_used": {
+        "input_token": 4208,
+        "output_token": 829,
+        "total_token": 5037
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.82,
+        "reasoning": "The page is a Policies and Reports page listing policies, reports, and related documents. There are no job postings or career-related content on this page.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    },
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://www.sevenoaksschool.org/about-us/our-governors/",
+      "status": "not_job_related",
+      "current_url": "https://www.sevenoaksschool.org/about-us/our-governors/",
+      "error": null,
+      "extracted_content": "Skip to content → https://www.sevenoaksschool.org/about-us/our-governors/#content-wrap\nAbout Us\n\nH1: Our Governors\n\nChristopher Gill Chair of Governors → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2019\nChristopher Gill\nChair of Governors\nChris was educated at Dover Grammar School for Boys and Loughborough University where he read Economics and Finance. He was appointed to the governing body in 2017.\nChris spent much of his career in banking at HSBC, primarily in risk management, in London and New York. In 2011, he helped lead the management buyout of InfraRed Capital Partners, an investment management business specialising in infrastructure and real estate. In 2020, he also helped lead the sale of InfraRed to Sun Life Financial of Canada. As Deputy Chief Executive from 2008 to 2023, Chris oversaw both the day-to-day operations of the business and the investment process for its various funds and now chairs the InfraRed investment committees. His three sons were all pupils at Sevenoaks School.\nCharlotte Houghteling Vice-Chair → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2043\nCharlotte Houghteling\nVice-Chair\nCharlotte Houghteling joined the governing body in 2023. Charlotte is a Lecturer in Law at Oxford Brookes University, where she teaches contract law and works with students in their co-curricular opportunities and career pathways. Charlotte was educated at Harvard University (BA), the University of Cambridge (MPhil), Columbia University School of Law (JD), the London School of Economics (LLM) and the University of Buckingham (PhD).\nCharlotte began her career as a lawyer in New York City where she was a founding partner at a boutique litigation firm and was named a New York Super Lawyer Rising Star. She then moved back to the UK and co-founded A-List Education UK, an educational services firm offering guidance on the US university process. Charlotte worked with thousands of students and numerous independent schools, and she helped establish a programme to send pupils in the ARK Schools network to the US on scholarships. She is active in the non-profit community in Boston, where she is from, and has volunteered with Year Up, an organisation specialising in career development, for nearly two decades.\nKirsteen Allen → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2023\nKirsteen Allen\nKirsteen Allen joined the governing body in 2019. A graduate of Leeds University, she studied Mathematics and Management Studies before qualifying as a Chartered Accountant in practice in London.\nKirsteen was a partner at Arthur Andersen and worked on external audit clients in the financial services sector, latterly specialising in Internal Audit consultancy and partnership. After spending some time living in New York and Tokyo with her family, Kirsteen founded and co-ran a successful recruitment and flexible working consultancy agency in West Kent. During this time Kirsteen was also a board member on the Sevenoaks Chamber of Commerce. Since selling this business in 2020, Kirsteen has been working as Finance Manager for a local bespoke tea-blending business. Kirsteen lives in Sevenoaks and both of her daughters attended Sevenoaks School.\nCharlie Barda → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-33816\nCharlie Barda\nCharlie Barda joined the governing body in 2023.\nRoger Best → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2027\nRoger Best\nRoger Best joined the governing body in 2018. He is a member of the Governance and Education Committees and also serves as the school’s nominated trustee for Sevenoaks Almshouses.\nRoger was educated at The Judd School, Tonbridge, and the University of Durham where he gained a BA in Economics and Law. He qualified as a solicitor and was a partner in an international law firm. His professional work focused on contentious issues and cross-border investigations. Roger has held various management and oversight roles at his law firm including managing partner of the office in Hong Kong where he lived for seven years. Externally, Roger is active in a number of anti-corruption organisations, he has chaired international arbitration tribunals and, in 2021, was appointed as an Alternate Complaints Commissioner to investigate complaints against the UK’s financial regulators.\nRoger has a long association with Sevenoaks; his sister joined the school for the Sixth Form and his four children were pupils between 1992 and 2017.\nBill Castell → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-439181\nBill Castell\nBill was educated at Sevenoaks School. Prior to reading Politics and Economics at the University of Bristol, Bill was an infantry officer, Short Service Limited Commission, in the British Army. He is a qualified accountant, having worked as an auditor at Deloitte and as an investment banker at Goldman Sachs.\nHe is currently the Chief Financial Officer of Gamma Communications plc, a FTSE 250 company, having previously held senior finance and operational roles at Barclays, Virgin Media, and OVO Energy.\nBill is also a Non-Executive Director of the Financial Ombudsman Service and has previously served as a school governor at Whitgift, an independent boys’ school in Croydon. Two of Bill’s three sons currently attend Sevenoaks School, and in his spare time he is often found on the padel court.\nPeter Collini → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-304462\nPeter Collini\nPeter Collini joined the governing body in May 2025 following the merger with Solefield School, where he continues to be Chair of Governors.\nHe has lived in Sevenoaks for over 25 years and has two adult children, his son attended Sevenoaks and Solefield. A chartered accountant, he holds an MA in Engineering from Oxford University. He has a number of advisory and non-executive roles having previously run his own corporate finance advisory practice in Covent Garden for 20 years following appointments with Deutsche Bank and PwC. He serves on the Finance and Property Committee.\nAli Henderson → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-401302\nAli Henderson\nAli Henderson joined the governing body in 2026. She is a member of the Education Committee. Following a degree in Economics, Social & Political Sciences at Cambridge University Ali worked for the civil service for a decade before moving into the charitable sector – initially at Oxfam GB and more recently as CEO of Royal National Children’s SpringBoard Foundation, a charity that works across the UK’s boarding and independent day schools’ sector to support the targeting of transformational bursary schemes for vulnerable children. Ali is a parent of two current Sevenoaks School pupils.\nGuy Innes → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2047\nGuy Innes\nGuy Innes was educated at Eton College and the University of Bristol, where he read Geography. After qualifying as a Chartered Accountant, he worked in London and Paris advising on corporate mergers and acquisitions. He was also Chairman of St John Ambulance Kent from 2010 to 2012.\nAs well as running a diverse portfolio of his own and family businesses, he currently serves as Governor (effectively Chief Executive) of the Titsey Foundation and serves on the boards of several companies in the building products and bio-technology sectors. He has two daughters and two sons.\nPaul Luxmoore → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2051\nPaul Luxmoore\nPaul was the Executive Headteacher of Coastal Academies Trust, consisting of five state schools in Thanet, four secondary and one primary.\nPaul is now retired. He was a National Leader of Education and a co-opted member of the IBSCA Steering Committee. He was also a member of the Kent Association of Headteachers Executive and the Kent and Medway Teaching Schools Association. He was educated at Christ’s Hospital School and University College, London and is married with three school-aged children.\nMelanie McInerney → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2055\nMelanie McInerney\nMelanie McInerney joined the governing body in November 2019. She holds the Diploma in School Business Management and brings a wealth of experience, having served for 17 years as governor of a large local primary school, latterly as Chair.\nA pharmacology graduate from the University of Bristol, Melanie qualified as a Chartered Management Accountant in 1992. During her career she undertook a range of management accounting roles at Glaxo Wellcome plc and was Regional Commercial Finance Manager of Asda plc. Melanie has had some success with fundraising for the primary school and a local sports club, enjoys running and has an interest in wellbeing. Her daughters attended the Sixth Form at Sevenoaks School.\nMark Merson → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2058\nMark Merson\nMark was educated at Warwick School and New College, Oxford, where he studied English. He was appointed to the governing body in 2018.\nA chartered accountant, Mark was a partner at Andersens and Deloitte, specialising in consulting to banks and financial services. He subsequently spent 15 years with Barclays in senior roles in finance, including Group Financial Controller, Head of Investor Relations through the credit crunch, CFO for the Corporate and Investment Bank, and latterly Deputy Group Finance Director. Widely travelled through work and personal interest, having lived in Japan and worked through Europe, India, Africa and the US, he was a founding partner of Veritum Partners Limited, advisors to European financial services companies and is a director of Petershill Partners PLC. All three of his daughters attended Sevenoaks School.\nJudy Mitchem → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-242823\nJudy Mitchem\nJudy was educated at Sevenoaks School and went on to Birmingham University where she read English and French. She joined the governing body in April 2025.\nJudy started her career in the bright lights of London’s advertising agencies, working her way up to be Group Marketing Director of M&C Saatchi and then Managing Director, CMO of Ogilvy UK.\nAfter 25 years in agencies, she then pivoted into education, joining the Executive Board of the Girls’ Day School Trust (GDST), where she spearheaded the transformation strategy. After that, she launched a strategic consultancy and has since advised many leading independent schools. Having worked with United Learning, she also has experience of schools in the state sector. She is very used to school life and the daily challenges that schools face.\nShe lives in London and has three children.\nMatthew Proctor → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-242815\nMatthew Proctor\nMatt was educated at Sevenoaks School and Durham University, where he studied Economics and Management. He was appointed to the governing body in 2025.\nMatt joined Coutts private bank in 2017 and has held a range of roles across client coverage, strategy and M&A. He is currently Head of Delivery of the firm’s Investment Management business, where he leads on areas of business transformation, strategic initiatives, financial oversight, organisation design and day-to-day business management. He has previously been a member of the NatWest Group Board Colleague Advisory Panel, and the PIMFA Under 40 Leadership Committee.\nMatt is an Old Sennockian (OS 2015). During his time at school, he pursued the International Baccalaureate Diploma programme, was Captain of Cross Country and a scholar in the Music department.\nPrior to joining the governing body, Matt spent two years as an Associate Member of the Board.\nAnita Yuravlivker → https://www.sevenoaksschool.org/about-us/our-governors/#staff-popup-2066\nAnita Yuravlivker\nAnita Yuravlivker joined the governing body in 2018, having previously worked at Sevenoaks School as Assistant Bursar. She studied for her International Baccalaureate here and went on to gain a degree in Chemistry and Business Management from Imperial College.\nIn 2005 she qualified as a Chartered Accountant, worked in practice at Ernst & Young and prior to returning to Sevenoaks School, had a stint as the Finance Director of Greenpeace USA in Washington DC. Anita currently lives in Eton with her family and serves as a trustee to the local preschool.\n\nH2: Contact our Governors\n\n\nH3: Clerk to the Governors\n\nclerk@sevenoaksschool.org → mailto:clerk@sevenoaksschool.org\n[link] → tel:\n\nH2: Where Next?\n\nHistory of the School → https://www.sevenoaksschool.org/about-us/history-of-the-school/\nRead more\nMeet the Headmaster → https://www.sevenoaksschool.org/about-us/headmasters-welcome/\nRead more\nOur Leadership Team → https://www.sevenoaksschool.org/about-us/our-staff/\nRead more",
+      "extracted_url": "https://www.sevenoaksschool.org/about-us/our-governors/",
+      "token_used": {
+        "input_token": 5107,
+        "output_token": 918,
+        "total_token": 6025
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.75,
+        "reasoning": "The page lists governors with bios and contact details; there are no job postings, vacancies, or recruitment content.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    }
+  ]
+}

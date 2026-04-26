@@ -1,0 +1,71 @@
+{
+  "overview": {
+    "outcome": "not_job_related",
+    "outcome_reason": "None of the career URLs contained job or hiring related content.",
+    "jobs_found": false,
+    "total_jobs_found": 0,
+    "job_urls": [],
+    "job_found_on_urls": [],
+    "listing_ui": null,
+    "job_alert": false,
+    "job_alert_note": null,
+    "job_alert_urls": [],
+    "career_page_confirmed": false,
+    "no_vacancy_urls": [],
+    "blocked_platform_urls": {},
+    "external_redirect_urls": [],
+    "embedded_urls": [],
+    "navigation_blocked_urls": [],
+    "navigation_issues": [],
+    "not_job_related_urls": [
+      "https://cabotlearningfederation.net/about/"
+    ],
+    "access_issue_urls": [],
+    "unknown_urls": [],
+    "total_urls_processed": 1
+  },
+  "career_pages_analysis": [
+    {
+      "agent_index": 0,
+      "handle": "ws://127.0.0.1:4445/session/cbcab88a577ac36ca8777804b2845983/se/cdp",
+      "url": "https://cabotlearningfederation.net/about/",
+      "status": "not_job_related",
+      "current_url": "https://cabotlearningfederation.net/about/",
+      "error": null,
+      "extracted_content": "H2: About\n\nยินดีต้อนรับสู่เว็บไซต์ของเรา!\nเรามุ่งมั่นที่จะสร้างพื้นที่การเรียนรู้ที่น่าสนใจและสนุกสนานสำหรับเด็ก ๆ ทุกคน! เราเชื่อว่าการเรียนรู้ควรเป็นประสบการณ์ที่น่าสนใจและที่สำคัญในชีวิตของทุกเด็ก ๆ และเราทำให้มันเป็นจริงผ่านทรัพยากรการเรียนรู้ที่ทันสมัยและที่น่าสนใจมากมายที่เราให้บริการ\nเราให้ความสำคัญกับการให้บริการทรัพยากรการเรียนรู้ที่ทันสมัยที่สุดสำหรับเด็ก ๆ ทุกคน ทั้งจากการเรียนรู้เกี่ยวกับภาษา, คณิตศาสตร์, วิทยาศาสตร์, และหลายๆ ด้านอื่น ๆ ที่สนุกสนานและเต็มไปด้วยความเรียนรู้\nเรายึดมั่นในการส่งเสริมการพัฒนาทักษะทางการศึกษาอย่างครอบคลุม ทั้งทักษะการอ่าน, เขียน, คิดวิเคราะห์, และปัญญาสัมพันธ์ ที่สำคัญสำหรับการเติบโตและพัฒนาของเด็ก ๆ\nที่นี่ เรานำเสนอแนวคิดของการเรียนรู้ที่น่าสนใจและสนุกสนาน ที่ส่งเสริมความกระตือรือร้นในการเรียนรู้ รวมถึงการให้โอกาสในการสนับสนุนความคิดสร้างสรรค์และการมีส่วนร่วมในกระบวนการการเรียนรู้\nเราเต็มใจที่จะฟังความคิดเห็น, คำถาม หรือคำแนะนำจากคุณ หากคุณมีคำถามเกี่ยวกับทรัพยากรการเรียนรู้ของเรา หรือต้องการให้เราเพิ่มเติมเรื่องที่น่าสนใจ\nขอบคุณที่เลือกเป็นส่วนหนึ่งของการเรียนรู้\n\nH2: Archives\n\nNovember 2025 → https://cabotlearningfederation.net/2025/11/\nNovember 2024 → https://cabotlearningfederation.net/2024/11/\nJanuary 2024 → https://cabotlearningfederation.net/2024/01/\nDecember 2023 → https://cabotlearningfederation.net/2023/12/\nNovember 2023 → https://cabotlearningfederation.net/2023/11/\nOctober 2023 → https://cabotlearningfederation.net/2023/10/\nSeptember 2023 → https://cabotlearningfederation.net/2023/09/\n\nH2: Categories\n\nEducation → https://cabotlearningfederation.net/category/education/\nInsurance → https://cabotlearningfederation.net/category/insurance/\nLifestyle → https://cabotlearningfederation.net/category/lifestyle/",
+      "extracted_url": "https://cabotlearningfederation.net/about/",
+      "token_used": {
+        "input_token": 2510,
+        "output_token": 976,
+        "total_token": 3486
+      },
+      "llm_analysis": {
+        "page_category": "not_job_related",
+        "confidence": 0.9,
+        "reasoning": "The page is an About page describing learning resources and does not contain any job postings or hiring information.",
+        "job_alert": null,
+        "page_access_status": "accessible",
+        "page_access_issue_detail": null,
+        "next_action_target": {
+          "url": null,
+          "button": null,
+          "element_type": null
+        },
+        "jobs_listed_on_page": [],
+        "listing_ui": {
+          "ui_category": null,
+          "filter_present": false,
+          "filter_types": [],
+          "sort_present": false,
+          "sort_types": [],
+          "pagination_present": false,
+          "pagination_type": null,
+          "next_page_url": null
+        }
+      },
+      "job_alert": false,
+      "jobs_listed_on_page": [],
+      "embedded_jobs_present": false
+    }
+  ]
+}
