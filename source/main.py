@@ -11,10 +11,12 @@ logger = get_logger("main")
 
 async def run_job_pipeline(
     *,
+    client_name: str = "default_client",
     urls: list[str],
     agent_count: int = 1,
     grid_url: str | None = None,
     ats_check: bool = True,
+    job_monitoring: bool = False,
     task_id: str | None = None,
 ) -> dict:
     log_event(
@@ -24,16 +26,21 @@ async def run_job_pipeline(
         len(urls),
         agent_count,
         domain=urls[0] if urls else "unknown",
+        client_name=client_name,
         url_count=len(urls),
         agent_count=agent_count,
+        ats_check=ats_check,
+        job_monitoring=job_monitoring,
         task_id=task_id,
     )
     service = JobProcessService()
     request = JobProcessRequest(
+        client_name=client_name,
         urls=urls,
         agent_count=agent_count,
         grid_url=grid_url,
         ats_check=ats_check,
+        job_monitoring=job_monitoring,
         task_id=task_id,
     )
     result = await service.run_process(request=request, process_id=task_id)
@@ -67,6 +74,7 @@ async def main() -> None:
         agent_count=2,
         grid_url=None,
         ats_check=True,
+        job_monitoring=False,
     )
 
 

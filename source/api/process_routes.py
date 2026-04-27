@@ -31,8 +31,11 @@ async def create_process(
         len(request.urls),
         request.agent_count,
         domain=request.urls[0] if request.urls else "unknown",
+        client_name=request.client_name,
         url_count=len(request.urls),
         agent_count=request.agent_count,
+        job_monitoring=request.job_monitoring,
+        ats_check=request.ats_check,
     )
     process_document = await job_process_service.submit_process(request)
     background_tasks.add_task(
@@ -59,9 +62,11 @@ async def create_process(
 async def create_process_from_file(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
+    client_name: str = Form("default_client"),
     agent_count: int = Form(1),
     grid_url: str | None = Form(None),
     ats_check: bool = Form(True),
+    job_monitoring: bool = Form(False),
     task_id: str | None = Form(None),
 ) -> dict[str, str]:
     if not file.filename:
@@ -78,16 +83,18 @@ async def create_process_from_file(
             file.filename,
             str(exc),
             domain=file.filename,
-            filename=file.filename,
+            upload_filename=file.filename,
             error=str(exc),
         )
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     request = JobProcessRequest(
+        client_name=client_name,
         urls=urls,
         agent_count=agent_count,
         grid_url=grid_url,
         ats_check=ats_check,
+        job_monitoring=job_monitoring,
         task_id=task_id,
     )
     log_event(
@@ -98,10 +105,12 @@ async def create_process_from_file(
         len(urls),
         agent_count,
         domain=urls[0] if urls else file.filename,
-        filename=file.filename,
+        upload_filename=file.filename,
+        client_name=client_name,
         url_count=len(urls),
         agent_count=agent_count,
         ats_check=ats_check,
+        job_monitoring=job_monitoring,
     )
     process_document = await job_process_service.submit_process(request)
     background_tasks.add_task(
@@ -156,3 +165,16 @@ async def get_process(process_id: str) -> dict:
         status=process.get("status"),
     )
     return process
+
+
+@router.get("/clients/{client_name}")
+async def get_client_overview(client_name: str) -> dict:
+    log_event(
+        logger,
+        "info",
+        "client_overview_requested client_name=%s",
+        client_name,
+        domain=client_name,
+        client_name=client_name,
+    )
+    return await job_process_service.get_client_overview(client_name)

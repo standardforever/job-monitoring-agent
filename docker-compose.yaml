@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  chrome:
+    # image: selenium/standalone-chrome:latest # Production
+    image: selenium/standalone-chromium:latest # Development
+    shm_size: "2g"
+    ports:
+      - "4445:4444" # WebDriver / Selenium Grid
+      - "7901:7900" # noVNC live view (password: secret)
+    environment:
+      - SE_NODE_SESSION_TIMEOUT=999999999
+      - SE_SESSION_REQUEST_TIMEOUT=999999999
+      - SE_SESSION_RETRY_INTERVAL=5
+      - SE_BROWSER_ARGS_DISABLE_DSHM=--disable-dev-shm-usage
+      - SE_BROWSER_ARGS_NO_SANDBOX=--no-sandbox
+    volumes:
+      - ./chrome-profile:/home/seluser/chrome-profile
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - "8081:8081" # Web UI → http://localhost:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=secret
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:secret@mongo:27017/
+      - ME_CONFIG_BASICAUTH_USERNAME=admin # UI login
+      - ME_CONFIG_BASICAUTH_PASSWORD=secret # UI login
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

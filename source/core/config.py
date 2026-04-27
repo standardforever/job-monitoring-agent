@@ -37,7 +37,12 @@ class Settings:
     post_navigation_delay_ms: int = int(os.getenv("POST_NAVIGATION_DELAY_MS", "5000"))
     mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://admin:secret@127.0.0.1:27017")
     mongodb_database: str = os.getenv("MONGODB_DATABASE", "job_monitoring_agent")
-    mongodb_process_collection: str = os.getenv("MONGODB_PROCESS_COLLECTION", "job_processes")
+    mongodb_clients_collection: str = os.getenv("MONGODB_CLIENTS_COLLECTION", "clients")
+    mongodb_client_domains_collection: str = os.getenv("MONGODB_CLIENT_DOMAINS_COLLECTION", "client_domains")
+    mongodb_domains_collection: str = os.getenv("MONGODB_DOMAINS_COLLECTION", "domains")
+    mongodb_process_runs_collection: str = os.getenv("MONGODB_PROCESS_RUNS_COLLECTION", "process_runs")
+    mongodb_process_run_items_collection: str = os.getenv("MONGODB_PROCESS_RUN_ITEMS_COLLECTION", "process_run_items")
+    mongodb_domain_checks_collection: str = os.getenv("MONGODB_DOMAIN_CHECKS_COLLECTION", "domain_checks")
 
 
 def get_settings() -> Settings:
@@ -45,11 +50,11 @@ def get_settings() -> Settings:
     log_event(
         logger,
         "info",
-        "settings_loaded mongodb_database=%s mongodb_collection=%s",
+        "settings_loaded mongodb_database=%s process_runs_collection=%s",
         settings.mongodb_database,
-        settings.mongodb_process_collection,
+        settings.mongodb_process_runs_collection,
         domain="config",
         mongodb_database=settings.mongodb_database,
-        mongodb_process_collection=settings.mongodb_process_collection,
+        mongodb_process_runs_collection=settings.mongodb_process_runs_collection,
     )
     return settings

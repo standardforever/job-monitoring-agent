@@ -1,11 +1,24 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import json
+import re
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
-from models.process import DomainProcessRecord, JobProcessDocument, JobProcessRequest, WorkerProcessResult
+from models.process import (
+    ClientDomainDocument,
+    ClientDocument,
+    DomainCheckDocument,
+    DomainProcessRecord,
+    JobProcessRequest,
+    ProcessRunDocument,
+    ProcessRunItemDocument,
+    RequestedCapability,
+    WorkerProcessResult,
+)
 from nodes.ats_check_node import detect_ats
 from nodes.career_page_category import career_page_category_node
 from nodes.session_bootstrap import bootstrap_browser_node
@@ -27,27 +40,35 @@ class JobProcessService:
     async def submit_process(self, request: JobProcessRequest) -> dict[str, Any]:
         assignments = allocate_urls_to_agents(request.urls, request.agent_count)
         process_id = request.task_id or str(uuid4())
-        log_event(
-            logger,
-            "info",
-            "process_submission_started process_id=%s url_count=%s agent_count=%s",
-            process_id,
-            len(request.urls),
-            request.agent_count,
-            domain=request.urls[0] if request.urls else "unknown",
+        client_key = self._build_client_key(request.client_name)
+        requested_capability = self._requested_capability_for_request(request)
+        now = datetime.utcnow()
+
+        await self._mongodb_service.ensure_client(client_key, request.client_name)
+
+        normalized_urls = [self._normalize_domain_key(url) for url in request.urls]
+        for domain_key in normalized_urls:
+            await self._mongodb_service.upsert_client_domain(
+                client_key=client_key,
+                client_name=request.client_name,
+                domain_key=domain_key,
+                requested_capability=requested_capability,
+                ats_check=request.ats_check,
+                job_monitoring=request.job_monitoring,
+            )
+
+        run_document = ProcessRunDocument(
             process_id=process_id,
-            url_count=len(request.urls),
-            agent_count=request.agent_count,
-        )
-        document = JobProcessDocument(
-            process_id=process_id,
+            client_key=client_key,
+            client_name=request.client_name,
             status="queued",
             request=request,
             assignments=assignments,
             queued_urls=list(request.urls),
             metadata={
-                "headless": False,
                 "ats_check": request.ats_check,
+                "job_monitoring": request.job_monitoring,
+                "requested_capability": requested_capability,
             },
             summary={
                 "total_urls": len(request.urls),
@@ -58,104 +79,59 @@ class JobProcessService:
                 "queued_url_count": len(request.urls),
                 "running_url_count": 0,
             },
+            created_at=now,
+            updated_at=now,
         )
-        await self._mongodb_service.insert_process(document.model_dump(mode="json"))
+
+        run_items = [
+            ProcessRunItemDocument(
+                process_id=process_id,
+                client_key=client_key,
+                client_name=request.client_name,
+                raw_url=url,
+                domain_key=self._normalize_domain_key(url),
+                requested_capability=requested_capability,
+                status="queued",
+                created_at=now,
+                updated_at=now,
+            ).model_dump(mode="json")
+            for url in request.urls
+        ]
+
+        await self._mongodb_service.insert_process_run(run_document.model_dump(mode="json"))
+        await self._mongodb_service.insert_process_run_items(run_items)
+
         log_event(
             logger,
             "info",
-            "process_submission_completed process_id=%s",
+            "process_submission_completed process_id=%s client_key=%s url_count=%s",
             process_id,
-            domain=request.urls[0] if request.urls else "unknown",
+            client_key,
+            len(request.urls),
+            domain=normalized_urls[0] if normalized_urls else client_key,
             process_id=process_id,
+            client_key=client_key,
+            url_count=len(request.urls),
         )
-        return document.model_dump(mode="json")
+        return run_document.model_dump(mode="json")
 
     async def run_process(self, request: JobProcessRequest, process_id: str | None = None) -> dict[str, Any]:
         configure_logging()
-        log_event(
-            logger,
-            "info",
-            "run_process_started requested_process_id=%s",
-            process_id or request.task_id,
-            domain=request.urls[0] if request.urls else "unknown",
-            requested_process_id=process_id or request.task_id,
-        )
-
         submitted_process = await self.submit_process(
             request.model_copy(update={"task_id": process_id or request.task_id})
         )
-        active_process_id = submitted_process["process_id"]
-
-        await self._mongodb_service.update_process(
-            active_process_id,
-            {
-                "status": "running",
-                "started_at": datetime.utcnow(),
-            },
-        )
-
-        try:
-            result = await self._execute_process(active_process_id, request, submitted_process["assignments"])
-        except Exception as exc:
-            log_event(
-                logger,
-                "error",
-                "run_process_failed process_id=%s error=%s",
-                active_process_id,
-                str(exc),
-                domain=request.urls[0] if request.urls else "unknown",
-                process_id=active_process_id,
-                error=str(exc),
-            )
-            await self._mongodb_service.update_process(
-                active_process_id,
-                {
-                    "status": "failed",
-                    "completed_at": datetime.utcnow(),
-                    "errors": [str(exc)],
-                },
-            )
-            raise
-
-        await self._mongodb_service.update_process(
-            active_process_id,
-            {
-                "status": result["status"],
-                "completed_at": datetime.utcnow(),
-                "errors": result["errors"],
-                "summary": result["summary"],
-            },
-        )
-        log_event(
-            logger,
-            "info",
-            "run_process_completed process_id=%s status=%s",
-            active_process_id,
-            result["status"],
-            domain=request.urls[0] if request.urls else "unknown",
-            process_id=active_process_id,
-            status=result["status"],
-        )
-        return result
+        return await self.execute_existing_process(submitted_process["process_id"])
 
     async def execute_existing_process(self, process_id: str) -> dict[str, Any]:
-        process = await self._mongodb_service.get_process(process_id)
+        process = await self._mongodb_service.get_process_run(process_id)
         if process is None:
             raise ValueError(f"Unknown process_id: {process_id}")
-        domain = (((process.get("request") or {}).get("urls") or ["unknown"])[0])
-        log_event(
-            logger,
-            "info",
-            "execute_existing_process_started process_id=%s",
-            process_id,
-            domain=domain,
-            process_id=process_id,
-        )
 
+        domain = (((process.get("request") or {}).get("urls") or ["unknown"])[0])
         request = JobProcessRequest(**process["request"])
         assignments = process.get("assignments", [])
 
-        await self._mongodb_service.update_process(
+        await self._mongodb_service.update_process_run(
             process_id,
             {
                 "status": "running",
@@ -164,20 +140,27 @@ class JobProcessService:
             },
         )
 
+        log_event(
+            logger,
+            "info",
+            "execute_existing_process_started process_id=%s client_key=%s",
+            process_id,
+            process.get("client_key"),
+            domain=domain,
+            process_id=process_id,
+            client_key=process.get("client_key"),
+        )
+
         try:
-            result = await self._execute_process(process_id, request, assignments)
-        except Exception as exc:
-            log_event(
-                logger,
-                "error",
-                "execute_existing_process_failed process_id=%s error=%s",
-                process_id,
-                str(exc),
-                domain=domain,
+            result = await self._execute_process(
                 process_id=process_id,
-                error=str(exc),
+                request=request,
+                assignments=assignments,
+                client_key=process["client_key"],
+                client_name=process["client_name"],
             )
-            await self._mongodb_service.update_process(
+        except Exception as exc:
+            await self._mongodb_service.update_process_run(
                 process_id,
                 {
                     "status": "failed",
@@ -187,7 +170,7 @@ class JobProcessService:
             )
             raise
 
-        await self._mongodb_service.update_process(
+        await self._mongodb_service.update_process_run(
             process_id,
             {
                 "status": result["status"],
@@ -196,26 +179,30 @@ class JobProcessService:
                 "summary": result["summary"],
             },
         )
-        log_event(
-            logger,
-            "info",
-            "execute_existing_process_completed process_id=%s status=%s",
-            process_id,
-            result["status"],
-            domain=domain,
-            process_id=process_id,
-            status=result["status"],
-        )
         return result
 
     async def get_process(self, process_id: str) -> dict[str, Any] | None:
-        return await self._mongodb_service.get_process(process_id)
+        return await self._mongodb_service.get_process_run_with_items(process_id)
+
+    async def get_client_overview(self, client_name: str) -> dict[str, Any]:
+        client_key = self._build_client_key(client_name)
+        subscriptions = await self._mongodb_service.get_client_domains(client_key)
+        runs = await self._mongodb_service.list_process_runs_for_client(client_key)
+        return {
+            "client_key": client_key,
+            "client_name": client_name,
+            "subscriptions": subscriptions,
+            "process_runs": runs,
+        }
 
     async def _execute_process(
         self,
+        *,
         process_id: str,
         request: JobProcessRequest,
         assignments: list[dict[str, Any]],
+        client_key: str,
+        client_name: str,
     ) -> dict[str, Any]:
         log_event(
             logger,
@@ -223,24 +210,44 @@ class JobProcessService:
             "execute_process_started process_id=%s assignment_count=%s",
             process_id,
             len(assignments),
-            domain=request.urls[0] if request.urls else "unknown",
+            domain=request.urls[0] if request.urls else client_key,
             process_id=process_id,
             assignment_count=len(assignments),
         )
+
         session_info = await create_session_async(grid_url=request.grid_url)
         if session_info is None or not session_info.cdp_url:
             error = "Unable to establish shared Selenium/CDP session"
-            log_event(
-                logger,
-                "error",
-                "execute_process_session_failed process_id=%s error=%s",
+            await self._mongodb_service.update_process_run(
                 process_id,
-                error,
-                domain=request.urls[0] if request.urls else "unknown",
-                process_id=process_id,
-                error=error,
+                {
+                    "status": "failed",
+                    "completed_at": datetime.utcnow(),
+                    "errors": [error],
+                    "summary": {
+                        "total_urls": len(request.urls),
+                        "assigned_agent_count": request.agent_count,
+                        "processed_url_count": len(request.urls),
+                        "completed_domain_count": 0,
+                        "failed_domain_count": len(request.urls),
+                        "queued_url_count": 0,
+                        "running_url_count": 0,
+                    },
+                    "queued_urls": [],
+                    "failed_urls": list(request.urls),
+                },
             )
-            result = {
+            for assignment in assignments:
+                await self._mongodb_service.update_assignment_status(process_id, assignment["agent_index"], "completed")
+                for url in assignment["urls"]:
+                    await self._mongodb_service.mark_url_failed(
+                        process_id,
+                        url,
+                        error,
+                        result_payload={"status": "failed", "reason": error},
+                        was_running=False,
+                    )
+            return {
                 "process_id": process_id,
                 "status": "failed",
                 "errors": [error],
@@ -248,52 +255,33 @@ class JobProcessService:
                 "summary": {
                     "total_urls": len(request.urls),
                     "assigned_agent_count": request.agent_count,
-                    "processed_url_count": 0,
+                    "processed_url_count": len(request.urls),
                     "completed_domain_count": 0,
                     "failed_domain_count": len(request.urls),
                     "queued_url_count": 0,
                     "running_url_count": 0,
                 },
             }
-            await self._mongodb_service.update_process(
-                process_id,
-                {
-                    "status": "failed",
-                    "completed_at": datetime.utcnow(),
-                    "errors": [error],
-                    "summary": result["summary"],
-                    "queued_urls": [],
-                    "failed_urls": list(request.urls),
-                },
-            )
-            return result
 
         worker_inputs = [
             {
                 "process_id": process_id,
-                "grid_url": request.grid_url,
-                "agent_count": request.agent_count,
+                "client_key": client_key,
+                "client_name": client_name,
                 "agent_index": assignment["agent_index"],
                 "assigned_urls": assignment["urls"],
-                "completed_urls": [],
-                "errors": [],
                 "session_id": session_info.session_id,
                 "cdp_url": session_info.cdp_url,
                 "metadata": {
-                    "allocation_status": assignment["status"],
-                    "allocated_url_count": assignment["url_count"],
-                    "headless": False,
                     "ats_check": request.ats_check,
-                    "reused_existing_session": session_info.reused_existing_session,
-                    "task_id": process_id,
+                    "job_monitoring": request.job_monitoring,
+                    "requested_capability": self._requested_capability_for_request(request),
                 },
             }
             for assignment in assignments
         ]
 
-        worker_results = await asyncio.gather(
-            *[self._run_agent(worker_input) for worker_input in worker_inputs]
-        )
+        worker_results = await asyncio.gather(*[self._run_agent(worker_input) for worker_input in worker_inputs])
 
         errors = [error for worker in worker_results for error in worker["errors"]]
         completed_domain_count = sum(
@@ -308,22 +296,8 @@ class JobProcessService:
             for record in worker["domain_results"]
             if record["status"] != "completed"
         )
-
         status = "completed" if not errors else "failed"
-        log_event(
-            logger,
-            "info",
-            "execute_process_completed process_id=%s status=%s completed_domain_count=%s failed_domain_count=%s",
-            process_id,
-            status,
-            completed_domain_count,
-            failed_domain_count,
-            domain=request.urls[0] if request.urls else "unknown",
-            process_id=process_id,
-            status=status,
-            completed_domain_count=completed_domain_count,
-            failed_domain_count=failed_domain_count,
-        )
+
         return {
             "process_id": process_id,
             "status": status,
@@ -343,32 +317,28 @@ class JobProcessService:
     async def _run_agent(self, graph_input: dict[str, Any]) -> dict[str, Any]:
         assigned_urls = list(graph_input.get("assigned_urls", []))
         process_id = str(graph_input["process_id"])
+        client_key = str(graph_input["client_key"])
+        client_name = str(graph_input["client_name"])
         agent_index = int(graph_input["agent_index"])
-        domain = assigned_urls[0] if assigned_urls else "unknown"
         browser_session = None
 
         if assigned_urls:
             await self._mongodb_service.update_assignment_status(process_id, agent_index, "running")
 
         bootstrap_result = await bootstrap_browser_node(state=graph_input)
-
         if not bootstrap_result.get("session_established"):
             errors = list(bootstrap_result.get("errors", []))
+            error_text = "; ".join(errors) or "Agent bootstrap failed"
             for url in assigned_urls:
-                await self._mongodb_service.mark_url_failed(process_id, url, was_running=False)
+                await self._mongodb_service.mark_url_failed(
+                    process_id,
+                    url,
+                    error_text,
+                    result_payload={"status": "failed", "reason": error_text},
+                    was_running=False,
+                )
             if assigned_urls:
                 await self._mongodb_service.update_assignment_status(process_id, agent_index, "completed")
-            log_event(
-                logger,
-                "error",
-                "worker_bootstrap_failed process_id=%s agent_index=%s",
-                process_id,
-                agent_index,
-                domain=domain,
-                process_id=process_id,
-                agent_index=agent_index,
-                errors=errors,
-            )
             return WorkerProcessResult(
                 agent_index=agent_index,
                 status="failed",
@@ -383,18 +353,6 @@ class JobProcessService:
         agent_tab = bootstrap_result.get("agent_tab", {})
 
         try:
-            log_event(
-                logger,
-                "info",
-                "worker_start agent_index=%s assigned_url_count=%s",
-                agent_index,
-                len(assigned_urls),
-                domain="run",
-                agent_index=agent_index,
-                assigned_url_count=len(assigned_urls),
-                process_id=process_id,
-            )
-
             domain_results: list[dict[str, Any]] = []
             errors: list[str] = []
             processed_urls: list[str] = []
@@ -402,11 +360,15 @@ class JobProcessService:
             for url in assigned_urls:
                 record = await self._process_domain(
                     process_id=process_id,
+                    client_key=client_key,
+                    client_name=client_name,
                     url=url,
                     browser_session=browser_session,
                     agent_index=agent_index,
                     agent_tab=agent_tab,
                     ats_check=bool((graph_input.get("metadata") or {}).get("ats_check", True)),
+                    job_monitoring=bool((graph_input.get("metadata") or {}).get("job_monitoring", False)),
+                    requested_capability=str((graph_input.get("metadata") or {}).get("requested_capability", "career_page")),
                 )
                 domain_results.append(record)
                 processed_urls.append(url)
@@ -426,84 +388,70 @@ class JobProcessService:
             if assigned_urls:
                 await self._mongodb_service.update_assignment_status(process_id, agent_index, "completed")
             await close_agent_tab(browser_session)
-            log_event(
-                logger,
-                "info",
-                "worker_tab_closed process_id=%s agent_index=%s",
-                process_id,
-                agent_index,
-                domain=domain,
-                process_id=process_id,
-                agent_index=agent_index,
-            )
 
     async def _process_domain(
         self,
         *,
         process_id: str,
+        client_key: str,
+        client_name: str,
         url: str,
         browser_session: Any,
         agent_index: int,
         agent_tab: dict[str, Any],
         ats_check: bool,
+        job_monitoring: bool,
+        requested_capability: str,
     ) -> dict[str, Any]:
+        domain_key = self._normalize_domain_key(url)
         main_domain = extract_domain(url)
-        await self._mongodb_service.mark_url_running(process_id, url)
-        log_event(
-            logger,
-            "info",
-            "domain_processing_started process_id=%s agent_index=%s url=%s",
-            process_id,
-            agent_index,
-            url,
-            domain=main_domain or url,
-            process_id=process_id,
-            agent_index=agent_index,
-            url=url,
-        )
-        if not main_domain:
-            record = DomainProcessRecord(
-                domain=url,
-                main_domain=None,
-                status="failed",
-                error="Unable to extract domain from URL",
-            ).model_dump(mode="json")
-            await self._mongodb_service.mark_url_failed(process_id, url)
-            await self._mongodb_service.append_domain_result(process_id, agent_index, record)
-            return record
+        await self._mongodb_service.mark_url_running(process_id, url, agent_index)
+
+        existing_domain = await self._mongodb_service.get_domain(domain_key)
+        reused_career_discovery = False
+        reused_ats_detection = False
 
         try:
-            career_url_result = await career_url_extraction_node(main_domain, browser_session)
+            career_url_result = {}
+            cached_career_result = ((existing_domain or {}).get("career_url_extraction") or {})
+            cached_career_urls = list(cached_career_result.get("career_urls") or [])
+            if cached_career_result.get("status") == "career_urls_found" and cached_career_urls:
+                career_url_result = cached_career_result
+                reused_career_discovery = True
+            else:
+                career_url_result = await career_url_extraction_node(main_domain or domain_key, browser_session)
+
             career_page_result = await career_page_category_node(
                 career_url_result.get("career_urls", []),
                 browser_session,
                 agent_index,
                 agent_tab,
             )
+
+            fingerprint_source = career_page_result.get("career_pages_analysis") or career_page_result
+            page_fingerprint = self._fingerprint_payload(fingerprint_source)
+            previous_fingerprint = (existing_domain or {}).get("latest_page_fingerprint")
+            content_changed = None if previous_fingerprint is None else previous_fingerprint != page_fingerprint
+
             if ats_check:
-                ats_detection = await detect_ats(
-                    career_page_result,
-                    main_domain,
-                    browser_session,
-                    agent_index,
-                    agent_tab,
-                )
+                cached_ats_detection = ((existing_domain or {}).get("ats_detection") or {})
+                if cached_ats_detection and cached_ats_detection.get("confidence") == "high":
+                    ats_detection = cached_ats_detection
+                    reused_ats_detection = True
+                else:
+                    ats_detection = await detect_ats(
+                        career_page_result,
+                        main_domain or domain_key,
+                        browser_session,
+                        agent_index,
+                        agent_tab,
+                    )
             else:
                 ats_detection = {
                     "ats_detected": None,
                     "detection_method": "skipped",
                     "reasoning": "ATS check disabled for this process.",
                 }
-                log_event(
-                    logger,
-                    "info",
-                    "ats_check_skipped process_id=%s agent_index=%s",
-                    process_id,
-                    agent_index,
-                    domain=main_domain,
-                    process_id=process_id,
-                    agent_index=agent_index,
-                )
 
             record = DomainProcessRecord(
                 domain=url,
@@ -513,39 +461,117 @@ class JobProcessService:
                 ats_detection=ats_detection,
                 status="completed",
             ).model_dump(mode="json")
-            await self._mongodb_service.mark_url_completed(process_id, url)
-            log_event(
-                logger,
-                "info",
-                "domain_processing_completed process_id=%s agent_index=%s status=%s",
-                process_id,
-                agent_index,
-                record["status"],
-                domain=main_domain,
-                process_id=process_id,
-                agent_index=agent_index,
-                status=record["status"],
+
+            domain_check_id = str(uuid4())
+            result_summary = self._build_result_summary(
+                record,
+                reused_career_discovery=reused_career_discovery,
+                reused_ats_detection=reused_ats_detection,
+                content_changed=content_changed,
+                job_monitoring=job_monitoring,
             )
+            await self._mongodb_service.insert_domain_check(
+                DomainCheckDocument(
+                    domain_check_id=domain_check_id,
+                    process_id=process_id,
+                    client_key=client_key,
+                    client_name=client_name,
+                    raw_url=url,
+                    domain_key=domain_key,
+                    requested_capability=requested_capability,  # type: ignore[arg-type]
+                    content_changed=content_changed,
+                    page_fingerprint=page_fingerprint,
+                    llm_skipped=not ats_check or reused_ats_detection,
+                    result_payload=record,
+                ).model_dump(mode="json")
+            )
+
+            await self._mongodb_service.upsert_domain(
+                domain_key,
+                {
+                    "career_url_extraction": career_url_result,
+                    "career_page_result": career_page_result,
+                    "ats_detection": ats_detection,
+                    "latest_page_fingerprint": page_fingerprint,
+                    "latest_extracted_text": self._extract_latest_page_text(career_page_result),
+                    "last_career_discovery_at": datetime.utcnow(),
+                    "last_career_check_at": datetime.utcnow(),
+                    "last_ats_check_at": datetime.utcnow() if ats_check else (existing_domain or {}).get("last_ats_check_at"),
+                },
+            )
+
+            await self._mongodb_service.mark_url_completed(
+                process_id,
+                url,
+                result_summary=result_summary,
+                result_payload=record,
+                domain_check_id=domain_check_id,
+            )
+            return record
         except Exception as exc:
-            record = DomainProcessRecord(
+            error_text = str(exc)
+            failed_record = DomainProcessRecord(
                 domain=url,
                 main_domain=main_domain,
                 status="failed",
-                error=str(exc),
+                error=error_text,
             ).model_dump(mode="json")
-            await self._mongodb_service.mark_url_failed(process_id, url)
-            log_event(
-                logger,
-                "error",
-                "domain_processing_failed process_id=%s agent_index=%s error=%s",
+            await self._mongodb_service.mark_url_failed(
                 process_id,
-                agent_index,
-                str(exc),
-                domain=main_domain,
-                process_id=process_id,
-                agent_index=agent_index,
-                error=str(exc),
+                url,
+                error_text,
+                result_payload=failed_record,
+                was_running=True,
             )
+            return failed_record
 
-        await self._mongodb_service.append_domain_result(process_id, agent_index, record)
-        return record
+    def _build_client_key(self, client_name: str) -> str:
+        normalized = re.sub(r"[^a-z0-9]+", "_", client_name.strip().lower()).strip("_")
+        return normalized or "default_client"
+
+    def _normalize_domain_key(self, raw_value: str) -> str:
+        extracted = extract_domain(raw_value)
+        return extracted or raw_value.strip().lower()
+
+    def _requested_capability_for_request(self, request: JobProcessRequest) -> RequestedCapability:
+        if request.job_monitoring:
+            return "job_monitoring"
+        if request.ats_check:
+            return "ats_check"
+        return "career_page"
+
+    def _fingerprint_payload(self, payload: Any) -> str:
+        serialized = json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str)
+        return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+    def _extract_latest_page_text(self, career_page_result: dict[str, Any]) -> str | None:
+        analyses = career_page_result.get("career_pages_analysis") or []
+        for page in analyses:
+            content = str(page.get("extracted_content") or "").strip()
+            if content:
+                return content
+        return None
+
+    def _build_result_summary(
+        self,
+        record: dict[str, Any],
+        *,
+        reused_career_discovery: bool,
+        reused_ats_detection: bool,
+        content_changed: bool | None,
+        job_monitoring: bool,
+    ) -> dict[str, Any]:
+        ats_detection = record.get("ats_detection") or {}
+        career_url_extraction = record.get("career_url_extraction") or {}
+        return {
+            "status": record.get("status"),
+            "main_domain": record.get("main_domain"),
+            "career_url_status": career_url_extraction.get("status"),
+            "career_url_count": len(career_url_extraction.get("career_urls") or []),
+            "ats_detected": ats_detection.get("ats_detected"),
+            "ats_provider": ats_detection.get("ats_provider"),
+            "reused_career_discovery": reused_career_discovery,
+            "reused_ats_detection": reused_ats_detection,
+            "content_changed": content_changed,
+            "job_monitoring": job_monitoring,
+        }

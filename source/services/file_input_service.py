@@ -21,7 +21,7 @@ class FileInputService:
             filename,
             suffix,
             domain=filename,
-            filename=filename,
+            upload_filename=filename,
             suffix=suffix,
         )
 
@@ -42,7 +42,7 @@ class FileInputService:
             filename,
             len(domains),
             domain=domains[0],
-            filename=filename,
+            upload_filename=filename,
             domain_count=len(domains),
         )
         return domains
