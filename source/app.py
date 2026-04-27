@@ -6,10 +6,10 @@ import uvicorn
 from api.process_routes import router as process_router
 from utils.logging import get_logger, log_event
 
-app = FastAPI(title="Job Monitoring Agent")
+app = FastAPI(title="Job Monitoring Agent", root_path="/ats")
 logger = get_logger("app")
 
-app.include_router(process_router)
+app.include_router(process_router, prefix="/api")
 log_event(
     logger,
     "info",
@@ -24,11 +24,11 @@ if __name__ == "__main__":
         "info",
         "uvicorn_start_requested host=%s port=%s reload=%s",
         "127.0.0.1",
-        9999,
+        8110,
         True,
         domain="api",
         host="127.0.0.1",
-        port=9999,
+        port=8110,
         reload=True,
     )
     uvicorn.run("app:app", host="127.0.0.1", port=9999, reload=True)

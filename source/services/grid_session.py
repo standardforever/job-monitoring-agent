@@ -302,16 +302,3 @@ async def close_agent_tab(session: BrowserSession | None) -> None:
             )
     except Exception:
         pass
-
-    try:
-        await session.playwright.stop()
-        log_event(
-            logger,
-            "info",
-            "playwright_stopped session_id=%s",
-            session.session_id,
-            domain=session.cdp_url,
-            session_id=session.session_id,
-        )
-    except Exception:
-        pass
