@@ -190,6 +190,15 @@ def _next_candidate(candidates: list[str], checked: set[str]) -> str | None:
     return None
 
 
+_NON_ACCESSIBLE_PAGE_STATUSES = {
+    "bot_detected",
+    "login_required",
+    "not_found",
+    "empty_or_blank",
+    "error",
+}
+
+
 
 
 async def career_page_category_node(career_page_url: List[str], browser_session: Any, agent_index: int, agent_tab: dict) -> dict:
@@ -295,6 +304,8 @@ async def career_page_category_node(career_page_url: List[str], browser_session:
             navigation_result["token_used"] = analysis.token_usage
             navigation_result["llm_analysis"] = normalized
             navigation_result["job_alert"] = normalized.get("job_alert") or False
+            navigation_result["page_access_status"] = normalized.get("page_access_status")
+            navigation_result["page_access_issue_detail"] = normalized.get("page_access_issue_detail")
 
             # Fill missing navigation target from selector map if needed
             if (
@@ -324,17 +335,22 @@ async def career_page_category_node(career_page_url: List[str], browser_session:
 
             # ── Branch on category ────────────────────────────────────────────
             category = normalized["page_category"]
+            page_access_status = normalized.get("page_access_status")
+            page_inaccessible = page_access_status in _NON_ACCESSIBLE_PAGE_STATUSES
 
             if category == "not_job_related":
-                navigation_result["status"] = "not_job_related"
+                navigation_result["status"] = "access_issue" if page_inaccessible else "not_job_related"
                 break
 
             elif category == "jobs_related_no_vacancies":
-                navigation_result["status"] = (
-                    "jobs_related_no_vacancies_job_alert"
-                    if navigation_result["job_alert"]
-                    else "jobs_related_no_vacancies"
-                )
+                if page_inaccessible:
+                    navigation_result["status"] = "access_issue"
+                else:
+                    navigation_result["status"] = (
+                        "jobs_related_no_vacancies_job_alert"
+                        if navigation_result["job_alert"]
+                        else "jobs_related_no_vacancies"
+                    )
                 break
 
             elif category == "single_job_posting":
@@ -581,7 +597,7 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
     }
     access_issue_statuses = {
         "navigation_skipped", "navigation_timeout", "navigation_non_web_url",
-        "action_failed", "download_started", "extraction_failed", "ai_analysis_failed",
+        "action_failed", "download_started", "extraction_failed", "ai_analysis_failed", "access_issue",
     }
 
     for result in career_pages_analysis:
@@ -589,6 +605,9 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         source_url = result.get("url") or result.get("navigation_url") or ""
         job_urls = result.get("jobs_listed_on_page") or []
         blocked_platform = result.get("blocked_platform")
+        page_access_status = str(result.get("page_access_status") or "").strip()
+        page_access_issue_detail = result.get("page_access_issue_detail")
+        page_inaccessible = page_access_status in _NON_ACCESSIBLE_PAGE_STATUSES
 
         # Collect job alert pages regardless of which bucket this result falls into
         if result.get("job_alert"):
@@ -628,15 +647,17 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         elif result.get("embedded_jobs_present"):
             embedded_urls.append(source_url)
 
-        elif status == "not_job_related":
-            not_job_related_urls.append(source_url)
-
-        elif status in access_issue_statuses:
+        elif page_inaccessible or status in access_issue_statuses:
             access_issue_urls.append({
                 "url": source_url,
                 "status": status,
+                "page_access_status": page_access_status or None,
                 "error": result.get("error"),
+                "detail": page_access_issue_detail,
             })
+
+        elif status == "not_job_related":
+            not_job_related_urls.append(source_url)
 
         else:
             unknown_urls.append(source_url)
@@ -675,13 +696,35 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         outcome = "embedded_job_board"
         outcome_reason = "Jobs appear to be loaded inside an embedded iframe/widget — not extractable from page text."
 
-    elif not_job_related_urls and not unknown_urls:
+    elif not_job_related_urls and not unknown_urls and not access_issue_urls:
         outcome = "not_job_related"
         outcome_reason = "None of the career URLs contained job or hiring related content."
 
     elif access_issue_urls:
-        outcome = "access_issue"
-        outcome_reason = "One or more career pages could not be accessed (timeout, bot detection, extraction failure)."
+        inaccessible_count = len(access_issue_urls)
+        not_job_related_count = len(not_job_related_urls)
+        if inaccessible_count == len(career_pages_analysis):
+            outcome = "access_issue"
+            outcome_reason = "All discovered career pages had access issues, so job/career status could not be verified."
+        elif all_job_urls or no_vacancy_urls or job_alert_urls:
+            outcome = "jobs_found" if all_job_urls else "career_page_partial_access"
+            base_reason = (
+                f"{len(all_job_urls)} job(s) found across {len(job_found_on_urls)} career page(s)."
+                if all_job_urls
+                else "Career-related result found, but some discovered pages could not be accessed."
+            )
+            outcome_reason = (
+                f"{base_reason} {inaccessible_count} additional page(s) had access issues."
+            )
+        elif not_job_related_count:
+            outcome = "access_issue"
+            outcome_reason = (
+                "No job/career result was confirmed, and some discovered pages could not be accessed, "
+                "so the result cannot be treated as confidently not job related."
+            )
+        else:
+            outcome = "access_issue"
+            outcome_reason = "One or more career pages could not be accessed (timeout, bot detection, extraction failure)."
 
     else:
         outcome = "unknown"

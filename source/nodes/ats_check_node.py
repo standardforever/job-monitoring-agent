@@ -128,6 +128,29 @@ async def detect_ats(
         )
         return result
 
+    if overview.get("outcome") == "access_issue":
+        result = _build_ats_response(
+            {
+                "is_ats": None,
+                "confidence": "uncertain",
+                "detection_method": "skipped_access_issue",
+                "reasoning": "ATS detection could not be verified because the discovered career pages were not accessible.",
+                "ats_provider": None,
+            },
+            checked_urls=[],
+            raw_checks=[],
+        )
+        log_event(
+            logger,
+            "info",
+            "ats_detection_skipped_access_issue main_domain=%s",
+            main_domain,
+            domain=main_domain,
+            agent_index=agent_index,
+            detection_method=result.get("detection_method"),
+        )
+        return result
+
     checked_urls: list[str] = []
     raw_checks: list[dict] = []
 

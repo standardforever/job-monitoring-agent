@@ -66,6 +66,12 @@ If the only "contact" available is an email address and no jobs are listed → u
 **Selector map links:** The `VISIBLE INTERACTIVE LINKS/BUTTONS` section is extracted from the DOM selector map. If page text mentions a navigation link/button but the URL is missing from the markdown, use the matching URL from this section.
 Never pick a `mailto:` link from the selector map as a navigation target.
 
+**Access-first rule:**
+- If the page content clearly shows an access barrier like `403 Forbidden`, `Access denied`, `login required`, CAPTCHA, Cloudflare challenge, or similar, set `page_access_status` to the matching non-accessible value.
+- If `page_access_status` is anything other than `accessible`, then set `page_category` = `not_job_related`.
+- When doing this, make the reasoning explicit that the page could not be properly accessed and that job/career content could not be verified.
+- Still return the correct non-accessible `page_access_status` and `page_access_issue_detail`.
+
 ---
 
 ## JOBS LISTED ON PAGE (when page_category = `jobs_listed`)
