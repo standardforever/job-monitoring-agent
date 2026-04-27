@@ -24,11 +24,11 @@ if __name__ == "__main__":
         "info",
         "uvicorn_start_requested host=%s port=%s reload=%s",
         "127.0.0.1",
-        8111,
+        8110,
         True,
         domain="api",
         host="127.0.0.1",
-        port=8111,
+        port=8110,
         reload=True,
     )
     uvicorn.run("app:app", host="127.0.0.1", port=9999, reload=True)
