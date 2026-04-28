@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 from dataclasses import dataclass
+from threading import Lock
 from urllib.parse import urlparse
 
 import requests
@@ -26,6 +27,8 @@ except Exception:  # pragma: no cover - handled gracefully at runtime
     WebDriver = None
 
 logger = get_logger("grid_session")
+_DRIVER_REGISTRY: dict[str, WebDriver] = {}
+_DRIVER_REGISTRY_LOCK = Lock()
 
 
 @dataclass(slots=True)
@@ -104,6 +107,21 @@ def _get_active_grid_sessions(base_url: str) -> list:
         return []
 
 
+def _register_driver(session_id: str, driver: WebDriver) -> None:
+    with _DRIVER_REGISTRY_LOCK:
+        _DRIVER_REGISTRY[session_id] = driver
+
+
+def _pop_driver(session_id: str) -> WebDriver | None:
+    with _DRIVER_REGISTRY_LOCK:
+        return _DRIVER_REGISTRY.pop(session_id, None)
+
+
+def _get_registered_driver(session_id: str) -> WebDriver | None:
+    with _DRIVER_REGISTRY_LOCK:
+        return _DRIVER_REGISTRY.get(session_id)
+
+
 def _build_stealth_options() -> Options:
     if Options is None:
         raise RuntimeError("selenium is not installed")
@@ -135,6 +153,9 @@ def patch_webdriver_flag(driver: WebDriver) -> None:
 
 def create_session(
     grid_url: str | None = None,
+    *,
+    reuse_existing: bool = False,
+    preferred_session_id: str | None = None,
 ) -> SessionBootstrapResult | None:
     raw_grid = grid_url or os.getenv("SELENIUM_REMOTE_URL") or "http://127.0.0.1:4445/wd/hub"
 
@@ -155,8 +176,18 @@ def create_session(
 
     log_event(logger, "info", "grid_connecting base_url=%s", base_url, domain=base_url, base_url=base_url)
     existing_sessions = _get_active_grid_sessions(base_url)
-    if existing_sessions:
-        reused_session_id = str(existing_sessions[0])
+    if reuse_existing:
+        candidate_session_id = None
+        if preferred_session_id and preferred_session_id in existing_sessions:
+            candidate_session_id = preferred_session_id
+        elif existing_sessions:
+            candidate_session_id = str(existing_sessions[0])
+
+    else:
+        candidate_session_id = None
+
+    if candidate_session_id:
+        reused_session_id = str(candidate_session_id)
         cdp_url = f"{cdp_base}/session/{reused_session_id}/se/cdp"
         log_event(
             logger,
@@ -185,6 +216,7 @@ def create_session(
             options=_build_stealth_options(),
         )
         patch_webdriver_flag(driver)
+        _register_driver(str(driver.session_id), driver)
         cdp_url = f"{cdp_base}/session/{driver.session_id}/se/cdp"
         log_event(
             logger,
@@ -224,9 +256,20 @@ def create_session(
 
 async def create_session_async(
     grid_url: str | None = None,
+    *,
+    reuse_existing: bool = False,
+    preferred_session_id: str | None = None,
 ) -> SessionBootstrapResult | None:
     try:
-        return await asyncio.wait_for(asyncio.to_thread(create_session, grid_url), timeout=45)
+        return await asyncio.wait_for(
+            asyncio.to_thread(
+                create_session,
+                grid_url,
+                reuse_existing=reuse_existing,
+                preferred_session_id=preferred_session_id,
+            ),
+            timeout=45,
+        )
     except asyncio.TimeoutError:
         log_event(
             logger,
@@ -237,6 +280,20 @@ async def create_session_async(
             grid_url=grid_url,
         )
         return None
+
+
+def is_grid_session_active(grid_url: str | None, session_id: str | None) -> bool:
+    if not grid_url or not session_id:
+        return False
+    try:
+        _, base_url, _ = _normalize_grid_url(grid_url)
+    except Exception:
+        return False
+    return str(session_id) in _get_active_grid_sessions(base_url)
+
+
+async def is_grid_session_active_async(grid_url: str | None, session_id: str | None) -> bool:
+    return await asyncio.to_thread(is_grid_session_active, grid_url, session_id)
 
 
 async def attach_playwright_to_cdp(cdp_url: str) -> BrowserSession | None:
@@ -302,3 +359,60 @@ async def close_agent_tab(session: BrowserSession | None) -> None:
             )
     except Exception:
         pass
+
+
+async def close_browser_attachment(session: BrowserSession | None) -> None:
+    if session is None:
+        return
+
+    try:
+        if not session.page.is_closed():
+            await session.page.close()
+    except Exception:
+        pass
+
+    try:
+        await session.browser.close()
+    except Exception:
+        pass
+
+    try:
+        await session.playwright.stop()
+    except Exception:
+        pass
+
+
+def close_shared_session(session_id: str | None) -> None:
+    session_key = str(session_id or "").strip()
+    if not session_key:
+        return
+
+    driver = _pop_driver(session_key)
+    if driver is None:
+        return
+
+    try:
+        driver.quit()
+        log_event(
+            logger,
+            "info",
+            "grid_session_closed session_id=%s",
+            session_key,
+            domain="grid",
+            session_id=session_key,
+        )
+    except Exception as exc:
+        log_event(
+            logger,
+            "warning",
+            "grid_session_close_failed session_id=%s error=%s",
+            session_key,
+            str(exc),
+            domain="grid",
+            session_id=session_key,
+            error=str(exc),
+        )
+
+
+async def close_shared_session_async(session_id: str | None) -> None:
+    await asyncio.to_thread(close_shared_session, session_id)

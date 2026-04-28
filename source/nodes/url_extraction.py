@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import tldextract
 
 from services.carrer_url_extractor import UrlExtractor
+from services.flow_safety import extract_base_domain
 
 from utils.logging import get_logger, log_event
 
@@ -57,6 +58,12 @@ def _normalize_input_target(raw_value: str) -> tuple[str, str]:
     return without_www, with_www
 
 
+def _is_cross_domain_redirect(original_url: str | None, final_url: str | None) -> bool:
+    original_domain = extract_base_domain(original_url)
+    final_domain = extract_base_domain(final_url)
+    return bool(original_domain and final_domain and original_domain != final_domain)
+
+
 async def career_url_extraction_node(navigate_to: str, browser_session: Any) -> dict:
     log_event(
         logger,
@@ -78,7 +85,7 @@ async def career_url_extraction_node(navigate_to: str, browser_session: Any) -> 
 
     # Try without www first, then fall back to with www
     fallback_urls = await extractor.discover_job_urls_from_domain(
-        domain=navigate_to,
+        domain=url_no_www,
         try_common_paths=False,
         extract_from_homepage=True,
     )
@@ -94,7 +101,7 @@ async def career_url_extraction_node(navigate_to: str, browser_session: Any) -> 
             input_url=url_no_www,
         )
         fallback_urls = await extractor.discover_job_urls_from_domain(
-            domain=navigate_to,
+            domain=url_with_www,
             try_common_paths=False,
             extract_from_homepage=True,
         )
@@ -103,6 +110,10 @@ async def career_url_extraction_node(navigate_to: str, browser_session: Any) -> 
 
     fallback_meta = dict(fallback_urls.get("meta_data", {}) or {})
     redirect_detected = bool(fallback_meta.get("redirected"))
+    cross_domain_redirect = _is_cross_domain_redirect(
+        fallback_meta.get("original_url", active_url),
+        fallback_meta.get("final_url", ""),
+    )
 
     if not fallback_urls.get("success"):
         fallback_error = str(fallback_urls.get("error", "") or "Unknown error")
@@ -121,7 +132,7 @@ async def career_url_extraction_node(navigate_to: str, browser_session: Any) -> 
         )
         return return_dict
 
-    elif redirect_detected:
+    elif redirect_detected and cross_domain_redirect:
         return_dict["status"] = "domain_redirected"
         return_dict["error_message"] = (
             f"Domain redirected for {active_url}: "

@@ -1,8 +1,9 @@
 from utils.logging import setup_logger
 from playwright.async_api import Page
 from utils.domain_name_filters import URLFilter
+from services.flow_safety import extract_base_domain
 import tldextract
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 import asyncio
 
 # Import the three search engine nodes — do NOT modify them
@@ -186,12 +187,47 @@ class UrlExtractor:
         ext = tldextract.extract(url)
         return f"{ext.domain}.{ext.suffix}".lower()
 
+    def _normalize_url_for_same_site_compare(self, raw_url: str | None) -> str:
+        parsed = urlparse(str(raw_url or "").strip())
+        scheme = parsed.scheme.lower() or "https"
+        hostname = (parsed.hostname or "").lower().removeprefix("www.")
+        path = parsed.path or "/"
+        if path != "/":
+            path = path.rstrip("/") or "/"
+        normalized = parsed._replace(
+            scheme=scheme,
+            netloc=hostname,
+            path=path,
+            params="",
+            query="",
+            fragment="",
+        )
+        return urlunparse(normalized)
+
+    def _is_same_site_canonical_redirect(self, original_url: str, final_url: str) -> bool:
+        original_domain = self.normalize_domain(urlparse(original_url).netloc.lower())
+        final_domain = self.normalize_domain(urlparse(final_url).netloc.lower())
+        if original_domain != final_domain:
+            return False
+        return (
+            self._normalize_url_for_same_site_compare(original_url)
+            == self._normalize_url_for_same_site_compare(final_url)
+        )
+
+    def _is_same_base_domain(self, original_url: str | None, final_url: str | None) -> bool:
+        original_domain = extract_base_domain(original_url)
+        final_domain = extract_base_domain(final_url)
+        return bool(original_domain and final_domain and original_domain == final_domain)
+
+    def _is_err_aborted(self, exc: Exception) -> bool:
+        return "ERR_ABORTED" in str(exc)
+
     async def _extract_urls_from_page(self, url: str) -> dict:
         logger.debug("Extracting URLs from page", extra={"url": url})
         for i in range(3):
             try:
                 await self._page.goto(url, wait_until="domcontentloaded", timeout=90000)
-                await asyncio.sleep(15 * i)
+                await asyncio.sleep((0.5 * i) + 0.5)
 
                 original_domain = self.normalize_domain(urlparse(url).netloc.lower())
                 final_url       = self._page.url
@@ -216,10 +252,44 @@ class UrlExtractor:
                 break
 
             except Exception as e:
+                current_url = self._page.url if self._page is not None else ""
+                same_site_canonical_redirect = (
+                    current_url and self._is_same_site_canonical_redirect(url, current_url)
+                )
+                same_base_domain_recovery = (
+                    current_url
+                    and self._is_err_aborted(e)
+                    and self._is_same_base_domain(url, current_url)
+                )
+                if same_site_canonical_redirect or same_base_domain_recovery:
+                    original_domain = self.normalize_domain(urlparse(url).netloc.lower())
+                    final_url = current_url
+                    final_domain = self.normalize_domain(urlparse(final_url).netloc.lower())
+                    redirected = original_domain != final_domain
+                    logger.info(
+                        "Recovered from same-site navigation interruption during URL extraction",
+                        extra={
+                            "original_url": url,
+                            "final_url": final_url,
+                            "attempt": i + 1,
+                            "error": str(e),
+                        },
+                    )
+                    await asyncio.sleep((0.5 * i) + 0.5)
+                    resp = await self._extract_urls_from_current_page()
+                    if not resp.get("success"):
+                        raise RuntimeError(
+                            f"(status={resp.get('status')}, body={resp.get('error')})"
+                        )
+                    break
+
                 logger.warning(
                     "Failed to load page for URL extraction",
                     extra={"url": url, "error": str(e), "attempt": i + 1},
                 )
+                if self._is_err_aborted(e) and i < 2:
+                    await asyncio.sleep(float(i + 1) * 0.5)
+                    continue
                 if i == 2:
                     return {
                         "error": str(e),

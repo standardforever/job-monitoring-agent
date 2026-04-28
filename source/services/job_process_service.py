@@ -4,6 +4,7 @@ import asyncio
 import hashlib
 import json
 import re
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
@@ -25,11 +26,31 @@ from nodes.session_bootstrap import bootstrap_browser_node
 from nodes.url_extraction import career_url_extraction_node
 from services.agent_allocator import allocate_urls_to_agents
 from services.flow_safety import extract_domain
-from services.grid_session import close_agent_tab, create_session_async
+from services.grid_session import (
+    attach_playwright_to_cdp,
+    close_agent_tab,
+    close_browser_attachment,
+    close_shared_session_async,
+    create_session_async,
+    is_grid_session_active_async,
+)
+from services.tab_manager import ensure_agent_tab
 from services.mongodb_service import MongoDBService
 from utils.logging import configure_logging, get_logger, log_event
 
 logger = get_logger("job_process_service")
+
+
+@dataclass(slots=True)
+class SharedSessionRuntime:
+    grid_url: str | None
+    session_id: str
+    cdp_url: str
+    recovery_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+
+
+class AgentSessionRecoveryNeeded(Exception):
+    pass
 
 
 class JobProcessService:
@@ -215,7 +236,7 @@ class JobProcessService:
             assignment_count=len(assignments),
         )
 
-        session_info = await create_session_async(grid_url=request.grid_url)
+        session_info = await create_session_async(grid_url=request.grid_url, reuse_existing=True)
         if session_info is None or not session_info.cdp_url:
             error = "Unable to establish shared Selenium/CDP session"
             await self._mongodb_service.update_process_run(
@@ -263,6 +284,12 @@ class JobProcessService:
                 },
             }
 
+        shared_runtime = SharedSessionRuntime(
+            grid_url=request.grid_url,
+            session_id=session_info.session_id,
+            cdp_url=session_info.cdp_url,
+        )
+
         worker_inputs = [
             {
                 "process_id": process_id,
@@ -272,6 +299,7 @@ class JobProcessService:
                 "assigned_urls": assignment["urls"],
                 "session_id": session_info.session_id,
                 "cdp_url": session_info.cdp_url,
+                "shared_runtime": shared_runtime,
                 "metadata": {
                     "ats_check": request.ats_check,
                     "job_monitoring": request.job_monitoring,
@@ -281,7 +309,11 @@ class JobProcessService:
             for assignment in assignments
         ]
 
-        worker_results = await asyncio.gather(*[self._run_agent(worker_input) for worker_input in worker_inputs])
+        try:
+            worker_results = await asyncio.gather(*[self._run_agent(worker_input) for worker_input in worker_inputs])
+        finally:
+            # await close_shared_session_async(shared_runtime.session_id)
+            pass
 
         errors = [error for worker in worker_results for error in worker["errors"]]
         completed_domain_count = sum(
@@ -320,6 +352,7 @@ class JobProcessService:
         client_key = str(graph_input["client_key"])
         client_name = str(graph_input["client_name"])
         agent_index = int(graph_input["agent_index"])
+        shared_runtime: SharedSessionRuntime = graph_input["shared_runtime"]
         browser_session = None
 
         if assigned_urls:
@@ -327,27 +360,54 @@ class JobProcessService:
 
         bootstrap_result = await bootstrap_browser_node(state=graph_input)
         if not bootstrap_result.get("session_established"):
-            errors = list(bootstrap_result.get("errors", []))
-            error_text = "; ".join(errors) or "Agent bootstrap failed"
-            for url in assigned_urls:
-                await self._mongodb_service.mark_url_failed(
-                    process_id,
-                    url,
-                    error_text,
-                    result_payload={"status": "failed", "reason": error_text},
-                    was_running=False,
-                )
-            if assigned_urls:
-                await self._mongodb_service.update_assignment_status(process_id, agent_index, "completed")
-            return WorkerProcessResult(
+            log_event(
+                logger,
+                "warning",
+                "agent_bootstrap_failed_attempting_recovery process_id=%s agent_index=%s",
+                process_id,
+                agent_index,
+                domain=assigned_urls[0] if assigned_urls else client_key,
+                process_id=process_id,
                 agent_index=agent_index,
-                status="failed",
-                assigned_urls=assigned_urls,
-                processed_urls=[],
-                domain_results=[],
-                errors=errors,
-                metadata=dict(bootstrap_result.get("metadata", {})),
-            ).model_dump(mode="json")
+            )
+            try:
+                browser_session, agent_tab = await self._recover_agent_tab(
+                    shared_runtime=shared_runtime,
+                    browser_session=None,
+                    agent_index=agent_index,
+                    url=assigned_urls[0] if assigned_urls else client_key,
+                )
+                bootstrap_metadata = dict(bootstrap_result.get("metadata", {}))
+                bootstrap_metadata["bootstrap_status"] = "recovered"
+                bootstrap_result = {
+                    **bootstrap_result,
+                    "browser_session": browser_session,
+                    "agent_tab": agent_tab,
+                    "session_established": True,
+                    "metadata": bootstrap_metadata,
+                }
+            except Exception as exc:
+                errors = list(bootstrap_result.get("errors", []))
+                error_text = str(exc) or "; ".join(errors) or "Agent bootstrap failed"
+                for url in assigned_urls:
+                    await self._mongodb_service.mark_url_failed(
+                        process_id,
+                        url,
+                        error_text,
+                        result_payload={"status": "failed", "reason": error_text},
+                        was_running=False,
+                    )
+                if assigned_urls:
+                    await self._mongodb_service.update_assignment_status(process_id, agent_index, "completed")
+                return WorkerProcessResult(
+                    agent_index=agent_index,
+                    status="failed",
+                    assigned_urls=assigned_urls,
+                    processed_urls=[],
+                    domain_results=[],
+                    errors=errors + [error_text],
+                    metadata=dict(bootstrap_result.get("metadata", {})),
+                ).model_dump(mode="json")
 
         browser_session = bootstrap_result.get("browser_session")
         agent_tab = bootstrap_result.get("agent_tab", {})
@@ -358,18 +418,65 @@ class JobProcessService:
             processed_urls: list[str] = []
 
             for url in assigned_urls:
-                record = await self._process_domain(
-                    process_id=process_id,
-                    client_key=client_key,
-                    client_name=client_name,
-                    url=url,
-                    browser_session=browser_session,
-                    agent_index=agent_index,
-                    agent_tab=agent_tab,
-                    ats_check=bool((graph_input.get("metadata") or {}).get("ats_check", True)),
-                    job_monitoring=bool((graph_input.get("metadata") or {}).get("job_monitoring", False)),
-                    requested_capability=str((graph_input.get("metadata") or {}).get("requested_capability", "career_page")),
-                )
+                recovery_attempt_count = 0
+                mark_running = True
+                while True:
+                    try:
+                        record = await self._process_domain(
+                            process_id=process_id,
+                            client_key=client_key,
+                            client_name=client_name,
+                            url=url,
+                            browser_session=browser_session,
+                            agent_index=agent_index,
+                            agent_tab=agent_tab,
+                            ats_check=bool((graph_input.get("metadata") or {}).get("ats_check", True)),
+                            job_monitoring=bool((graph_input.get("metadata") or {}).get("job_monitoring", False)),
+                            requested_capability=str((graph_input.get("metadata") or {}).get("requested_capability", "career_page")),
+                            mark_running=mark_running,
+                        )
+                        break
+                    except AgentSessionRecoveryNeeded as exc:
+                        recovery_attempt_count += 1
+                        if recovery_attempt_count > 2:
+                            error_text = str(exc)
+                            record = DomainProcessRecord(
+                                domain=url,
+                                main_domain=extract_domain(url),
+                                status="failed",
+                                error=error_text,
+                            ).model_dump(mode="json")
+                            await self._mongodb_service.mark_url_failed(
+                                process_id,
+                                url,
+                                error_text,
+                                result_payload=record,
+                                was_running=True,
+                            )
+                            log_event(
+                                logger,
+                                "error",
+                                "agent_recovery_exhausted process_id=%s agent_index=%s url=%s error=%s",
+                                process_id,
+                                agent_index,
+                                url,
+                                error_text,
+                                domain=url,
+                                process_id=process_id,
+                                agent_index=agent_index,
+                                url=url,
+                                error=error_text,
+                            )
+                            break
+
+                        browser_session, agent_tab = await self._recover_agent_tab(
+                            shared_runtime=shared_runtime,
+                            browser_session=browser_session,
+                            agent_index=agent_index,
+                            url=url,
+                        )
+                        mark_running = False
+
                 domain_results.append(record)
                 processed_urls.append(url)
                 if record["status"] != "completed" and record.get("error"):
@@ -402,10 +509,12 @@ class JobProcessService:
         ats_check: bool,
         job_monitoring: bool,
         requested_capability: str,
+        mark_running: bool = True,
     ) -> dict[str, Any]:
         domain_key = self._normalize_domain_key(url)
         main_domain = extract_domain(url)
-        await self._mongodb_service.mark_url_running(process_id, url, agent_index)
+        if mark_running:
+            await self._mongodb_service.mark_url_running(process_id, url, agent_index)
 
         existing_domain = await self._mongodb_service.get_domain(domain_key)
         reused_career_discovery = False
@@ -510,6 +619,22 @@ class JobProcessService:
             return record
         except Exception as exc:
             error_text = str(exc)
+            if self._is_recoverable_agent_session_error(error_text):
+                log_event(
+                    logger,
+                    "warning",
+                    "agent_session_recovery_needed process_id=%s agent_index=%s url=%s error=%s",
+                    process_id,
+                    agent_index,
+                    url,
+                    error_text,
+                    domain=url,
+                    process_id=process_id,
+                    agent_index=agent_index,
+                    url=url,
+                    error=error_text,
+                )
+                raise AgentSessionRecoveryNeeded(error_text) from exc
             failed_record = DomainProcessRecord(
                 domain=url,
                 main_domain=main_domain,
@@ -525,9 +650,99 @@ class JobProcessService:
             )
             return failed_record
 
+    async def _recover_agent_tab(
+        self,
+        *,
+        shared_runtime: SharedSessionRuntime,
+        browser_session: Any,
+        agent_index: int,
+        url: str,
+    ) -> tuple[Any, dict[str, Any]]:
+        async with shared_runtime.recovery_lock:
+            original_session_id = shared_runtime.session_id
+            session_active = await is_grid_session_active_async(shared_runtime.grid_url, original_session_id)
+
+            if session_active:
+                target_cdp_url = shared_runtime.cdp_url
+                log_event(
+                    logger,
+                    "info",
+                    "agent_tab_recovery_reusing_shared_session agent_index=%s session_id=%s url=%s",
+                    agent_index,
+                    original_session_id,
+                    url,
+                    domain=url,
+                    agent_index=agent_index,
+                    session_id=original_session_id,
+                    url=url,
+                )
+            else:
+                replacement = await create_session_async(
+                    grid_url=shared_runtime.grid_url,
+                    reuse_existing=False,
+                )
+                if replacement is None or not replacement.cdp_url:
+                    raise RuntimeError("Shared browser session is unavailable and could not be recreated")
+
+                await close_shared_session_async(original_session_id)
+                shared_runtime.session_id = replacement.session_id
+                shared_runtime.cdp_url = replacement.cdp_url
+                target_cdp_url = replacement.cdp_url
+                log_event(
+                    logger,
+                    "warning",
+                    "shared_session_recreated_for_agent_recovery agent_index=%s old_session_id=%s new_session_id=%s url=%s",
+                    agent_index,
+                    original_session_id,
+                    replacement.session_id,
+                    url,
+                    domain=url,
+                    agent_index=agent_index,
+                    old_session_id=original_session_id,
+                    new_session_id=replacement.session_id,
+                    url=url,
+                )
+
+        await close_browser_attachment(browser_session)
+        rebuilt_session = await attach_playwright_to_cdp(shared_runtime.cdp_url)
+        if rebuilt_session is None:
+            raise RuntimeError("Failed to reattach Playwright during agent recovery")
+
+        rebuilt_tab = await ensure_agent_tab(rebuilt_session, agent_index=agent_index)
+        log_event(
+            logger,
+            "info",
+            "agent_tab_recovery_completed agent_index=%s session_id=%s url=%s",
+            agent_index,
+            shared_runtime.session_id,
+            url,
+            domain=url,
+            agent_index=agent_index,
+            session_id=shared_runtime.session_id,
+            url=url,
+        )
+        return rebuilt_session, rebuilt_tab
+
     def _build_client_key(self, client_name: str) -> str:
         normalized = re.sub(r"[^a-z0-9]+", "_", client_name.strip().lower()).strip("_")
         return normalized or "default_client"
+
+    def _is_recoverable_agent_session_error(self, error_text: str) -> bool:
+        normalized = str(error_text or "").lower()
+        return any(
+            signature in normalized
+            for signature in (
+                "connection closed while reading from the driver",
+                "target page, context or browser has been closed",
+                "browser has been closed",
+                "page has been closed",
+                "context closed",
+                "session closed",
+                "cdp session closed",
+                "websocket closed",
+                "closed while reading from the driver",
+            )
+        )
 
     def _normalize_domain_key(self, raw_value: str) -> str:
         extracted = extract_domain(raw_value)
