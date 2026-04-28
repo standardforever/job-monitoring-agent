@@ -205,6 +205,9 @@ class JobProcessService:
     async def get_process(self, process_id: str) -> dict[str, Any] | None:
         return await self._mongodb_service.get_process_run_with_items(process_id)
 
+    async def list_processes(self, limit: int = 100) -> list[dict[str, Any]]:
+        return await self._mongodb_service.list_all_process_runs(limit=limit)
+
     async def get_client_overview(self, client_name: str) -> dict[str, Any]:
         client_key = self._build_client_key(client_name)
         subscriptions = await self._mongodb_service.get_client_domains(client_key)

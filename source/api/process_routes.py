@@ -223,6 +223,23 @@ async def create_process(
     }
 
 
+@router.get("/processes")
+async def list_processes(limit: int = 100) -> dict[str, Any]:
+    log_event(
+        logger,
+        "info",
+        "process_list_requested limit=%s",
+        limit,
+        domain="api",
+        limit=limit,
+    )
+    processes = await job_process_service.list_processes(limit=limit)
+    return {
+        "count": len(processes),
+        "processes": processes,
+    }
+
+
 @router.post("/processes/upload")
 async def create_process_from_file(
     background_tasks: BackgroundTasks,

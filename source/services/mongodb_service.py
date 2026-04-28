@@ -227,6 +227,18 @@ class MongoDBService:
         )
         return list(cursor)
 
+    async def list_all_process_runs(self, limit: int = 100) -> list[dict[str, Any]]:
+        return await asyncio.to_thread(self._list_all_process_runs_sync, limit)
+
+    def _list_all_process_runs_sync(self, limit: int) -> list[dict[str, Any]]:
+        cursor = (
+            self._get_collection("process_runs")
+            .find({}, {"_id": 0})
+            .sort("created_at", -1)
+            .limit(limit)
+        )
+        return list(cursor)
+
     async def get_client_domains(self, client_key: str) -> list[dict[str, Any]]:
         return await asyncio.to_thread(self._get_client_domains_sync, client_key)
 
