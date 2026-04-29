@@ -93,6 +93,17 @@ class MongoDBService:
     def _get_client_sync(self, client_key: str) -> dict[str, Any] | None:
         return self._get_collection("clients").find_one({"client_key": client_key}, {"_id": 0})
 
+    async def list_clients(self) -> list[dict[str, Any]]:
+        return await asyncio.to_thread(self._list_clients_sync)
+
+    def _list_clients_sync(self) -> list[dict[str, Any]]:
+        cursor = (
+            self._get_collection("clients")
+            .find({}, {"_id": 0})
+            .sort("updated_at", -1)
+        )
+        return list(cursor)
+
     async def upsert_client_configuration(
         self,
         *,
@@ -365,17 +376,33 @@ class MongoDBService:
         run["items"] = items
         return run
 
-    async def list_process_runs_for_client(self, client_key: str, limit: int = 50) -> list[dict[str, Any]]:
-        return await asyncio.to_thread(self._list_process_runs_for_client_sync, client_key, limit)
+    async def list_process_runs_for_client(
+        self,
+        client_key: str,
+        *,
+        page: int = 1,
+        page_size: int = 50,
+    ) -> tuple[list[dict[str, Any]], int]:
+        return await asyncio.to_thread(self._list_process_runs_for_client_sync, client_key, page, page_size)
 
-    def _list_process_runs_for_client_sync(self, client_key: str, limit: int) -> list[dict[str, Any]]:
+    def _list_process_runs_for_client_sync(
+        self,
+        client_key: str,
+        page: int,
+        page_size: int,
+    ) -> tuple[list[dict[str, Any]], int]:
+        normalized_page = max(1, int(page or 1))
+        normalized_page_size = max(1, min(int(page_size or 50), 200))
+        skip = (normalized_page - 1) * normalized_page_size
+        total = self._get_collection("process_runs").count_documents({"client_key": client_key})
         cursor = (
             self._get_collection("process_runs")
             .find({"client_key": client_key}, {"_id": 0})
             .sort("created_at", -1)
-            .limit(limit)
+            .skip(skip)
+            .limit(normalized_page_size)
         )
-        return list(cursor)
+        return list(cursor), total
 
     async def list_all_process_runs(self, limit: int = 100) -> list[dict[str, Any]]:
         return await asyncio.to_thread(self._list_all_process_runs_sync, limit)
@@ -422,6 +449,22 @@ class MongoDBService:
                 }
             },
         )
+
+    async def mark_process_stop_requested(self, process_id: str) -> dict[str, Any] | None:
+        return await asyncio.to_thread(self._mark_process_stop_requested_sync, process_id)
+
+    def _mark_process_stop_requested_sync(self, process_id: str) -> dict[str, Any] | None:
+        now = datetime.utcnow()
+        self._get_collection("process_runs").update_one(
+            {"process_id": process_id, "status": {"$in": ["queued", "running", "stop_requested"]}},
+            {
+                "$set": {
+                    "status": "stop_requested",
+                    "updated_at": now,
+                }
+            },
+        )
+        return self._get_process_run_sync(process_id)
 
     async def update_process_run_item(
         self,
@@ -577,6 +620,79 @@ class MongoDBService:
                 }
             },
         )
+
+    async def mark_urls_stopped(
+        self,
+        process_id: str,
+        urls: list[str],
+        *,
+        agent_index: int | None = None,
+        reason: str = "Process stop requested.",
+    ) -> None:
+        if not urls:
+            return
+        await asyncio.to_thread(self._mark_urls_stopped_sync, process_id, urls, agent_index, reason)
+
+    def _mark_urls_stopped_sync(
+        self,
+        process_id: str,
+        urls: list[str],
+        agent_index: int | None,
+        reason: str,
+    ) -> None:
+        now = datetime.utcnow()
+        run = self._get_process_run_sync(process_id) or {}
+        queued_urls = set(run.get("queued_urls") or [])
+        running_urls = set(run.get("running_urls") or [])
+        target_urls = [url for url in urls if url in queued_urls or url in running_urls]
+        if not target_urls:
+            return
+
+        queued_count = sum(1 for url in target_urls if url in queued_urls)
+        running_count = sum(1 for url in target_urls if url in running_urls)
+        inc_fields: dict[str, int] = {"summary.stopped_url_count": len(target_urls)}
+        if queued_count:
+            inc_fields["summary.queued_url_count"] = -queued_count
+        if running_count:
+            inc_fields["summary.running_url_count"] = -running_count
+
+        self._get_collection("process_runs").update_one(
+            {"process_id": process_id},
+            {
+                "$pull": {"queued_urls": {"$in": target_urls}, "running_urls": {"$in": target_urls}},
+                "$addToSet": {"stopped_urls": {"$each": target_urls}},
+                "$inc": inc_fields,
+                "$set": {"updated_at": now},
+            },
+        )
+        item_updates: dict[str, Any] = {
+            "status": "stopped",
+            "error": reason,
+            "completed_at": now,
+            "updated_at": now,
+        }
+        if agent_index is not None:
+            item_updates["agent_index"] = agent_index
+        self._get_collection("process_run_items").update_many(
+            {
+                "process_id": process_id,
+                "raw_url": {"$in": target_urls},
+                "status": {"$in": ["queued", "running", "stop_requested"]},
+            },
+            {"$set": item_updates},
+        )
+
+    async def list_client_jobs_for_process(self, process_id: str, limit: int = 500) -> list[dict[str, Any]]:
+        return await asyncio.to_thread(self._list_client_jobs_for_process_sync, process_id, limit)
+
+    def _list_client_jobs_for_process_sync(self, process_id: str, limit: int) -> list[dict[str, Any]]:
+        cursor = (
+            self._get_collection("client_jobs")
+            .find({"process_id": process_id}, {"_id": 0})
+            .sort("updated_at", -1)
+            .limit(limit)
+        )
+        return list(cursor)
 
     async def get_domain(self, domain_key: str) -> dict[str, Any] | None:
         return await asyncio.to_thread(self._get_domain_sync, domain_key)

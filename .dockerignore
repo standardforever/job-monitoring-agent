@@ -1,0 +1,12 @@
+.git
+.gitignore
+my-env
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+logs
+chrome-profile
+mongo-data
+*.log

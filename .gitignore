@@ -209,3 +209,5 @@ __marimo__/
 my-env/
 logs/
 test/
+chrome-profile/
+mongo-data/.DS_Store

@@ -66,6 +66,7 @@ class JobProcessService:
         self._mongodb_service = mongodb_service or MongoDBService()
         self._job_extraction_service = JobExtractionService(self._mongodb_service)
         self._settings = get_settings()
+        self._stop_requests: set[str] = set()
         log_event(logger, "info", "job_process_service_initialized", domain="service")
 
     async def submit_process(self, request: JobProcessRequest) -> dict[str, Any]:
@@ -113,6 +114,7 @@ class JobProcessService:
                 "failed_domain_count": 0,
                 "queued_url_count": len(request.urls),
                 "running_url_count": 0,
+                "stopped_url_count": 0,
             },
             created_at=now,
             updated_at=now,
@@ -211,6 +213,7 @@ class JobProcessService:
             )
             raise
         finally:
+            self._stop_requests.discard(process_id)
             reset_openai_runtime_config(runtime_tokens)
 
         await self._mongodb_service.update_process_run(
@@ -237,7 +240,7 @@ class JobProcessService:
         client_key = self._build_client_key(client_name)
         validation = await validate_openai_api_key(api_key=api_key, model=model)
         if not validation.active:
-            raise ValueError(f"Client API key validation failed: {validation.error}")
+            raise ValueError(validation.user_message or "The OpenAI API key could not be validated.")
 
         client = await self._mongodb_service.upsert_client_configuration(
             client_key=client_key,
@@ -269,7 +272,7 @@ class JobProcessService:
 
         validation = await validate_openai_api_key(api_key=final_api_key, model=final_model)
         if not validation.active:
-            raise ValueError(f"Client API key validation failed: {validation.error}")
+            raise ValueError(validation.user_message or "The OpenAI API key could not be validated.")
 
         updated = await self._mongodb_service.update_client_configuration(
             current_client_key=current_client["client_key"],
@@ -289,14 +292,43 @@ class JobProcessService:
         client = await self._require_client(client_name)
         return self._sanitize_client_document(client)
 
-    async def list_processes(self, limit: int = 100) -> list[dict[str, Any]]:
-        return await self._mongodb_service.list_all_process_runs(limit=limit)
+    async def list_clients(self) -> dict[str, Any]:
+        clients = await self._mongodb_service.list_clients()
+        return {
+            "count": len(clients),
+            "clients": [self._sanitize_client_document(client) for client in clients],
+        }
+
+    async def list_processes(
+        self,
+        client_name: str,
+        *,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> dict[str, Any]:
+        client = await self._require_client(client_name)
+        processes, total = await self._mongodb_service.list_process_runs_for_client(
+            client["client_key"],
+            page=page,
+            page_size=page_size,
+        )
+        return {
+            "client_key": client["client_key"],
+            "client_name": client["client_name"],
+            "count": len(processes),
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "has_next": page * page_size < total,
+            "has_previous": page > 1,
+            "processes": processes,
+        }
 
     async def get_client_overview(self, client_name: str) -> dict[str, Any]:
         client = await self._require_client(client_name)
         client_key = client["client_key"]
         subscriptions = await self._mongodb_service.get_client_domains(client_key)
-        runs = await self._mongodb_service.list_process_runs_for_client(client_key)
+        runs, _ = await self._mongodb_service.list_process_runs_for_client(client_key)
         return {
             "client_key": client_key,
             "client_name": client["client_name"],
@@ -313,6 +345,40 @@ class JobProcessService:
             "client_name": client["client_name"],
             "count": len(jobs),
             "jobs": jobs,
+        }
+
+    async def get_process_jobs(self, process_id: str, limit: int = 500) -> dict[str, Any]:
+        process = await self._mongodb_service.get_process_run(process_id)
+        if process is None:
+            raise ValueError("Process not found")
+        jobs = await self._mongodb_service.list_client_jobs_for_process(process_id, limit=limit)
+        return {
+            "process_id": process_id,
+            "client_key": process.get("client_key"),
+            "client_name": process.get("client_name"),
+            "count": len(jobs),
+            "jobs": jobs,
+        }
+
+    async def stop_process(self, process_id: str) -> dict[str, Any]:
+        process = await self._mongodb_service.get_process_run(process_id)
+        if process is None:
+            raise ValueError("Process not found")
+
+        current_status = str(process.get("status") or "")
+        if current_status in {"completed", "failed", "stopped"}:
+            return {
+                "process_id": process_id,
+                "status": current_status,
+                "message": f"Process is already {current_status}.",
+            }
+
+        self._stop_requests.add(process_id)
+        updated = await self._mongodb_service.mark_process_stop_requested(process_id)
+        return {
+            "process_id": process_id,
+            "status": str((updated or process).get("status") or "stop_requested"),
+            "message": "Stop requested. Running work will stop after the current URL finishes.",
         }
 
     async def _execute_process(
@@ -353,6 +419,7 @@ class JobProcessService:
                         "failed_domain_count": len(request.urls),
                         "queued_url_count": 0,
                         "running_url_count": 0,
+                        "stopped_url_count": 0,
                     },
                     "queued_urls": [],
                     "failed_urls": list(request.urls),
@@ -381,6 +448,7 @@ class JobProcessService:
                     "failed_domain_count": len(request.urls),
                     "queued_url_count": 0,
                     "running_url_count": 0,
+                    "stopped_url_count": 0,
                 },
             }
 
@@ -429,8 +497,12 @@ class JobProcessService:
             for record in worker["domain_results"]
             if record["status"] != "completed"
         )
-        status = "completed" if not errors else "failed"
+        stop_requested = self._is_stop_requested(process_id)
+        status = "stopped" if stop_requested else ("completed" if not errors else "failed")
+        process_run = await self._mongodb_service.get_process_run(process_id)
+        self._stop_requests.discard(process_id)
 
+        persisted_summary = dict((process_run or {}).get("summary") or {})
         return {
             "process_id": process_id,
             "status": status,
@@ -439,11 +511,12 @@ class JobProcessService:
             "summary": {
                 "total_urls": len(request.urls),
                 "assigned_agent_count": request.agent_count,
-                "processed_url_count": sum(len(worker["processed_urls"]) for worker in worker_results),
-                "completed_domain_count": completed_domain_count,
-                "failed_domain_count": failed_domain_count,
-                "queued_url_count": 0,
-                "running_url_count": 0,
+                "processed_url_count": int(persisted_summary.get("processed_url_count", completed_domain_count + failed_domain_count)),
+                "completed_domain_count": int(persisted_summary.get("completed_domain_count", completed_domain_count)),
+                "failed_domain_count": int(persisted_summary.get("failed_domain_count", failed_domain_count)),
+                "queued_url_count": int(persisted_summary.get("queued_url_count", 0)),
+                "running_url_count": int(persisted_summary.get("running_url_count", 0)),
+                "stopped_url_count": int(persisted_summary.get("stopped_url_count", 0)),
             },
         }
 
@@ -458,6 +531,17 @@ class JobProcessService:
 
         if assigned_urls:
             await self._mongodb_service.update_assignment_status(process_id, agent_index, "running")
+        if self._is_stop_requested(process_id):
+            await self._stop_remaining_agent_urls(process_id, agent_index, assigned_urls)
+            return WorkerProcessResult(
+                agent_index=agent_index,
+                status="stopped",
+                assigned_urls=assigned_urls,
+                processed_urls=[],
+                domain_results=[],
+                errors=[],
+                metadata={"stop_requested": True},
+            ).model_dump(mode="json")
 
         bootstrap_result = await bootstrap_browser_node(state=graph_input)
         if not bootstrap_result.get("session_established"):
@@ -519,6 +603,10 @@ class JobProcessService:
             processed_urls: list[str] = []
 
             for url in assigned_urls:
+                if self._is_stop_requested(process_id):
+                    remaining_urls = [pending_url for pending_url in assigned_urls if pending_url not in processed_urls]
+                    await self._stop_remaining_agent_urls(process_id, agent_index, remaining_urls)
+                    break
                 recovery_attempt_count = 0
                 mark_running = True
                 while True:
@@ -586,7 +674,7 @@ class JobProcessService:
 
             return WorkerProcessResult(
                 agent_index=agent_index,
-                status="completed" if not errors else "failed",
+                status="stopped" if self._is_stop_requested(process_id) else ("completed" if not errors else "failed"),
                 assigned_urls=assigned_urls,
                 processed_urls=processed_urls,
                 domain_results=[DomainProcessRecord(**record) for record in domain_results],
@@ -595,7 +683,8 @@ class JobProcessService:
             ).model_dump(mode="json")
         finally:
             if assigned_urls:
-                await self._mongodb_service.update_assignment_status(process_id, agent_index, "completed")
+                assignment_status = "stopped" if self._is_stop_requested(process_id) else "completed"
+                await self._mongodb_service.update_assignment_status(process_id, agent_index, assignment_status)
             await close_agent_tab(browser_session)
 
     async def _process_domain(
@@ -863,6 +952,22 @@ class JobProcessService:
     def _build_client_key(self, client_name: str) -> str:
         normalized = re.sub(r"[^a-z0-9]+", "_", client_name.strip().lower()).strip("_")
         return normalized or "default_client"
+
+    def _is_stop_requested(self, process_id: str) -> bool:
+        return process_id in self._stop_requests
+
+    async def _stop_remaining_agent_urls(
+        self,
+        process_id: str,
+        agent_index: int,
+        urls: list[str],
+    ) -> None:
+        await self._mongodb_service.mark_urls_stopped(
+            process_id,
+            urls,
+            agent_index=agent_index,
+            reason="Process stop requested.",
+        )
 
     async def _require_client(self, client_name: str) -> dict[str, Any]:
         client_key = self._build_client_key(client_name)

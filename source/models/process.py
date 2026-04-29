@@ -6,7 +6,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
-ProcessStatus = Literal["queued", "running", "completed", "failed"]
+ProcessStatus = Literal["queued", "running", "completed", "failed", "stop_requested", "stopped"]
 RequestedCapability = Literal["career_page", "ats_check", "job_extract", "ats_and_job_extract", "job_monitoring"]
 
 
@@ -109,6 +109,7 @@ class ProcessRunDocument(BaseModel):
     running_urls: list[str] = Field(default_factory=list)
     completed_urls: list[str] = Field(default_factory=list)
     failed_urls: list[str] = Field(default_factory=list)
+    stopped_urls: list[str] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
     summary: dict[str, Any] = Field(default_factory=dict)
     metadata: dict[str, Any] = Field(default_factory=dict)

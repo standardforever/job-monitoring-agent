@@ -33,6 +33,7 @@ load_environment()
 @dataclass(slots=True)
 class Settings:
     selenium_remote_url: str = os.getenv("SELENIUM_REMOTE_URL", "http://127.0.0.1:4445/wd/hub")
+    client_registration_password: str = os.getenv("CLIENT_REGISTRATION_PASSWORD", "")
     default_agent_count: int = int(os.getenv("DEFAULT_AGENT_COUNT", "1"))
     post_navigation_delay_ms: int = int(os.getenv("POST_NAVIGATION_DELAY_MS", "5000"))
     mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://admin:secret@127.0.0.1:27017")

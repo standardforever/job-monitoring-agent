@@ -22,6 +22,7 @@ SourceType = Literal["job_url", "embedded_page"]
 class JobExtractionSource:
     source_type: SourceType
     source_url: str
+    navigate_allowed: bool = True
     page_fingerprint: str | None = None
     extracted_markdown: str | None = None
     page_title: str | None = None
@@ -127,6 +128,23 @@ class JobExtractionService:
                     source_summary["reused"] = True
                     source_summary["strategy"] = cached_extraction.get("extraction_strategy")
                     reused_source_count += 1
+                elif not source.navigate_allowed:
+                    jobs = [self._build_link_only_job_record(source)]
+                    source_summary["status"] = "linked_only"
+                    source_summary["job_count"] = len(jobs)
+                    source_summary["strategy"] = "link_only"
+                    skipped_source_count += 1
+                    await self._mongodb_service.upsert_job_extraction_cache(
+                        cache_key,
+                        {
+                            "domain_key": domain_key,
+                            "source_type": source.source_type,
+                            "source_url": source.source_url,
+                            "page_fingerprint": source.page_fingerprint,
+                            "extraction_strategy": "link_only",
+                            "jobs": jobs,
+                        },
+                    )
                 else:
                     extracted_markdown, page_url, page_fingerprint = await self._prepare_source_content(
                         source=source,
@@ -255,13 +273,19 @@ class JobExtractionService:
 
         for job_url in overview.get("job_urls") or []:
             normalized_job_url = str(job_url or "").strip()
-            if not normalized_job_url or not is_web_navigation_url(normalized_job_url) or has_skip_extension(normalized_job_url):
+            if not normalized_job_url:
                 continue
             marker = ("job_url", normalized_job_url, None)
             if marker in seen:
                 continue
             seen.add(marker)
-            sources.append(JobExtractionSource(source_type="job_url", source_url=normalized_job_url))
+            sources.append(
+                JobExtractionSource(
+                    source_type="job_url",
+                    source_url=normalized_job_url,
+                    navigate_allowed=is_web_navigation_url(normalized_job_url) and not has_skip_extension(normalized_job_url),
+                )
+            )
 
         for page in analysis_pages:
             if not page.get("embedded_jobs_present"):
@@ -336,6 +360,75 @@ class JobExtractionService:
         normalized_job["source_url"] = source.source_url
         normalized_job["source_type"] = source.source_type
         return normalized_job
+
+    def _build_link_only_job_record(self, source: JobExtractionSource) -> dict[str, Any]:
+        return {
+            "title": None,
+            "company_name": None,
+            "is_job_page": True,
+            "confidence_reason": None,
+            "holiday": None,
+            "location": {
+                "address": None,
+                "city": None,
+                "region": None,
+                "postcode": None,
+                "country": None,
+            },
+            "salary": {
+                "min": None,
+                "max": None,
+                "currency": None,
+                "period": None,
+                "actual_salary": None,
+                "raw_text_salary": None,
+            },
+            "job_type": None,
+            "contract_type": None,
+            "remote_option": None,
+            "hours": {
+                "weekly": None,
+                "daily": None,
+                "details": None,
+            },
+            "closing_date": {
+                "iso_format": None,
+                "raw_text": None,
+            },
+            "interview_date": {
+                "iso_format": None,
+                "raw_text": None,
+            },
+            "start_date": {
+                "iso_format": None,
+                "raw_text": None,
+            },
+            "post_date": {
+                "iso_format": None,
+                "raw_text": None,
+            },
+            "contact": {
+                "name": None,
+                "email": None,
+                "phone": None,
+            },
+            "job_reference": None,
+            "description": None,
+            "responsibilities": [],
+            "requirements": [],
+            "benefits": [],
+            "company_info": None,
+            "how_to_apply": None,
+            "application_method": {
+                "type": None,
+                "url": None,
+                "email": None,
+                "instructions": None,
+            },
+            "additional_sections": {},
+            "source_url": source.source_url,
+            "source_type": source.source_type,
+        }
 
     def _build_cache_key(self, source: JobExtractionSource) -> str:
         if source.source_type == "embedded_page":

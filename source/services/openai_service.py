@@ -31,6 +31,7 @@ class APIKeyValidationResult:
     active: bool
     model: str
     error: str = ""
+    user_message: str = ""
 
 
 def set_openai_runtime_config(
@@ -73,7 +74,7 @@ def _validate_openai_api_key_sync(api_key: str, model: str) -> APIKeyValidationR
         client.responses.create(
             model=model,
             input="ping",
-            max_output_tokens=1,
+            max_output_tokens=16,
         )
         log_event(
             logger,
@@ -86,6 +87,7 @@ def _validate_openai_api_key_sync(api_key: str, model: str) -> APIKeyValidationR
         return APIKeyValidationResult(active=True, model=model)
     except Exception as exc:
         error = str(exc)
+        user_message = _summarize_api_key_validation_error(error)
         log_event(
             logger,
             "warning",
@@ -96,7 +98,22 @@ def _validate_openai_api_key_sync(api_key: str, model: str) -> APIKeyValidationR
             model=model,
             error=error,
         )
-        return APIKeyValidationResult(active=False, model=model, error=error)
+        return APIKeyValidationResult(active=False, model=model, error=error, user_message=user_message)
+
+
+def _summarize_api_key_validation_error(error: str) -> str:
+    normalized = str(error or "").lower()
+    if "invalid_api_key" in normalized or "incorrect api key" in normalized:
+        return "The OpenAI API key is invalid. Please check the key and try again."
+    if "insufficient_quota" in normalized or "quota" in normalized:
+        return "The OpenAI account does not have enough quota to use this model right now."
+    if "model_not_found" in normalized or "does not exist" in normalized:
+        return "The selected model is not available for this API key."
+    if "organization" in normalized and "not found" in normalized:
+        return "The API key could not be used because the associated organization settings are invalid."
+    if "rate limit" in normalized or "429" in normalized:
+        return "OpenAI rate-limited the validation request. Please wait a moment and try again."
+    return "The OpenAI API key could not be validated. Please confirm the key and model, then try again."
 
 
 class OpenAIAnalysisService:

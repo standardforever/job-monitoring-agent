@@ -1,6 +1,28 @@
 version: "3.8"
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8110:8110"
+    volumes:
+      - .:/app
+    env_file:
+      - ./source/.env
+    environment:
+      - SELENIUM_REMOTE_URL=http://chrome:4444/wd/hub
+      - MONGODB_URI=mongodb://admin:secret@mongo:27017
+      - BROWSER_USE_API_KEY="bu_-9bBL4GohKql0HukZE9izOTupsG9NICY40PiuT-3t5c"
+      - BROWSERLESS_API_TOKEN=2TRSGRot5XY5T1M23f6a441b569018ae4d8e62df9e15b247e
+      - CLIENT_REGISTRATION_PASSWORD=password_change
+
+    depends_on:
+      - chrome
+      - mongo
+    restart: unless-stopped
+
   chrome:
     # image: selenium/standalone-chrome:latest # Production
     image: selenium/standalone-chromium:latest # Development
@@ -26,7 +48,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
     volumes:
-      - mongo-data:/data/db
+      - ./mongo-data:/data/db
     restart: unless-stopped
 
   mongo-express:
