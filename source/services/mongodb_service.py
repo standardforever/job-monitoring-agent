@@ -25,6 +25,9 @@ class MongoDBService:
             "process_runs": settings.mongodb_process_runs_collection,
             "process_run_items": settings.mongodb_process_run_items_collection,
             "domain_checks": settings.mongodb_domain_checks_collection,
+            "jobs": settings.mongodb_jobs_collection,
+            "client_jobs": settings.mongodb_client_jobs_collection,
+            "job_extraction_cache": settings.mongodb_job_extraction_cache_collection,
         }
         self._client: MongoClient | None = None
         self._database = None
@@ -84,6 +87,149 @@ class MongoDBService:
             upsert=True,
         )
 
+    async def get_client(self, client_key: str) -> dict[str, Any] | None:
+        return await asyncio.to_thread(self._get_client_sync, client_key)
+
+    def _get_client_sync(self, client_key: str) -> dict[str, Any] | None:
+        return self._get_collection("clients").find_one({"client_key": client_key}, {"_id": 0})
+
+    async def upsert_client_configuration(
+        self,
+        *,
+        client_key: str,
+        client_name: str,
+        api_key: str,
+        model: str,
+        grid_url: str | None,
+        api_key_status: str,
+        api_key_validation_error: str | None,
+    ) -> dict[str, Any]:
+        return await asyncio.to_thread(
+            self._upsert_client_configuration_sync,
+            client_key,
+            client_name,
+            api_key,
+            model,
+            grid_url,
+            api_key_status,
+            api_key_validation_error,
+        )
+
+    def _upsert_client_configuration_sync(
+        self,
+        client_key: str,
+        client_name: str,
+        api_key: str,
+        model: str,
+        grid_url: str | None,
+        api_key_status: str,
+        api_key_validation_error: str | None,
+    ) -> dict[str, Any]:
+        now = datetime.utcnow()
+        self._get_collection("clients").update_one(
+            {"client_key": client_key},
+            {
+                "$set": {
+                    "client_name": client_name,
+                    "api_key": api_key,
+                    "model": model,
+                    "grid_url": grid_url,
+                    "api_key_status": api_key_status,
+                    "api_key_last_validated_at": now,
+                    "api_key_validation_error": api_key_validation_error,
+                    "updated_at": now,
+                },
+                "$setOnInsert": {
+                    "client_key": client_key,
+                    "created_at": now,
+                },
+            },
+            upsert=True,
+        )
+        return self._get_client_sync(client_key) or {}
+
+    async def update_client_configuration(
+        self,
+        *,
+        current_client_key: str,
+        new_client_key: str,
+        client_name: str,
+        api_key: str,
+        model: str,
+        grid_url: str | None,
+        api_key_status: str,
+        api_key_validation_error: str | None,
+    ) -> dict[str, Any] | None:
+        return await asyncio.to_thread(
+            self._update_client_configuration_sync,
+            current_client_key,
+            new_client_key,
+            client_name,
+            api_key,
+            model,
+            grid_url,
+            api_key_status,
+            api_key_validation_error,
+        )
+
+    def _update_client_configuration_sync(
+        self,
+        current_client_key: str,
+        new_client_key: str,
+        client_name: str,
+        api_key: str,
+        model: str,
+        grid_url: str | None,
+        api_key_status: str,
+        api_key_validation_error: str | None,
+    ) -> dict[str, Any] | None:
+        existing = self._get_client_sync(current_client_key)
+        if existing is None:
+            return None
+
+        now = datetime.utcnow()
+        self._get_collection("clients").update_one(
+            {"client_key": current_client_key},
+            {
+                "$set": {
+                    "client_key": new_client_key,
+                    "client_name": client_name,
+                    "api_key": api_key,
+                    "model": model,
+                    "grid_url": grid_url,
+                    "api_key_status": api_key_status,
+                    "api_key_last_validated_at": now,
+                    "api_key_validation_error": api_key_validation_error,
+                    "updated_at": now,
+                },
+            },
+        )
+
+        if new_client_key != current_client_key:
+            rename_filter = {"client_key": current_client_key}
+            rename_update = {"$set": {"client_key": new_client_key, "client_name": client_name}}
+            self._get_collection("client_domains").update_many(rename_filter, rename_update)
+            self._get_collection("process_runs").update_many(
+                rename_filter,
+                {"$set": {"client_key": new_client_key, "client_name": client_name, "request.client_name": client_name}},
+            )
+            self._get_collection("process_run_items").update_many(rename_filter, rename_update)
+            self._get_collection("domain_checks").update_many(rename_filter, rename_update)
+            self._get_collection("client_jobs").update_many(rename_filter, rename_update)
+        else:
+            rename_filter = {"client_key": current_client_key}
+            rename_update = {"$set": {"client_name": client_name}}
+            self._get_collection("client_domains").update_many(rename_filter, rename_update)
+            self._get_collection("process_runs").update_many(
+                rename_filter,
+                {"$set": {"client_name": client_name, "request.client_name": client_name}},
+            )
+            self._get_collection("process_run_items").update_many(rename_filter, rename_update)
+            self._get_collection("domain_checks").update_many(rename_filter, rename_update)
+            self._get_collection("client_jobs").update_many(rename_filter, rename_update)
+
+        return self._get_client_sync(new_client_key)
+
     async def upsert_client_domain(
         self,
         client_key: str,
@@ -91,6 +237,7 @@ class MongoDBService:
         domain_key: str,
         requested_capability: RequestedCapability,
         ats_check: bool,
+        job_extract: bool,
         job_monitoring: bool,
     ) -> None:
         await asyncio.to_thread(
@@ -100,6 +247,7 @@ class MongoDBService:
             domain_key,
             requested_capability,
             ats_check,
+            job_extract,
             job_monitoring,
         )
 
@@ -110,6 +258,7 @@ class MongoDBService:
         domain_key: str,
         requested_capability: RequestedCapability,
         ats_check: bool,
+        job_extract: bool,
         job_monitoring: bool,
     ) -> None:
         now = datetime.utcnow()
@@ -132,6 +281,7 @@ class MongoDBService:
                     "client_name": client_name,
                     "requested_capability": requested_capability,
                     "ats_check": ats_check,
+                    "job_extract": job_extract,
                     "job_monitoring": job_monitoring,
                     "updated_at": now,
                 },
@@ -244,6 +394,18 @@ class MongoDBService:
 
     def _get_client_domains_sync(self, client_key: str) -> list[dict[str, Any]]:
         cursor = self._get_collection("client_domains").find({"client_key": client_key}, {"_id": 0})
+        return list(cursor)
+
+    async def list_client_jobs(self, client_key: str, limit: int = 500) -> list[dict[str, Any]]:
+        return await asyncio.to_thread(self._list_client_jobs_sync, client_key, limit)
+
+    def _list_client_jobs_sync(self, client_key: str, limit: int) -> list[dict[str, Any]]:
+        cursor = (
+            self._get_collection("client_jobs")
+            .find({"client_key": client_key}, {"_id": 0})
+            .sort("updated_at", -1)
+            .limit(limit)
+        )
         return list(cursor)
 
     async def update_assignment_status(self, process_id: str, agent_index: int, status: str) -> None:
@@ -448,3 +610,106 @@ class MongoDBService:
 
     def _insert_domain_check_sync(self, document: dict[str, Any]) -> None:
         self._get_collection("domain_checks").insert_one(document)
+
+    async def get_job_extraction_cache(self, cache_key: str) -> dict[str, Any] | None:
+        return await asyncio.to_thread(self._get_job_extraction_cache_sync, cache_key)
+
+    def _get_job_extraction_cache_sync(self, cache_key: str) -> dict[str, Any] | None:
+        return self._get_collection("job_extraction_cache").find_one({"cache_key": cache_key}, {"_id": 0})
+
+    async def upsert_job_extraction_cache(self, cache_key: str, document: dict[str, Any]) -> None:
+        await asyncio.to_thread(self._upsert_job_extraction_cache_sync, cache_key, document)
+
+    def _upsert_job_extraction_cache_sync(self, cache_key: str, document: dict[str, Any]) -> None:
+        now = datetime.utcnow()
+        self._get_collection("job_extraction_cache").update_one(
+            {"cache_key": cache_key},
+            {
+                "$set": {
+                    **document,
+                    "updated_at": now,
+                },
+                "$setOnInsert": {
+                    "cache_key": cache_key,
+                    "created_at": now,
+                },
+            },
+            upsert=True,
+        )
+
+    async def upsert_job(self, job_key: str, document: dict[str, Any]) -> None:
+        await asyncio.to_thread(self._upsert_job_sync, job_key, document)
+
+    def _upsert_job_sync(self, job_key: str, document: dict[str, Any]) -> None:
+        now = datetime.utcnow()
+        self._get_collection("jobs").update_one(
+            {"job_key": job_key},
+            {
+                "$set": {
+                    **document,
+                    "updated_at": now,
+                },
+                "$setOnInsert": {
+                    "job_key": job_key,
+                    "created_at": now,
+                },
+            },
+            upsert=True,
+        )
+
+    async def upsert_client_job(
+        self,
+        *,
+        client_key: str,
+        client_name: str,
+        domain_key: str,
+        raw_url: str,
+        process_id: str,
+        job_key: str,
+        document: dict[str, Any],
+    ) -> None:
+        await asyncio.to_thread(
+            self._upsert_client_job_sync,
+            client_key,
+            client_name,
+            domain_key,
+            raw_url,
+            process_id,
+            job_key,
+            document,
+        )
+
+    def _upsert_client_job_sync(
+        self,
+        client_key: str,
+        client_name: str,
+        domain_key: str,
+        raw_url: str,
+        process_id: str,
+        job_key: str,
+        document: dict[str, Any],
+    ) -> None:
+        now = datetime.utcnow()
+        self._get_collection("client_jobs").update_one(
+            {
+                "client_key": client_key,
+                "domain_key": domain_key,
+                "job_key": job_key,
+            },
+            {
+                "$set": {
+                    **document,
+                    "client_name": client_name,
+                    "raw_url": raw_url,
+                    "process_id": process_id,
+                    "updated_at": now,
+                },
+                "$setOnInsert": {
+                    "client_key": client_key,
+                    "domain_key": domain_key,
+                    "job_key": job_key,
+                    "created_at": now,
+                },
+            },
+            upsert=True,
+        )

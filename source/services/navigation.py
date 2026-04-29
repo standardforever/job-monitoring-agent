@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 from utils.logging import get_logger, log_event
 
 try:
@@ -15,6 +15,23 @@ from schemas.agent_state import NavigationResult
 
 WEB_NAVIGATION_SCHEMES = {"", "http", "https"}
 logger = get_logger("navigation")
+SECURITY_INTERSTITIAL_MARKERS = (
+    "this site doesn't support a secure connection",
+    "your connection is not private",
+    "privacy error",
+    "attackers can see and change the information",
+    "net::err_ssl",
+)
+SECURITY_INTERSTITIAL_CONTINUE_SELECTORS = (
+    "button:has-text('Continue to site')",
+    "button:has-text('Continue')",
+    "a:has-text('Continue to site')",
+    "a:has-text('Continue')",
+    "button:has-text('Proceed')",
+    "a:has-text('Proceed')",
+    "button:has-text('Advanced')",
+    "a:has-text('Advanced')",
+)
 
 
 def _is_web_navigation_url(url: str | None) -> bool:
@@ -27,6 +44,107 @@ def _is_web_navigation_url(url: str | None) -> bool:
 def _is_download_start_error(exc: Exception) -> bool:
     message = str(exc)
     return "Download is starting" in message or "download is starting" in message
+
+
+def _http_fallback_url(url: str | None) -> str | None:
+    parsed = urlparse(str(url or "").strip())
+    if parsed.scheme.lower() != "https":
+        return None
+    return urlunparse(parsed._replace(scheme="http"))
+
+
+async def _get_page_text_snapshot(page: Page) -> str:
+    try:
+        title = await page.title()
+    except Exception:
+        title = ""
+
+    try:
+        body = await page.locator("body").inner_text(timeout=2_000)
+    except Exception:
+        body = ""
+
+    return f"{title}\n{body}".lower()
+
+
+async def handle_security_interstitial(
+    page: Page,
+    requested_url: str,
+    *,
+    post_navigation_delay_ms: int = 0,
+) -> bool:
+    snapshot = await _get_page_text_snapshot(page)
+    if not any(marker in snapshot for marker in SECURITY_INTERSTITIAL_MARKERS):
+        return False
+
+    log_event(
+        logger,
+        "warning",
+        "security_interstitial_detected url=%s current_url=%s",
+        requested_url,
+        page.url,
+        domain=requested_url,
+        url=requested_url,
+        current_url=page.url,
+    )
+
+    for selector in SECURITY_INTERSTITIAL_CONTINUE_SELECTORS:
+        try:
+            locator = page.locator(selector).first
+            if await locator.count() == 0:
+                continue
+            await locator.click(timeout=2_500)
+            await page.wait_for_load_state("domcontentloaded", timeout=15_000)
+            if post_navigation_delay_ms > 0:
+                await page.wait_for_timeout(post_navigation_delay_ms)
+            log_event(
+                logger,
+                "info",
+                "security_interstitial_dismissed_by_click url=%s selector=%s final_url=%s",
+                requested_url,
+                selector,
+                page.url,
+                domain=requested_url,
+                url=requested_url,
+                selector=selector,
+                final_url=page.url,
+            )
+            return True
+        except Exception:
+            continue
+
+    fallback_url = _http_fallback_url(page.url or requested_url)
+    if fallback_url:
+        try:
+            await page.goto(fallback_url, wait_until="domcontentloaded", timeout=60_000)
+            if post_navigation_delay_ms > 0:
+                await page.wait_for_timeout(post_navigation_delay_ms)
+            log_event(
+                logger,
+                "info",
+                "security_interstitial_recovered_with_http_fallback url=%s fallback_url=%s",
+                requested_url,
+                fallback_url,
+                domain=requested_url,
+                url=requested_url,
+                fallback_url=fallback_url,
+            )
+            return True
+        except Exception as exc:
+            log_event(
+                logger,
+                "warning",
+                "security_interstitial_http_fallback_failed url=%s fallback_url=%s error=%s",
+                requested_url,
+                fallback_url,
+                str(exc),
+                domain=requested_url,
+                url=requested_url,
+                fallback_url=fallback_url,
+                error=str(exc),
+            )
+
+    return False
 
 
 async def _goto_with_retry(
@@ -51,6 +169,11 @@ async def _goto_with_retry(
                 attempt=attempt,
             )
             await page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+            await handle_security_interstitial(
+                page,
+                url,
+                post_navigation_delay_ms=post_navigation_delay_ms,
+            )
             if post_navigation_delay_ms > 0:
                 await page.wait_for_timeout(post_navigation_delay_ms)
             log_event(

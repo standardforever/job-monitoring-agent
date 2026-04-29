@@ -14,8 +14,8 @@ async def run_job_pipeline(
     client_name: str = "default_client",
     urls: list[str],
     agent_count: int = 1,
-    grid_url: str | None = None,
     ats_check: bool = True,
+    job_extract: bool = False,
     job_monitoring: bool = False,
     task_id: str | None = None,
 ) -> dict:
@@ -30,6 +30,7 @@ async def run_job_pipeline(
         url_count=len(urls),
         agent_count=agent_count,
         ats_check=ats_check,
+        job_extract=job_extract,
         job_monitoring=job_monitoring,
         task_id=task_id,
     )
@@ -38,8 +39,8 @@ async def run_job_pipeline(
         client_name=client_name,
         urls=urls,
         agent_count=agent_count,
-        grid_url=grid_url,
         ats_check=ats_check,
+        job_extract=job_extract,
         job_monitoring=job_monitoring,
         task_id=task_id,
     )
@@ -72,8 +73,8 @@ async def main() -> None:
     await run_job_pipeline(
         urls=urls,
         agent_count=2,
-        grid_url=None,
         ats_check=True,
+        job_extract=False,
         job_monitoring=False,
     )
 

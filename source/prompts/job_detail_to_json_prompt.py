@@ -113,3 +113,4 @@ def build_job_detail_to_json_prompt(extracted_markdown: str, page_url: str | Non
         "Extracted job detail page content:\n"
         f"{extracted_markdown}"
     )
+

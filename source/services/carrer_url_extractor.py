@@ -2,6 +2,7 @@ from utils.logging import setup_logger
 from playwright.async_api import Page
 from utils.domain_name_filters import URLFilter
 from services.flow_safety import extract_base_domain
+from services.navigation import handle_security_interstitial
 import tldextract
 from urllib.parse import urlparse, urlunparse
 import asyncio
@@ -227,6 +228,7 @@ class UrlExtractor:
         for i in range(3):
             try:
                 await self._page.goto(url, wait_until="domcontentloaded", timeout=90000)
+                await handle_security_interstitial(self._page, url)
                 await asyncio.sleep((0.5 * i) + 0.5)
 
                 original_domain = self.normalize_domain(urlparse(url).netloc.lower())

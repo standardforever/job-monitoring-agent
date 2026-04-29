@@ -34,8 +34,16 @@ from services.grid_session import (
     create_session_async,
     is_grid_session_active_async,
 )
+from services.job_extraction_service import JobExtractionService
+from services.openai_service import (
+    mask_api_key,
+    reset_openai_runtime_config,
+    set_openai_runtime_config,
+    validate_openai_api_key,
+)
 from services.tab_manager import ensure_agent_tab
 from services.mongodb_service import MongoDBService
+from core.config import get_settings
 from utils.logging import configure_logging, get_logger, log_event
 
 logger = get_logger("job_process_service")
@@ -56,38 +64,44 @@ class AgentSessionRecoveryNeeded(Exception):
 class JobProcessService:
     def __init__(self, mongodb_service: MongoDBService | None = None) -> None:
         self._mongodb_service = mongodb_service or MongoDBService()
+        self._job_extraction_service = JobExtractionService(self._mongodb_service)
+        self._settings = get_settings()
         log_event(logger, "info", "job_process_service_initialized", domain="service")
 
     async def submit_process(self, request: JobProcessRequest) -> dict[str, Any]:
+        client = await self._require_active_client(request.client_name)
+        resolved_grid_url = client.get("grid_url") or self._settings.selenium_remote_url
+        request = request.model_copy(update={"client_name": client["client_name"]})
         assignments = allocate_urls_to_agents(request.urls, request.agent_count)
         process_id = request.task_id or str(uuid4())
-        client_key = self._build_client_key(request.client_name)
         requested_capability = self._requested_capability_for_request(request)
         now = datetime.utcnow()
-
-        await self._mongodb_service.ensure_client(client_key, request.client_name)
 
         normalized_urls = [self._normalize_domain_key(url) for url in request.urls]
         for domain_key in normalized_urls:
             await self._mongodb_service.upsert_client_domain(
-                client_key=client_key,
-                client_name=request.client_name,
+                client_key=client["client_key"],
+                client_name=client["client_name"],
                 domain_key=domain_key,
                 requested_capability=requested_capability,
                 ats_check=request.ats_check,
+                job_extract=request.job_extract,
                 job_monitoring=request.job_monitoring,
             )
 
         run_document = ProcessRunDocument(
             process_id=process_id,
-            client_key=client_key,
-            client_name=request.client_name,
+            client_key=client["client_key"],
+            client_name=client["client_name"],
             status="queued",
             request=request,
             assignments=assignments,
             queued_urls=list(request.urls),
             metadata={
+                "client_model": client.get("model") or "gpt-5-nano",
+                "client_grid_url": resolved_grid_url,
                 "ats_check": request.ats_check,
+                "job_extract": request.job_extract,
                 "job_monitoring": request.job_monitoring,
                 "requested_capability": requested_capability,
             },
@@ -107,8 +121,8 @@ class JobProcessService:
         run_items = [
             ProcessRunItemDocument(
                 process_id=process_id,
-                client_key=client_key,
-                client_name=request.client_name,
+                client_key=client["client_key"],
+                client_name=client["client_name"],
                 raw_url=url,
                 domain_key=self._normalize_domain_key(url),
                 requested_capability=requested_capability,
@@ -127,11 +141,11 @@ class JobProcessService:
             "info",
             "process_submission_completed process_id=%s client_key=%s url_count=%s",
             process_id,
-            client_key,
+            client["client_key"],
             len(request.urls),
-            domain=normalized_urls[0] if normalized_urls else client_key,
+            domain=normalized_urls[0] if normalized_urls else client["client_key"],
             process_id=process_id,
-            client_key=client_key,
+            client_key=client["client_key"],
             url_count=len(request.urls),
         )
         return run_document.model_dump(mode="json")
@@ -151,6 +165,7 @@ class JobProcessService:
         domain = (((process.get("request") or {}).get("urls") or ["unknown"])[0])
         request = JobProcessRequest(**process["request"])
         assignments = process.get("assignments", [])
+        client = await self._require_active_client_by_key(process["client_key"])
 
         await self._mongodb_service.update_process_run(
             process_id,
@@ -172,6 +187,10 @@ class JobProcessService:
             client_key=process.get("client_key"),
         )
 
+        runtime_tokens = set_openai_runtime_config(
+            api_key=client.get("api_key"),
+            model=client.get("model") or "gpt-5-nano",
+        )
         try:
             result = await self._execute_process(
                 process_id=process_id,
@@ -179,6 +198,7 @@ class JobProcessService:
                 assignments=assignments,
                 client_key=process["client_key"],
                 client_name=process["client_name"],
+                grid_url=str((process.get("metadata") or {}).get("client_grid_url") or client.get("grid_url") or self._settings.selenium_remote_url),
             )
         except Exception as exc:
             await self._mongodb_service.update_process_run(
@@ -190,6 +210,8 @@ class JobProcessService:
                 },
             )
             raise
+        finally:
+            reset_openai_runtime_config(runtime_tokens)
 
         await self._mongodb_service.update_process_run(
             process_id,
@@ -205,18 +227,92 @@ class JobProcessService:
     async def get_process(self, process_id: str) -> dict[str, Any] | None:
         return await self._mongodb_service.get_process_run_with_items(process_id)
 
+    async def register_client(
+        self,
+        client_name: str,
+        api_key: str,
+        model: str = "gpt-5-nano",
+        grid_url: str | None = None,
+    ) -> dict[str, Any]:
+        client_key = self._build_client_key(client_name)
+        validation = await validate_openai_api_key(api_key=api_key, model=model)
+        if not validation.active:
+            raise ValueError(f"Client API key validation failed: {validation.error}")
+
+        client = await self._mongodb_service.upsert_client_configuration(
+            client_key=client_key,
+            client_name=client_name,
+            api_key=api_key,
+            model=model,
+            grid_url=grid_url or self._settings.selenium_remote_url,
+            api_key_status="active",
+            api_key_validation_error=None,
+        )
+        return self._sanitize_client_document(client)
+
+    async def update_client(
+        self,
+        current_client_name: str,
+        *,
+        new_client_name: str | None = None,
+        api_key: str | None = None,
+        model: str | None = None,
+        grid_url: str | None = None,
+    ) -> dict[str, Any]:
+        current_client = await self._require_client(current_client_name)
+        final_client_name = new_client_name or current_client["client_name"]
+        final_model = model or current_client.get("model") or "gpt-5-nano"
+        final_api_key = api_key or current_client.get("api_key")
+        final_grid_url = grid_url if grid_url is not None else current_client.get("grid_url") or self._settings.selenium_remote_url
+        if not final_api_key:
+            raise ValueError("Client does not have an API key configured")
+
+        validation = await validate_openai_api_key(api_key=final_api_key, model=final_model)
+        if not validation.active:
+            raise ValueError(f"Client API key validation failed: {validation.error}")
+
+        updated = await self._mongodb_service.update_client_configuration(
+            current_client_key=current_client["client_key"],
+            new_client_key=self._build_client_key(final_client_name),
+            client_name=final_client_name,
+            api_key=final_api_key,
+            model=final_model,
+            grid_url=final_grid_url,
+            api_key_status="active",
+            api_key_validation_error=None,
+        )
+        if updated is None:
+            raise ValueError(f"Unknown client: {current_client_name}")
+        return self._sanitize_client_document(updated)
+
+    async def get_client_configuration(self, client_name: str) -> dict[str, Any]:
+        client = await self._require_client(client_name)
+        return self._sanitize_client_document(client)
+
     async def list_processes(self, limit: int = 100) -> list[dict[str, Any]]:
         return await self._mongodb_service.list_all_process_runs(limit=limit)
 
     async def get_client_overview(self, client_name: str) -> dict[str, Any]:
-        client_key = self._build_client_key(client_name)
+        client = await self._require_client(client_name)
+        client_key = client["client_key"]
         subscriptions = await self._mongodb_service.get_client_domains(client_key)
         runs = await self._mongodb_service.list_process_runs_for_client(client_key)
         return {
             "client_key": client_key,
-            "client_name": client_name,
+            "client_name": client["client_name"],
             "subscriptions": subscriptions,
             "process_runs": runs,
+        }
+
+    async def get_client_jobs(self, client_name: str, limit: int = 500) -> dict[str, Any]:
+        client = await self._require_client(client_name)
+        client_key = client["client_key"]
+        jobs = await self._mongodb_service.list_client_jobs(client_key, limit=limit)
+        return {
+            "client_key": client_key,
+            "client_name": client["client_name"],
+            "count": len(jobs),
+            "jobs": jobs,
         }
 
     async def _execute_process(
@@ -227,6 +323,7 @@ class JobProcessService:
         assignments: list[dict[str, Any]],
         client_key: str,
         client_name: str,
+        grid_url: str,
     ) -> dict[str, Any]:
         log_event(
             logger,
@@ -239,7 +336,7 @@ class JobProcessService:
             assignment_count=len(assignments),
         )
 
-        session_info = await create_session_async(grid_url=request.grid_url, reuse_existing=True)
+        session_info = await create_session_async(grid_url=grid_url, reuse_existing=True)
         if session_info is None or not session_info.cdp_url:
             error = "Unable to establish shared Selenium/CDP session"
             await self._mongodb_service.update_process_run(
@@ -288,7 +385,7 @@ class JobProcessService:
             }
 
         shared_runtime = SharedSessionRuntime(
-            grid_url=request.grid_url,
+            grid_url=grid_url,
             session_id=session_info.session_id,
             cdp_url=session_info.cdp_url,
         )
@@ -305,6 +402,7 @@ class JobProcessService:
                 "shared_runtime": shared_runtime,
                 "metadata": {
                     "ats_check": request.ats_check,
+                    "job_extract": request.job_extract,
                     "job_monitoring": request.job_monitoring,
                     "requested_capability": self._requested_capability_for_request(request),
                 },
@@ -434,6 +532,7 @@ class JobProcessService:
                             agent_index=agent_index,
                             agent_tab=agent_tab,
                             ats_check=bool((graph_input.get("metadata") or {}).get("ats_check", True)),
+                            job_extract=bool((graph_input.get("metadata") or {}).get("job_extract", False)),
                             job_monitoring=bool((graph_input.get("metadata") or {}).get("job_monitoring", False)),
                             requested_capability=str((graph_input.get("metadata") or {}).get("requested_capability", "career_page")),
                             mark_running=mark_running,
@@ -510,6 +609,7 @@ class JobProcessService:
         agent_index: int,
         agent_tab: dict[str, Any],
         ats_check: bool,
+        job_extract: bool,
         job_monitoring: bool,
         requested_capability: str,
         mark_running: bool = True,
@@ -533,12 +633,16 @@ class JobProcessService:
             else:
                 career_url_result = await career_url_extraction_node(main_domain or domain_key, browser_session)
 
-            career_page_result = await career_page_category_node(
-                career_url_result.get("career_urls", []),
-                browser_session,
-                agent_index,
-                agent_tab,
-            )
+            career_urls = list(career_url_result.get("career_urls") or [])
+            if career_urls:
+                career_page_result = await career_page_category_node(
+                    career_urls,
+                    browser_session,
+                    agent_index,
+                    agent_tab,
+                )
+            else:
+                career_page_result = self._build_empty_career_page_result(career_url_result)
 
             fingerprint_source = career_page_result.get("career_pages_analysis") or career_page_result
             page_fingerprint = self._fingerprint_payload(fingerprint_source)
@@ -565,12 +669,34 @@ class JobProcessService:
                     "reasoning": "ATS check disabled for this process.",
                 }
 
+            if job_extract:
+                jobs_extraction = await self._job_extraction_service.extract_jobs_for_domain(
+                    process_id=process_id,
+                    client_key=client_key,
+                    client_name=client_name,
+                    raw_url=url,
+                    domain_key=domain_key,
+                    career_page_result=career_page_result,
+                    browser_session=browser_session,
+                    agent_index=agent_index,
+                    agent_tab=agent_tab,
+                )
+            else:
+                jobs_extraction = {
+                    "status": "skipped",
+                    "requested": False,
+                    "job_count": 0,
+                    "jobs": [],
+                    "sources": [],
+                }
+
             record = DomainProcessRecord(
                 domain=url,
                 main_domain=main_domain,
                 career_url_extraction=career_url_result,
                 career_page_result=career_page_result,
                 ats_detection=ats_detection,
+                jobs_extraction=jobs_extraction,
                 status="completed",
             ).model_dump(mode="json")
 
@@ -604,11 +730,19 @@ class JobProcessService:
                     "career_url_extraction": career_url_result,
                     "career_page_result": career_page_result,
                     "ats_detection": ats_detection,
+                    "jobs_extraction_summary": {
+                        "status": jobs_extraction.get("status"),
+                        "requested": jobs_extraction.get("requested"),
+                        "job_count": jobs_extraction.get("job_count"),
+                        "source_count": jobs_extraction.get("source_count"),
+                        "reused_source_count": jobs_extraction.get("reused_source_count"),
+                    },
                     "latest_page_fingerprint": page_fingerprint,
                     "latest_extracted_text": self._extract_latest_page_text(career_page_result),
                     "last_career_discovery_at": datetime.utcnow(),
                     "last_career_check_at": datetime.utcnow(),
                     "last_ats_check_at": datetime.utcnow() if ats_check else (existing_domain or {}).get("last_ats_check_at"),
+                    "last_job_extract_at": datetime.utcnow() if job_extract else (existing_domain or {}).get("last_job_extract_at"),
                 },
             )
 
@@ -730,6 +864,36 @@ class JobProcessService:
         normalized = re.sub(r"[^a-z0-9]+", "_", client_name.strip().lower()).strip("_")
         return normalized or "default_client"
 
+    async def _require_client(self, client_name: str) -> dict[str, Any]:
+        client_key = self._build_client_key(client_name)
+        client = await self._mongodb_service.get_client(client_key)
+        if client is None:
+            raise ValueError(f"Client '{client_name}' is not registered")
+        return client
+
+    async def _require_active_client(self, client_name: str) -> dict[str, Any]:
+        client = await self._require_client(client_name)
+        if str(client.get("api_key_status") or "").lower() != "active":
+            raise ValueError(f"Client '{client_name}' does not have an active API key")
+        if not client.get("api_key"):
+            raise ValueError(f"Client '{client_name}' does not have an API key configured")
+        return client
+
+    async def _require_active_client_by_key(self, client_key: str) -> dict[str, Any]:
+        client = await self._mongodb_service.get_client(client_key)
+        if client is None:
+            raise ValueError(f"Client '{client_key}' is not registered")
+        if str(client.get("api_key_status") or "").lower() != "active":
+            raise ValueError(f"Client '{client.get('client_name') or client_key}' does not have an active API key")
+        if not client.get("api_key"):
+            raise ValueError(f"Client '{client.get('client_name') or client_key}' does not have an API key configured")
+        return client
+
+    def _sanitize_client_document(self, client: dict[str, Any]) -> dict[str, Any]:
+        sanitized = dict(client)
+        sanitized["api_key"] = mask_api_key(client.get("api_key"))
+        return sanitized
+
     def _is_recoverable_agent_session_error(self, error_text: str) -> bool:
         normalized = str(error_text or "").lower()
         return any(
@@ -751,9 +915,65 @@ class JobProcessService:
         extracted = extract_domain(raw_value)
         return extracted or raw_value.strip().lower()
 
+    def _build_empty_career_page_result(self, career_url_result: dict[str, Any]) -> dict[str, Any]:
+        status = str(career_url_result.get("status") or "").strip()
+        error_message = str(career_url_result.get("error_message") or "").strip() or None
+
+        outcome = "career_page_not_analyzed"
+        outcome_reason = "Career page analysis was skipped because no career URLs were available."
+
+        if status == "no_career_page_found":
+            outcome = "no_career_page_found"
+            outcome_reason = "No career or job page candidates were found for this domain."
+        elif status == "domain_access_failed":
+            outcome = "career_page_discovery_failed"
+            outcome_reason = (
+                f"Career page discovery failed because the domain could not be accessed."
+                + (f" {error_message}" if error_message else "")
+            )
+        elif status == "domain_redirected":
+            outcome = "career_page_domain_redirected"
+            outcome_reason = (
+                f"Career page discovery stopped because the domain redirected externally."
+                + (f" {error_message}" if error_message else "")
+            )
+        elif error_message:
+            outcome_reason = error_message
+
+        return {
+            "overview": {
+                "outcome": outcome,
+                "outcome_reason": outcome_reason,
+                "jobs_found": False,
+                "total_jobs_found": 0,
+                "job_urls": [],
+                "job_found_on_urls": [],
+                "listing_ui": None,
+                "job_alert": False,
+                "job_alert_note": None,
+                "job_alert_urls": [],
+                "career_page_confirmed": False,
+                "no_vacancy_urls": [],
+                "blocked_platform_urls": {},
+                "external_redirect_urls": [],
+                "embedded_urls": [],
+                "navigation_blocked_urls": [],
+                "navigation_issues": [],
+                "not_job_related_urls": [],
+                "access_issue_urls": [],
+                "unknown_urls": [],
+                "total_urls_processed": 0,
+            },
+            "career_pages_analysis": [],
+        }
+
     def _requested_capability_for_request(self, request: JobProcessRequest) -> RequestedCapability:
         if request.job_monitoring:
             return "job_monitoring"
+        if request.ats_check and request.job_extract:
+            return "ats_and_job_extract"
+        if request.job_extract:
+            return "job_extract"
         if request.ats_check:
             return "ats_check"
         return "career_page"
@@ -781,6 +1001,7 @@ class JobProcessService:
     ) -> dict[str, Any]:
         ats_detection = record.get("ats_detection") or {}
         career_url_extraction = record.get("career_url_extraction") or {}
+        jobs_extraction = record.get("jobs_extraction") or {}
         return {
             "status": record.get("status"),
             "main_domain": record.get("main_domain"),
@@ -788,6 +1009,8 @@ class JobProcessService:
             "career_url_count": len(career_url_extraction.get("career_urls") or []),
             "ats_detected": ats_detection.get("ats_detected"),
             "ats_provider": ats_detection.get("ats_provider"),
+            "job_extract_requested": bool(jobs_extraction.get("requested")),
+            "job_count": int(jobs_extraction.get("job_count") or 0),
             "reused_career_discovery": reused_career_discovery,
             "reused_ats_detection": reused_ats_detection,
             "content_changed": content_changed,

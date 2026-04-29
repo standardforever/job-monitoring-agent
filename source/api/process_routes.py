@@ -9,7 +9,7 @@ from typing import Any
 from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 
-from models.process import JobProcessRequest
+from models.process import ClientRegistrationRequest, ClientUpdateRequest, JobProcessRequest
 from services.file_input_service import FileInputService
 from services.job_process_service import JobProcessService
 from utils.logging import get_logger, log_event
@@ -184,6 +184,76 @@ async def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@router.post("/clients")
+async def register_client(request: ClientRegistrationRequest) -> dict[str, Any]:
+    log_event(
+        logger,
+        "info",
+        "client_registration_requested client_name=%s model=%s",
+        request.client_name,
+        request.model,
+        domain=request.client_name,
+        client_name=request.client_name,
+        model=request.model,
+    )
+    try:
+        client = await job_process_service.register_client(
+            client_name=request.client_name,
+            api_key=request.api_key,
+            model=request.model,
+            grid_url=request.grid_url,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {
+        "status": "ready",
+        "client": client,
+        "message": "API key is active and ready to use.",
+    }
+
+
+@router.patch("/clients/{client_name}/config")
+async def update_client(client_name: str, request: ClientUpdateRequest) -> dict[str, Any]:
+    log_event(
+        logger,
+        "info",
+        "client_update_requested client_name=%s",
+        client_name,
+        domain=client_name,
+        client_name=client_name,
+    )
+    try:
+        client = await job_process_service.update_client(
+            client_name,
+            new_client_name=request.client_name,
+            api_key=request.api_key,
+            model=request.model,
+            grid_url=request.grid_url,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {
+        "status": "updated",
+        "client": client,
+    }
+
+
+@router.get("/clients/{client_name}/config")
+async def get_client_config(client_name: str) -> dict[str, Any]:
+    log_event(
+        logger,
+        "info",
+        "client_config_requested client_name=%s",
+        client_name,
+        domain=client_name,
+        client_name=client_name,
+    )
+    try:
+        return await job_process_service.get_client_configuration(client_name)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @router.post("/processes")
 async def create_process(
     request: JobProcessRequest,
@@ -200,9 +270,13 @@ async def create_process(
         url_count=len(request.urls),
         agent_count=request.agent_count,
         job_monitoring=request.job_monitoring,
+        job_extract=request.job_extract,
         ats_check=request.ats_check,
     )
-    process_document = await job_process_service.submit_process(request)
+    try:
+        process_document = await job_process_service.submit_process(request)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     background_tasks.add_task(
         job_process_service.execute_existing_process,
         process_document["process_id"],
@@ -246,8 +320,8 @@ async def create_process_from_file(
     file: UploadFile = File(...),
     client_name: str = Form("default_client"),
     agent_count: int = Form(1),
-    grid_url: str | None = Form(None),
     ats_check: bool = Form(True),
+    job_extract: bool = Form(False),
     job_monitoring: bool = Form(False),
     task_id: str | None = Form(None),
 ) -> dict[str, str]:
@@ -274,8 +348,8 @@ async def create_process_from_file(
         client_name=client_name,
         urls=urls,
         agent_count=agent_count,
-        grid_url=grid_url,
         ats_check=ats_check,
+        job_extract=job_extract,
         job_monitoring=job_monitoring,
         task_id=task_id,
     )
@@ -292,9 +366,13 @@ async def create_process_from_file(
         url_count=len(urls),
         agent_count=agent_count,
         ats_check=ats_check,
+        job_extract=job_extract,
         job_monitoring=job_monitoring,
     )
-    process_document = await job_process_service.submit_process(request)
+    try:
+        process_document = await job_process_service.submit_process(request)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     background_tasks.add_task(
         job_process_service.execute_existing_process,
         process_document["process_id"],
@@ -359,7 +437,10 @@ async def get_client_overview(client_name: str) -> StreamingResponse:
         domain=client_name,
         client_name=client_name,
     )
-    overview = await job_process_service.get_client_overview(client_name)
+    try:
+        overview = await job_process_service.get_client_overview(client_name)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     return _downloadable_json_response(
         overview,
         f"client_{_safe_filename(client_name)}.json",
@@ -376,12 +457,33 @@ async def get_client_summary(client_name: str) -> StreamingResponse:
         domain=client_name,
         client_name=client_name,
     )
-    overview = await job_process_service.get_client_overview(client_name)
+    try:
+        overview = await job_process_service.get_client_overview(client_name)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     summary_payload = _build_client_summary_export(client_name, overview)
     return _downloadable_json_response(
         summary_payload,
         f"client_{_safe_filename(client_name)}_summary.json",
     )
+
+
+@router.get("/clients/{client_name}/jobs")
+async def get_client_jobs(client_name: str, limit: int = 500) -> dict[str, Any]:
+    log_event(
+        logger,
+        "info",
+        "client_jobs_requested client_name=%s limit=%s",
+        client_name,
+        limit,
+        domain=client_name,
+        client_name=client_name,
+        limit=limit,
+    )
+    try:
+        return await job_process_service.get_client_jobs(client_name, limit=limit)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/processes/{process_id}/important")

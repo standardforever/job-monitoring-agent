@@ -43,6 +43,9 @@ class Settings:
     mongodb_process_runs_collection: str = os.getenv("MONGODB_PROCESS_RUNS_COLLECTION", "process_runs")
     mongodb_process_run_items_collection: str = os.getenv("MONGODB_PROCESS_RUN_ITEMS_COLLECTION", "process_run_items")
     mongodb_domain_checks_collection: str = os.getenv("MONGODB_DOMAIN_CHECKS_COLLECTION", "domain_checks")
+    mongodb_jobs_collection: str = os.getenv("MONGODB_JOBS_COLLECTION", "jobs")
+    mongodb_client_jobs_collection: str = os.getenv("MONGODB_CLIENT_JOBS_COLLECTION", "client_jobs")
+    mongodb_job_extraction_cache_collection: str = os.getenv("MONGODB_JOB_EXTRACTION_CACHE_COLLECTION", "job_extraction_cache")
 
 
 def get_settings() -> Settings:
