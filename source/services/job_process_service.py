@@ -1318,9 +1318,13 @@ class JobProcessService:
             previous_not_job_related_urls = list(
                 ((previous_career_page_result.get("overview") or {}).get("not_job_related_urls") or [])
             )
+            previous_general_job_info_urls = list(
+                ((previous_career_page_result.get("overview") or {}).get("general_job_info_urls") or [])
+            )
             candidate_career_urls = self._filter_rerun_career_urls(
                 career_url_result.get("career_urls") or [],
                 previous_not_job_related_urls,
+                previous_general_job_info_urls,
             )
             career_urls_changed = self._rerun_career_urls_changed(
                 previous_urls=list(previous_career_url_extraction.get("career_urls") or []),
@@ -1586,8 +1590,16 @@ class JobProcessService:
         selected["used_previous_career_urls"] = False
         return selected
 
-    def _filter_rerun_career_urls(self, urls: list[str], not_job_related_urls: list[str]) -> list[str]:
-        excluded = {self._normalize_url_for_compare(url) for url in not_job_related_urls}
+    def _filter_rerun_career_urls(
+        self,
+        urls: list[str],
+        not_job_related_urls: list[str],
+        general_job_info_urls: list[str] | None = None,
+    ) -> list[str]:
+        excluded = {
+            self._normalize_url_for_compare(url)
+            for url in [*not_job_related_urls, *(general_job_info_urls or [])]
+        }
         filtered: list[str] = []
         seen: set[str] = set()
         for url in urls:
@@ -1872,6 +1884,7 @@ class JobProcessService:
                 "job_alert_urls": [],
                 "career_page_confirmed": False,
                 "no_vacancy_urls": [],
+                "general_job_info_urls": [],
                 "blocked_platform_urls": {},
                 "external_redirect_urls": [],
                 "embedded_urls": [],

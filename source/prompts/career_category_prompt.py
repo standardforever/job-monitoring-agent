@@ -20,6 +20,7 @@ VISIBLE INTERACTIVE LINKS/BUTTONS:
 | `navigation_required` | No jobs visible but page has an explicit clickable link or button pointing to where jobs are listed |
 | `single_job_posting` | One specific job described (detailed or minimal) |
 | `not_job_related` | No job/career/hiring content at all |
+| `jobs_related_general_info` | Page is clearly about careers, recruitment, working here, or general job enquiries, but it does NOT list current vacancies and does NOT explicitly say there are currently no vacancies |
 | `jobs_related_no_vacancies` | Page is job/career/hiring related but has no open roles listed AND no clickable navigation target to jobs — includes pages with only a contact email, phone number, or general enquiry message |
 
 ---
@@ -48,14 +49,24 @@ BASE URL: {url}
 Use `navigation_required` ONLY when there is an explicit clickable link or button that points to where jobs are listed.
 - "Click here to view our vacancies → [link]" → `navigation_required`
 - "See all jobs on our careers portal → [link]" → `navigation_required`
-- "Please contact Sophie at sophie@example.com for job enquiries" → `jobs_related_no_vacancies`
+- "Learn about careers at our company" with no live vacancies and no explicit "no vacancies" statement → `jobs_related_general_info`
+- "Work with us", "why join us", "careers information", "recruitment process", or "send your CV" style content with no live jobs and no explicit "currently no vacancies" statement → `jobs_related_general_info`
+- "Please contact Sophie at sophie@example.com for job enquiries" → `jobs_related_general_info`
 - "No vacancies right now, email hr@example.com to register interest" → `jobs_related_no_vacancies`
-- "Call us on 020 1234 5678 to discuss opportunities" → `jobs_related_no_vacancies`
-If the ONLY thing on the page pointing toward jobs is a contact email, phone number, or general enquiry message — there is nothing to navigate to. Use `jobs_related_no_vacancies`.
+- "Call us on 020 1234 5678 to discuss opportunities" → `jobs_related_general_info`
+If the ONLY thing on the page pointing toward jobs is a contact email, phone number, or general enquiry message, and the page does NOT explicitly say there are no current vacancies, use `jobs_related_general_info`.
+If the page explicitly says there are no current vacancies and only offers a contact route, use `jobs_related_no_vacancies`.
+
+**Distinguish general careers info from explicit no-vacancy pages:**
+- Use `jobs_related_general_info` when the page talks about careers or recruitment in general but does NOT explicitly say there are no current vacancies/open roles right now.
+- Use `jobs_related_no_vacancies` only when the page explicitly indicates there are no current vacancies, no open roles, no positions available at the moment, or equivalent wording.
+- Do not use `jobs_related_no_vacancies` just because a page is careers-related and has no visible jobs. That wastes rerun checks.
 
 **Email links are NOT navigation targets:** Any link starting with `mailto:` is an email address, not a webpage.
 Never put a `mailto:` link in `next_action_target.url`. Never classify a page as `navigation_required` solely because it contains an email address.
-If the only "contact" available is an email address and no jobs are listed → use `jobs_related_no_vacancies`.
+If the only "contact" available is an email address and no jobs are listed:
+- use `jobs_related_no_vacancies` only if the page explicitly says there are no current vacancies
+- otherwise use `jobs_related_general_info`
 
 **Job alert:** Set `job_alert = true` only if page explicitly mentions signing up for vacancy/job alert notifications.
 
@@ -124,7 +135,7 @@ If NOT accessible, still attempt classification at lower confidence.
 Return ONLY valid JSON. No markdown, no extra text. Start with {{ end with }}.
 
 {{
-    "page_category": "jobs_listed" | "job_listings_preview_page" | "navigation_required" | "single_job_posting" | "not_job_related" | "jobs_related_no_vacancies",
+    "page_category": "jobs_listed" | "job_listings_preview_page" | "navigation_required" | "single_job_posting" | "not_job_related" | "jobs_related_general_info" | "jobs_related_no_vacancies",
     "confidence": <float 0.0–1.0>,
     "reasoning": "<concise explanation>",
     "job_alert": boolean | null,

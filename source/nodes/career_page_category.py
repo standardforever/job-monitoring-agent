@@ -353,6 +353,10 @@ async def career_page_category_node(career_page_url: List[str], browser_session:
                     )
                 break
 
+            elif category == "jobs_related_general_info":
+                navigation_result["status"] = "access_issue" if page_inaccessible else "jobs_related_general_info"
+                break
+
             elif category == "single_job_posting":
                 existing_job_urls = _dedupe_urls([career_url, *existing_job_urls])
                 navigation_result["status"] = "single_job_posting"
@@ -392,7 +396,7 @@ async def career_page_category_node(career_page_url: List[str], browser_session:
                 if navigation_result["job_alert"]:
                     navigation_result["status"] = "jobs_related_no_vacancies_job_alert"
                 else:
-                    navigation_result["status"] = "jobs_page"
+                    navigation_result["status"] = "jobs_related_general_info"
                 break
 
             elif category == "navigation_required":
@@ -449,7 +453,7 @@ async def career_page_category_node(career_page_url: List[str], browser_session:
                     elif existing_job_urls:
                         navigation_result["status"] = "jobs_listed_on_page"
                     else:
-                        navigation_result["status"] = "jobs_related_no_vacancies"
+                        navigation_result["status"] = "jobs_related_general_info"
                     break
 
                 # ── Guard: step cap — only now is it a real failure ───────────
@@ -578,6 +582,7 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
     job_alert_urls: list[str] = []
 
     no_vacancy_urls: list[str] = []
+    general_job_info_urls: list[str] = []
     blocked_platform_urls: dict[str, list[str]] = {}
     external_redirect_urls: list[str] = []
     navigation_blocked_urls: list[str] = []
@@ -589,6 +594,7 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
 
     job_found_statuses = {"jobs_listed_on_page", "single_job_posting", "external_domain_redirect"}
     no_vacancy_statuses = {"jobs_related_no_vacancies", "jobs_related_no_vacancies_job_alert"}
+    general_job_info_statuses = {"jobs_related_general_info", "jobs_page"}
 
     # already_visited_url intentionally excluded — it resolves into a positive status above
     navigation_blocked_statuses = {
@@ -633,6 +639,9 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         elif status in no_vacancy_statuses:
             no_vacancy_urls.append(source_url)
 
+        elif status in general_job_info_statuses:
+            general_job_info_urls.append(source_url)
+
         elif status in navigation_blocked_statuses:
             navigation_blocked_urls.append(source_url)
             for step in result.get("navigation_history") or []:
@@ -675,6 +684,12 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         outcome = "career_page_no_vacancies"
         outcome_reason = "Career page confirmed but no open vacancies at this time."
 
+    elif general_job_info_urls:
+        outcome = "career_page_general_job_info"
+        outcome_reason = (
+            "Career-related information was found, but these pages do not list vacancies and do not explicitly say there are no vacancies right now."
+        )
+
     elif job_alert_urls:
         outcome = "no_jobs_but_job_alert_available"
         outcome_reason = "No jobs listed but at least one page offers a job alert signup."
@@ -696,7 +711,7 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         outcome = "embedded_job_board"
         outcome_reason = "Jobs appear to be loaded inside an embedded iframe/widget — not extractable from page text."
 
-    elif not_job_related_urls and not unknown_urls and not access_issue_urls:
+    elif not_job_related_urls and not unknown_urls and not access_issue_urls and not general_job_info_urls:
         outcome = "not_job_related"
         outcome_reason = "None of the career URLs contained job or hiring related content."
 
@@ -716,7 +731,7 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
             outcome_reason = (
                 f"{base_reason} {inaccessible_count} additional page(s) had access issues."
             )
-        elif not_job_related_count:
+        elif not_job_related_count or general_job_info_urls:
             outcome = "access_issue"
             outcome_reason = (
                 "No job/career result was confirmed, and some discovered pages could not be accessed, "
@@ -747,8 +762,9 @@ def _build_career_page_overview(career_pages_analysis: list[dict]) -> dict:
         "job_alert": job_alert_present,
         "job_alert_note": job_alert_note,
         "job_alert_urls": job_alert_urls,
-        "career_page_confirmed": bool(no_vacancy_urls or all_job_urls or job_alert_urls),
+        "career_page_confirmed": bool(no_vacancy_urls or all_job_urls or job_alert_urls or general_job_info_urls),
         "no_vacancy_urls": no_vacancy_urls,
+        "general_job_info_urls": general_job_info_urls,
         "blocked_platform_urls": blocked_platform_urls,
         "external_redirect_urls": external_redirect_urls,
         "embedded_urls": embedded_urls,
