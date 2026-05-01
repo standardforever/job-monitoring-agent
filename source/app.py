@@ -34,7 +34,11 @@ async def ensure_mongodb_indexes() -> None:
 
 def _render_ui_html(request: Request) -> HTMLResponse:
     log_event(logger, "info", "ui_index_requested", domain="ui")
-    root_path = str(request.scope.get("root_path", "") or "")
+    forwarded_prefix = str(request.headers.get("x-forwarded-prefix", "") or "").strip()
+    root_path = forwarded_prefix or str(request.scope.get("root_path", "") or "") or str(app.root_path or "")
+    if root_path and not root_path.startswith("/"):
+        root_path = f"/{root_path}"
+    root_path = root_path.rstrip("/")
     api_base = f"{request.base_url.scheme}://{request.base_url.netloc}{root_path}/api/"
     asset_base = f"{root_path}/assets/"
     html = (ui_directory / "index.html").read_text(encoding="utf-8")
