@@ -21,7 +21,7 @@ from models.process import (
     WorkerProcessResult,
 )
 from nodes.ats_check_node import detect_ats
-from nodes.career_page_category import career_page_category_node
+from nodes.career_page_category import _build_career_page_overview, career_page_category_node
 from nodes.session_bootstrap import bootstrap_browser_node
 from nodes.url_extraction import career_url_extraction_node
 from services.agent_allocator import allocate_urls_to_agents
@@ -35,6 +35,8 @@ from services.grid_session import (
     is_grid_session_active_async,
 )
 from services.job_extraction_service import JobExtractionService
+from services.content_extraction import extract_page_content
+from services.navigation import navigate_to_url
 from services.openai_service import (
     mask_api_key,
     reset_openai_runtime_config,
@@ -218,6 +220,140 @@ class JobProcessService:
 
         await self._mongodb_service.update_process_run(
             process_id,
+            {
+                "status": result["status"],
+                "completed_at": datetime.utcnow(),
+                "errors": result["errors"],
+                "summary": result["summary"],
+            },
+        )
+        return result
+
+    async def submit_rerun_process(self, original_process_id: str) -> dict[str, Any]:
+        original_process = await self._mongodb_service.get_process_run_with_items(original_process_id)
+        if original_process is None:
+            raise ValueError("Original process not found")
+        original_status = str(original_process.get("status") or "").strip().lower()
+        if original_status in {"running", "queued", "stop_requested"}:
+            raise ValueError(
+                f"Process {original_process_id} is currently {original_status} and cannot be rerun yet."
+            )
+
+        request = JobProcessRequest(**dict(original_process.get("request") or {}))
+        client = await self._require_active_client(request.client_name)
+        resolved_grid_url = client.get("grid_url") or self._settings.selenium_remote_url
+        assignments = allocate_urls_to_agents(request.urls, request.agent_count)
+        process_id = str(uuid4())
+        requested_capability = self._requested_capability_for_request(request)
+        now = datetime.utcnow()
+
+        run_document = ProcessRunDocument(
+            process_id=process_id,
+            client_key=client["client_key"],
+            client_name=client["client_name"],
+            status="queued",
+            request=request.model_copy(update={"task_id": process_id, "client_name": client["client_name"]}),
+            assignments=assignments,
+            queued_urls=list(request.urls),
+            metadata={
+                "client_model": client.get("model") or "gpt-5-nano",
+                "client_grid_url": resolved_grid_url,
+                "ats_check": request.ats_check,
+                "job_extract": request.job_extract,
+                "job_monitoring": request.job_monitoring,
+                "requested_capability": requested_capability,
+                "workflow_mode": "rerun",
+                "rerun_of_process_id": original_process_id,
+            },
+            summary={
+                "total_urls": len(request.urls),
+                "assigned_agent_count": request.agent_count,
+                "processed_url_count": 0,
+                "completed_domain_count": 0,
+                "failed_domain_count": 0,
+                "queued_url_count": len(request.urls),
+                "running_url_count": 0,
+                "stopped_url_count": 0,
+            },
+            created_at=now,
+            updated_at=now,
+        )
+
+        run_items = [
+            ProcessRunItemDocument(
+                process_id=process_id,
+                client_key=client["client_key"],
+                client_name=client["client_name"],
+                raw_url=url,
+                domain_key=self._normalize_domain_key(url),
+                requested_capability=requested_capability,
+                status="queued",
+                created_at=now,
+                updated_at=now,
+            ).model_dump(mode="json")
+            for url in request.urls
+        ]
+
+        await self._mongodb_service.insert_process_run(run_document.model_dump(mode="json"))
+        await self._mongodb_service.insert_process_run_items(run_items)
+        return run_document.model_dump(mode="json")
+
+    async def execute_rerun_process(self, rerun_process_id: str) -> dict[str, Any]:
+        process = await self._mongodb_service.get_process_run(rerun_process_id)
+        if process is None:
+            raise ValueError(f"Unknown process_id: {rerun_process_id}")
+
+        original_process_id = str((process.get("metadata") or {}).get("rerun_of_process_id") or "").strip()
+        if not original_process_id:
+            raise ValueError("Rerun source process is not configured")
+
+        original_process = await self._mongodb_service.get_process_run_with_items(original_process_id)
+        if original_process is None:
+            raise ValueError("Original process not found")
+
+        request = JobProcessRequest(**process["request"])
+        assignments = process.get("assignments", [])
+        client = await self._require_active_client_by_key(process["client_key"])
+
+        await self._mongodb_service.update_process_run(
+            rerun_process_id,
+            {
+                "status": "running",
+                "started_at": datetime.utcnow(),
+                "errors": [],
+            },
+        )
+
+        runtime_tokens = set_openai_runtime_config(
+            api_key=client.get("api_key"),
+            model=client.get("model") or "gpt-5-nano",
+        )
+        try:
+            result = await self._execute_rerun_process(
+                process_id=rerun_process_id,
+                request=request,
+                assignments=assignments,
+                client_key=process["client_key"],
+                client_name=process["client_name"],
+                grid_url=str((process.get("metadata") or {}).get("client_grid_url") or client.get("grid_url") or self._settings.selenium_remote_url),
+                original_process=original_process,
+            )
+        except Exception as exc:
+            await self._mongodb_service.update_process_run(
+                rerun_process_id,
+                {
+                    "status": "failed",
+                    "completed_at": datetime.utcnow(),
+                    "errors": [str(exc)],
+                },
+            )
+            raise
+        finally:
+            self._stop_requests.discard(rerun_process_id)
+            reset_openai_runtime_config(runtime_tokens)
+
+        await self._mongodb_service.update_process_run(
+            rerun_process_id,
             {
                 "status": result["status"],
                 "completed_at": datetime.utcnow(),
@@ -520,6 +656,131 @@ class JobProcessService:
             },
         }
 
+    async def _execute_rerun_process(
+        self,
+        *,
+        process_id: str,
+        request: JobProcessRequest,
+        assignments: list[dict[str, Any]],
+        client_key: str,
+        client_name: str,
+        grid_url: str,
+        original_process: dict[str, Any],
+    ) -> dict[str, Any]:
+        session_info = await create_session_async(grid_url=grid_url, reuse_existing=True)
+        if session_info is None or not session_info.cdp_url:
+            error = "Unable to establish shared Selenium/CDP session"
+            await self._mongodb_service.update_process_run(
+                process_id,
+                {
+                    "status": "failed",
+                    "completed_at": datetime.utcnow(),
+                    "errors": [error],
+                    "summary": {
+                        "total_urls": len(request.urls),
+                        "assigned_agent_count": request.agent_count,
+                        "processed_url_count": len(request.urls),
+                        "completed_domain_count": 0,
+                        "failed_domain_count": len(request.urls),
+                        "queued_url_count": 0,
+                        "running_url_count": 0,
+                        "stopped_url_count": 0,
+                    },
+                    "queued_urls": [],
+                    "failed_urls": list(request.urls),
+                },
+            )
+            for assignment in assignments:
+                await self._mongodb_service.update_assignment_status(process_id, assignment["agent_index"], "completed")
+                for url in assignment["urls"]:
+                    await self._mongodb_service.mark_url_failed(
+                        process_id,
+                        url,
+                        error,
+                        result_payload={"status": "failed", "reason": error},
+                        was_running=False,
+                    )
+            return {
+                "process_id": process_id,
+                "status": "failed",
+                "errors": [error],
+                "worker_results": [],
+                "summary": {
+                    "total_urls": len(request.urls),
+                    "assigned_agent_count": request.agent_count,
+                    "processed_url_count": len(request.urls),
+                    "completed_domain_count": 0,
+                    "failed_domain_count": len(request.urls),
+                    "queued_url_count": 0,
+                    "running_url_count": 0,
+                    "stopped_url_count": 0,
+                },
+            }
+
+        shared_runtime = SharedSessionRuntime(
+            grid_url=grid_url,
+            session_id=session_info.session_id,
+            cdp_url=session_info.cdp_url,
+        )
+        original_item_map = {
+            self._normalize_domain_key(item.get("raw_url") or item.get("domain_key") or ""): item
+            for item in list(original_process.get("items") or [])
+        }
+
+        worker_inputs = [
+            {
+                "process_id": process_id,
+                "client_key": client_key,
+                "client_name": client_name,
+                "agent_index": assignment["agent_index"],
+                "assigned_urls": assignment["urls"],
+                "shared_runtime": shared_runtime,
+                "metadata": {
+                    "ats_check": request.ats_check,
+                    "job_extract": request.job_extract,
+                    "job_monitoring": request.job_monitoring,
+                    "requested_capability": self._requested_capability_for_request(request),
+                },
+                "original_item_map": original_item_map,
+            }
+            for assignment in assignments
+        ]
+
+        try:
+            worker_results = await asyncio.gather(*[self._run_agent_rerun(worker_input) for worker_input in worker_inputs])
+        finally:
+            # await close_shared_session_async(shared_runtime.session_id)
+            pass
+
+        errors = [error for worker in worker_results for error in worker["errors"]]
+        completed_domain_count = sum(
+            1 for worker in worker_results for record in worker["domain_results"] if record["status"] == "completed"
+        )
+        failed_domain_count = sum(
+            1 for worker in worker_results for record in worker["domain_results"] if record["status"] != "completed"
+        )
+        stop_requested = self._is_stop_requested(process_id)
+        status = "stopped" if stop_requested else ("completed" if not errors else "failed")
+        process_run = await self._mongodb_service.get_process_run(process_id)
+        self._stop_requests.discard(process_id)
+        persisted_summary = dict((process_run or {}).get("summary") or {})
+        return {
+            "process_id": process_id,
+            "status": status,
+            "errors": errors,
+            "worker_results": worker_results,
+            "summary": {
+                "total_urls": len(request.urls),
+                "assigned_agent_count": request.agent_count,
+                "processed_url_count": int(persisted_summary.get("processed_url_count", completed_domain_count + failed_domain_count)),
+                "completed_domain_count": int(persisted_summary.get("completed_domain_count", completed_domain_count)),
+                "failed_domain_count": int(persisted_summary.get("failed_domain_count", failed_domain_count)),
+                "queued_url_count": int(persisted_summary.get("queued_url_count", 0)),
+                "running_url_count": int(persisted_summary.get("running_url_count", 0)),
+                "stopped_url_count": int(persisted_summary.get("stopped_url_count", 0)),
+            },
+        }
+
     async def _run_agent(self, graph_input: dict[str, Any]) -> dict[str, Any]:
         assigned_urls = list(graph_input.get("assigned_urls", []))
         process_id = str(graph_input["process_id"])
@@ -680,6 +941,149 @@ class JobProcessService:
                 domain_results=[DomainProcessRecord(**record) for record in domain_results],
                 errors=errors,
                 metadata=dict(bootstrap_result.get("metadata", {})),
+            ).model_dump(mode="json")
+        finally:
+            if assigned_urls:
+                assignment_status = "stopped" if self._is_stop_requested(process_id) else "completed"
+                await self._mongodb_service.update_assignment_status(process_id, agent_index, assignment_status)
+            await close_agent_tab(browser_session)
+
+    async def _run_agent_rerun(self, graph_input: dict[str, Any]) -> dict[str, Any]:
+        assigned_urls = list(graph_input.get("assigned_urls", []))
+        process_id = str(graph_input["process_id"])
+        client_key = str(graph_input["client_key"])
+        client_name = str(graph_input["client_name"])
+        agent_index = int(graph_input["agent_index"])
+        shared_runtime: SharedSessionRuntime = graph_input["shared_runtime"]
+        original_item_map = dict(graph_input.get("original_item_map") or {})
+        browser_session = None
+
+        if assigned_urls:
+            await self._mongodb_service.update_assignment_status(process_id, agent_index, "running")
+        if self._is_stop_requested(process_id):
+            await self._stop_remaining_agent_urls(process_id, agent_index, assigned_urls)
+            return WorkerProcessResult(
+                agent_index=agent_index,
+                status="stopped",
+                assigned_urls=assigned_urls,
+                processed_urls=[],
+                domain_results=[],
+                errors=[],
+                metadata={"stop_requested": True, "rerun": True},
+            ).model_dump(mode="json")
+
+        bootstrap_result = await bootstrap_browser_node(state=graph_input)
+        if not bootstrap_result.get("session_established"):
+            try:
+                browser_session, agent_tab = await self._recover_agent_tab(
+                    shared_runtime=shared_runtime,
+                    browser_session=None,
+                    agent_index=agent_index,
+                    url=assigned_urls[0] if assigned_urls else client_key,
+                )
+                bootstrap_result = {
+                    **bootstrap_result,
+                    "browser_session": browser_session,
+                    "agent_tab": agent_tab,
+                    "session_established": True,
+                    "metadata": {**dict(bootstrap_result.get("metadata", {})), "bootstrap_status": "recovered"},
+                }
+            except Exception as exc:
+                errors = list(bootstrap_result.get("errors", []))
+                error_text = str(exc) or "; ".join(errors) or "Agent bootstrap failed"
+                for url in assigned_urls:
+                    await self._mongodb_service.mark_url_failed(
+                        process_id,
+                        url,
+                        error_text,
+                        result_payload={"status": "failed", "reason": error_text},
+                        was_running=False,
+                    )
+                if assigned_urls:
+                    await self._mongodb_service.update_assignment_status(process_id, agent_index, "completed")
+                return WorkerProcessResult(
+                    agent_index=agent_index,
+                    status="failed",
+                    assigned_urls=assigned_urls,
+                    processed_urls=[],
+                    domain_results=[],
+                    errors=errors + [error_text],
+                    metadata={**dict(bootstrap_result.get("metadata", {})), "rerun": True},
+                ).model_dump(mode="json")
+
+        browser_session = bootstrap_result.get("browser_session")
+        agent_tab = bootstrap_result.get("agent_tab", {})
+        try:
+            domain_results: list[dict[str, Any]] = []
+            errors: list[str] = []
+            processed_urls: list[str] = []
+
+            for url in assigned_urls:
+                if self._is_stop_requested(process_id):
+                    remaining_urls = [pending_url for pending_url in assigned_urls if pending_url not in processed_urls]
+                    await self._stop_remaining_agent_urls(process_id, agent_index, remaining_urls)
+                    break
+
+                recovery_attempt_count = 0
+                mark_running = True
+                while True:
+                    try:
+                        record = await self._rerun_domain(
+                            process_id=process_id,
+                            client_key=client_key,
+                            client_name=client_name,
+                            url=url,
+                            browser_session=browser_session,
+                            agent_index=agent_index,
+                            agent_tab=agent_tab,
+                            ats_check=bool((graph_input.get("metadata") or {}).get("ats_check", True)),
+                            job_extract=bool((graph_input.get("metadata") or {}).get("job_extract", False)),
+                            job_monitoring=bool((graph_input.get("metadata") or {}).get("job_monitoring", False)),
+                            requested_capability=str((graph_input.get("metadata") or {}).get("requested_capability", "career_page")),
+                            original_item=original_item_map.get(self._normalize_domain_key(url)),
+                            mark_running=mark_running,
+                        )
+                        break
+                    except AgentSessionRecoveryNeeded as exc:
+                        recovery_attempt_count += 1
+                        if recovery_attempt_count > 2:
+                            error_text = str(exc)
+                            record = DomainProcessRecord(
+                                domain=url,
+                                main_domain=extract_domain(url),
+                                status="failed",
+                                error=error_text,
+                            ).model_dump(mode="json")
+                            await self._mongodb_service.mark_url_failed(
+                                process_id,
+                                url,
+                                error_text,
+                                result_payload=record,
+                                was_running=True,
+                            )
+                            break
+
+                        browser_session, agent_tab = await self._recover_agent_tab(
+                            shared_runtime=shared_runtime,
+                            browser_session=browser_session,
+                            agent_index=agent_index,
+                            url=url,
+                        )
+                        mark_running = False
+
+                domain_results.append(record)
+                processed_urls.append(url)
+                if record["status"] != "completed" and record.get("error"):
+                    errors.append(str(record["error"]))
+
+            return WorkerProcessResult(
+                agent_index=agent_index,
+                status="stopped" if self._is_stop_requested(process_id) else ("completed" if not errors else "failed"),
+                assigned_urls=assigned_urls,
+                processed_urls=processed_urls,
+                domain_results=[DomainProcessRecord(**record) for record in domain_results],
+                errors=errors,
+                metadata={**dict(bootstrap_result.get("metadata", {})), "rerun": True},
             ).model_dump(mode="json")
         finally:
             if assigned_urls:
@@ -876,6 +1280,214 @@ class JobProcessService:
             )
             return failed_record
 
+    async def _rerun_domain(
+        self,
+        *,
+        process_id: str,
+        client_key: str,
+        client_name: str,
+        url: str,
+        browser_session: Any,
+        agent_index: int,
+        agent_tab: dict[str, Any],
+        ats_check: bool,
+        job_extract: bool,
+        job_monitoring: bool,
+        requested_capability: str,
+        original_item: dict[str, Any] | None,
+        mark_running: bool = True,
+    ) -> dict[str, Any]:
+        domain_key = self._normalize_domain_key(url)
+        main_domain = extract_domain(url)
+        if mark_running:
+            await self._mongodb_service.mark_url_running(process_id, url, agent_index)
+
+        previous_record = dict((original_item or {}).get("result_payload") or {})
+        previous_career_url_extraction = dict(previous_record.get("career_url_extraction") or {})
+        previous_career_page_result = dict(previous_record.get("career_page_result") or {})
+        previous_ats_detection = dict(previous_record.get("ats_detection") or {})
+        existing_domain = await self._mongodb_service.get_domain(domain_key)
+
+        try:
+            fresh_career_url_result = await career_url_extraction_node(main_domain or domain_key, browser_session)
+            career_url_result = self._select_rerun_career_url_result(
+                fresh_result=fresh_career_url_result,
+                previous_result=previous_career_url_extraction,
+            )
+
+            previous_not_job_related_urls = list(
+                ((previous_career_page_result.get("overview") or {}).get("not_job_related_urls") or [])
+            )
+            candidate_career_urls = self._filter_rerun_career_urls(
+                career_url_result.get("career_urls") or [],
+                previous_not_job_related_urls,
+            )
+            career_urls_changed = self._rerun_career_urls_changed(
+                previous_urls=list(previous_career_url_extraction.get("career_urls") or []),
+                current_urls=list(career_url_result.get("career_urls") or []),
+            )
+
+            reused_analysis_count = 0
+            changed_page_count = 0
+            content_changed = career_urls_changed
+            career_page_result = self._build_empty_career_page_result(career_url_result)
+
+            if candidate_career_urls:
+                rerun_page_result = await self._build_rerun_career_page_result(
+                    career_urls=candidate_career_urls,
+                    previous_career_page_result=previous_career_page_result,
+                    browser_session=browser_session,
+                    agent_index=agent_index,
+                    agent_tab=agent_tab,
+                )
+                career_page_result = rerun_page_result["career_page_result"]
+                reused_analysis_count = int(rerun_page_result["reused_analysis_count"])
+                changed_page_count = int(rerun_page_result["changed_page_count"])
+                content_changed = bool(content_changed or rerun_page_result["content_changed"])
+
+            ats_detection: dict[str, Any]
+            if ats_check:
+                if not content_changed:
+                    ats_detection = {
+                        **previous_ats_detection,
+                        "detection_method": "rerun_skipped_no_career_change",
+                        "reasoning": "Career content did not change during rerun, so ATS check was skipped.",
+                        "reused": True,
+                    }
+                else:
+                    ats_detection = await detect_ats(
+                        career_page_result,
+                        main_domain or domain_key,
+                        browser_session,
+                        agent_index,
+                        agent_tab,
+                    )
+            else:
+                ats_detection = {
+                    "ats_detected": None,
+                    "detection_method": "skipped",
+                    "reasoning": "ATS check disabled for this process.",
+                }
+
+            if job_extract and content_changed:
+                jobs_extraction = await self._job_extraction_service.extract_jobs_for_domain(
+                    process_id=process_id,
+                    client_key=client_key,
+                    client_name=client_name,
+                    raw_url=url,
+                    domain_key=domain_key,
+                    career_page_result=career_page_result,
+                    browser_session=browser_session,
+                    agent_index=agent_index,
+                    agent_tab=agent_tab,
+                )
+            elif job_extract:
+                jobs_extraction = {
+                    "status": "skipped_no_career_change",
+                    "requested": True,
+                    "job_count": 0,
+                    "jobs": [],
+                    "sources": [],
+                    "reason": "Career content did not change during rerun.",
+                }
+            else:
+                jobs_extraction = {
+                    "status": "skipped",
+                    "requested": False,
+                    "job_count": 0,
+                    "jobs": [],
+                    "sources": [],
+                }
+
+            record = DomainProcessRecord(
+                domain=url,
+                main_domain=main_domain,
+                career_url_extraction=career_url_result,
+                career_page_result=career_page_result,
+                ats_detection=ats_detection,
+                jobs_extraction=jobs_extraction,
+                status="completed",
+            ).model_dump(mode="json")
+            record["rerun_metadata"] = {
+                "reused_analysis_count": reused_analysis_count,
+                "changed_page_count": changed_page_count,
+                "content_changed": content_changed,
+            }
+
+            domain_check_id = str(uuid4())
+            result_summary = self._build_result_summary(
+                record,
+                reused_career_discovery=bool(career_url_result.get("used_previous_career_urls")),
+                reused_ats_detection=bool(ats_detection.get("reused")),
+                content_changed=content_changed,
+                job_monitoring=job_monitoring,
+            )
+
+            await self._mongodb_service.insert_domain_check(
+                DomainCheckDocument(
+                    domain_check_id=domain_check_id,
+                    process_id=process_id,
+                    client_key=client_key,
+                    client_name=client_name,
+                    raw_url=url,
+                    domain_key=domain_key,
+                    requested_capability=requested_capability,  # type: ignore[arg-type]
+                    content_changed=content_changed,
+                    page_fingerprint=self._fingerprint_payload(career_page_result),
+                    llm_skipped=not content_changed,
+                    result_payload=record,
+                ).model_dump(mode="json")
+            )
+
+            await self._mongodb_service.upsert_domain(
+                domain_key,
+                {
+                    "career_url_extraction": career_url_result,
+                    "career_page_result": career_page_result,
+                    "ats_detection": ats_detection,
+                    "jobs_extraction_summary": {
+                        "status": jobs_extraction.get("status"),
+                        "requested": jobs_extraction.get("requested"),
+                        "job_count": jobs_extraction.get("job_count"),
+                        "source_count": jobs_extraction.get("source_count"),
+                        "reused_source_count": jobs_extraction.get("reused_source_count"),
+                    },
+                    "latest_page_fingerprint": self._fingerprint_payload(career_page_result),
+                    "latest_extracted_text": self._extract_latest_page_text(career_page_result),
+                    "last_career_discovery_at": datetime.utcnow(),
+                    "last_career_check_at": datetime.utcnow(),
+                    "last_ats_check_at": datetime.utcnow() if ats_check and content_changed else (existing_domain or {}).get("last_ats_check_at"),
+                    "last_job_extract_at": datetime.utcnow() if job_extract and content_changed else (existing_domain or {}).get("last_job_extract_at"),
+                },
+            )
+
+            await self._mongodb_service.mark_url_completed(
+                process_id,
+                url,
+                result_summary=result_summary,
+                result_payload=record,
+                domain_check_id=domain_check_id,
+            )
+            return record
+        except Exception as exc:
+            error_text = str(exc)
+            if self._is_recoverable_agent_session_error(error_text):
+                raise AgentSessionRecoveryNeeded(error_text) from exc
+            failed_record = DomainProcessRecord(
+                domain=url,
+                main_domain=main_domain,
+                status="failed",
+                error=error_text,
+            ).model_dump(mode="json")
+            await self._mongodb_service.mark_url_failed(
+                process_id,
+                url,
+                error_text,
+                result_payload=failed_record,
+                was_running=True,
+            )
+            return failed_record
+
     async def _recover_agent_tab(
         self,
         *,
@@ -952,6 +1564,201 @@ class JobProcessService:
     def _build_client_key(self, client_name: str) -> str:
         normalized = re.sub(r"[^a-z0-9]+", "_", client_name.strip().lower()).strip("_")
         return normalized or "default_client"
+
+    def _select_rerun_career_url_result(
+        self,
+        *,
+        fresh_result: dict[str, Any],
+        previous_result: dict[str, Any],
+    ) -> dict[str, Any]:
+        fresh_urls = list(fresh_result.get("career_urls") or [])
+        previous_urls = list(previous_result.get("career_urls") or [])
+        if fresh_urls:
+            selected = dict(fresh_result)
+            selected["used_previous_career_urls"] = False
+            return selected
+        if previous_urls:
+            selected = dict(previous_result)
+            selected["used_previous_career_urls"] = True
+            selected["fallback_reason"] = str(fresh_result.get("error_message") or fresh_result.get("status") or "").strip() or None
+            return selected
+        selected = dict(fresh_result)
+        selected["used_previous_career_urls"] = False
+        return selected
+
+    def _filter_rerun_career_urls(self, urls: list[str], not_job_related_urls: list[str]) -> list[str]:
+        excluded = {self._normalize_url_for_compare(url) for url in not_job_related_urls}
+        filtered: list[str] = []
+        seen: set[str] = set()
+        for url in urls:
+            normalized = self._normalize_url_for_compare(url)
+            if not normalized or normalized in seen or normalized in excluded:
+                continue
+            seen.add(normalized)
+            filtered.append(str(url).strip())
+        return filtered
+
+    def _rerun_career_urls_changed(self, *, previous_urls: list[str], current_urls: list[str]) -> bool:
+        previous_set = {self._normalize_url_for_compare(url) for url in previous_urls if self._normalize_url_for_compare(url)}
+        current_set = {self._normalize_url_for_compare(url) for url in current_urls if self._normalize_url_for_compare(url)}
+        return previous_set != current_set
+
+    def _normalize_url_for_compare(self, url: str | None) -> str:
+        value = str(url or "").strip().lower()
+        if not value:
+            return ""
+        value = value.rstrip("/")
+        return value
+
+    def _fingerprint_text(self, value: str) -> str:
+        return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+    def _build_previous_page_analysis_map(self, career_page_result: dict[str, Any]) -> dict[str, dict[str, Any]]:
+        previous_map: dict[str, dict[str, Any]] = {}
+        for page in list(career_page_result.get("career_pages_analysis") or []):
+            page_url = (
+                page.get("extracted_url")
+                or page.get("current_url")
+                or page.get("url")
+                or page.get("navigation_url")
+                or ""
+            )
+            normalized = self._normalize_url_for_compare(str(page_url))
+            if normalized:
+                previous_map[normalized] = dict(page)
+        return previous_map
+
+    def _should_retry_failed_previous_page(self, previous_page: dict[str, Any] | None) -> bool:
+        if not previous_page:
+            return False
+
+        status = str(previous_page.get("status") or "").strip()
+        page_access_status = str(previous_page.get("page_access_status") or "").strip()
+        error_text = str(previous_page.get("error") or "").strip()
+
+        retryable_statuses = {
+            "navigation_skipped",
+            "navigation_timeout",
+            "navigation_non_web_url",
+            "action_failed",
+            "download_started",
+            "extraction_failed",
+            "ai_analysis_failed",
+            "access_issue",
+        }
+        retryable_page_access_statuses = {
+            "blocked",
+            "forbidden",
+            "login_required",
+            "captcha",
+            "bot_check",
+            "rate_limited",
+            "timeout",
+            "unknown",
+        }
+        retryable_error_signatures = (
+            "timeout",
+            "unable to extract page content",
+            "access denied",
+            "forbidden",
+            "captcha",
+            "blocked",
+            "navigation",
+            "connection closed",
+            "session closed",
+            "browser has been closed",
+            "page has been closed",
+        )
+
+        if status in retryable_statuses:
+            return True
+        if page_access_status and page_access_status != "accessible" and page_access_status in retryable_page_access_statuses:
+            return True
+
+        normalized_error = error_text.lower()
+        return any(signature in normalized_error for signature in retryable_error_signatures)
+
+    async def _build_rerun_career_page_result(
+        self,
+        *,
+        career_urls: list[str],
+        previous_career_page_result: dict[str, Any],
+        browser_session: Any,
+        agent_index: int,
+        agent_tab: dict[str, Any],
+    ) -> dict[str, Any]:
+        previous_analysis_map = self._build_previous_page_analysis_map(previous_career_page_result)
+        reused_results: list[dict[str, Any]] = []
+        prechecked_failures: list[dict[str, Any]] = []
+        changed_urls: list[str] = []
+
+        for career_url in career_urls:
+            normalized_url = self._normalize_url_for_compare(career_url)
+            previous_page = previous_analysis_map.get(normalized_url)
+            if self._should_retry_failed_previous_page(previous_page):
+                changed_urls.append(career_url)
+                continue
+
+            previous_markdown = str((previous_page or {}).get("extracted_content") or "").strip()
+            if not previous_markdown:
+                changed_urls.append(career_url)
+                continue
+
+            nav_response = await navigate_to_url(
+                browser_session.page if browser_session is not None else None,
+                agent_index=agent_index,
+                tab_handle=agent_tab["handle"],
+                url=career_url,
+                post_navigation_delay_ms=0,
+            )
+            if nav_response.get("status") != "navigated":
+                prechecked_failures.append({**nav_response, "navigation_url": career_url})
+                continue
+
+            extracted_content_response = await extract_page_content(
+                browser_session.page if browser_session is not None else None,
+                sections=["body"],
+            )
+            current_markdown = str((extracted_content_response or {}).get("markdown") or "").strip()
+            if not current_markdown:
+                failure_record = {
+                    **nav_response,
+                    "navigation_url": career_url,
+                    "status": "extraction_failed",
+                    "error": "Unable to extract page content",
+                }
+                prechecked_failures.append(failure_record)
+                continue
+
+            if self._fingerprint_text(current_markdown) == self._fingerprint_text(previous_markdown):
+                reused_result = dict(previous_page or {})
+                reused_result["rerun_content_reused"] = True
+                reused_result["current_url"] = nav_response.get("current_url") or reused_result.get("current_url")
+                reused_results.append(reused_result)
+            else:
+                changed_urls.append(career_url)
+
+        changed_result = {"overview": {}, "career_pages_analysis": []}
+        if changed_urls:
+            changed_result = await career_page_category_node(
+                changed_urls,
+                browser_session,
+                agent_index,
+                agent_tab,
+            )
+
+        merged_analysis = reused_results + list(changed_result.get("career_pages_analysis") or []) + prechecked_failures
+        overview = _build_career_page_overview(merged_analysis)
+        content_changed = bool(changed_urls or prechecked_failures)
+        return {
+            "career_page_result": {
+                "overview": overview,
+                "career_pages_analysis": merged_analysis,
+            },
+            "content_changed": content_changed,
+            "reused_analysis_count": len(reused_results),
+            "changed_page_count": len(changed_urls) + len(prechecked_failures),
+        }
 
     def _is_stop_requested(self, process_id: str) -> bool:
         return process_id in self._stop_requests
@@ -1030,6 +1837,12 @@ class JobProcessService:
         if status == "no_career_page_found":
             outcome = "no_career_page_found"
             outcome_reason = "No career or job page candidates were found for this domain."
+        elif status == "career_page_discovery_failed":
+            outcome = "career_page_discovery_failed"
+            outcome_reason = (
+                "Career page discovery could not be completed."
+                + (f" {error_message}" if error_message else "")
+            )
         elif status == "domain_access_failed":
             outcome = "career_page_discovery_failed"
             outcome_reason = (

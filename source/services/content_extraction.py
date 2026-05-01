@@ -656,16 +656,15 @@ async def prepare_page_for_extraction(page: Page | None) -> dict[str, Any]:
     accordion_result = await _expand_accordions(page)
     scroll_result = await _scroll_to_load_content(page)
     stability_result = await _wait_for_content_stability(page)
-    follow_up_scroll_result = await _scroll_to_load_content(page, scroll_delay=0.35)
 
-    await asyncio.sleep(0.75)
+    await asyncio.sleep(2.0)
 
     log_event(
         logger,
         "info",
         "page_prepared cookie_handled=%s popups_closed=%s overlays_removed=%s "
         "accordions_dom=%s accordions_clicked=%s accordions_forced=%s "
-        "scroll_count=%s follow_up_scroll_count=%s content_stable=%s stability_wait_seconds=%s",
+        "scroll_count=%s content_stable=%s stability_wait_seconds=%s",
         cookie_handled,
         popups_closed,
         overlays_removed,
@@ -673,7 +672,6 @@ async def prepare_page_for_extraction(page: Page | None) -> dict[str, Any]:
         accordion_result["click_triggered"],
         accordion_result["force_revealed"],
         scroll_result["scroll_count"],
-        follow_up_scroll_result["scroll_count"],
         stability_result["stable"],
         stability_result["elapsed_seconds"],
         domain=_page_domain(page),
@@ -685,7 +683,6 @@ async def prepare_page_for_extraction(page: Page | None) -> dict[str, Any]:
         accordions_clicked=accordion_result["click_triggered"],
         accordions_forced=accordion_result["force_revealed"],
         scroll_count=scroll_result["scroll_count"],
-        follow_up_scroll_count=follow_up_scroll_result["scroll_count"],
         content_stable=stability_result["stable"],
         stability_wait_seconds=stability_result["elapsed_seconds"],
     )
@@ -696,17 +693,17 @@ async def prepare_page_for_extraction(page: Page | None) -> dict[str, Any]:
         "popups_closed": popups_closed,
         "overlays_removed": overlays_removed,
         "accordions_expanded": accordion_result,
-        "scroll_count": scroll_result["scroll_count"] + follow_up_scroll_result["scroll_count"],
+        "scroll_count": scroll_result["scroll_count"],
         "initial_scroll_count": scroll_result["scroll_count"],
-        "follow_up_scroll_count": follow_up_scroll_result["scroll_count"],
-        "final_scroll_height": max(scroll_result["final_height"], follow_up_scroll_result["final_height"]),
+        "follow_up_scroll_count": 0,
+        "final_scroll_height": scroll_result["final_height"],
         "content_stable": bool(stability_result["stable"]),
         "stability_wait_seconds": float(stability_result["elapsed_seconds"]),
         "stability_samples": int(stability_result["samples"]),
         "stable_interactive_count": int(stability_result["interactive_count"]),
         "stable_text_length": int(stability_result["text_length"]),
         "stable_scroll_height": int(stability_result["scroll_height"]),
-        "final_wait_seconds": 0.75,
+        "final_wait_seconds": 2.0,
     }
 
 

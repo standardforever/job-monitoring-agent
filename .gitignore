@@ -210,4 +210,5 @@ my-env/
 logs/
 test/
 chrome-profile/
-mongo-data/.DS_Store
+mongo-data/
+source/.DS_Store

@@ -8,11 +8,13 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from api.process_routes import router as process_router
+from services.mongodb_service import MongoDBService
 from utils.logging import get_logger, log_event
 
 app = FastAPI(title="Job Monitoring Agent", root_path="/ats")
 logger = get_logger("app")
 ui_directory = Path(__file__).resolve().parent / "ui"
+mongodb_service = MongoDBService()
 
 app.include_router(process_router, prefix="/api")
 app.mount("/assets", StaticFiles(directory=ui_directory), name="ui-assets")
@@ -22,6 +24,12 @@ log_event(
     "fastapi_application_initialized",
     domain="api",
 )
+
+
+@app.on_event("startup")
+async def ensure_mongodb_indexes() -> None:
+    await mongodb_service.ensure_indexes()
+    log_event(logger, "info", "fastapi_startup_indexes_ensured", domain="mongodb")
 
 
 def _render_ui_html(request: Request) -> HTMLResponse:

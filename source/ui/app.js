@@ -230,6 +230,9 @@ function renderProcesses(payload) {
       const metadata = process.metadata || {};
       const processId = encodeURIComponent(process.process_id);
       const showJobDownloads = Boolean(metadata.job_extract || metadata.requested_capability?.includes("job"));
+      const rerunButton = !["queued", "running", "stop_requested"].includes(process.status)
+        ? `<button class="button button-secondary rerun-process-button" type="button" data-process-id="${escapeHtml(process.process_id)}">Rerun</button>`
+        : "";
       const stopButton = ["queued", "running", "stop_requested"].includes(process.status)
         ? `<button class="button button-danger stop-process-button" type="button" data-process-id="${escapeHtml(process.process_id)}">${process.status === "stop_requested" ? "Stopping..." : "Stop Process"}</button>`
         : "";
@@ -258,6 +261,7 @@ function renderProcesses(payload) {
             <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/important.csv`)}" download>Career/ATS CSV</a>
             ${showJobDownloads ? `<a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/jobs.json`)}" download>Jobs JSON</a>` : ""}
             ${showJobDownloads ? `<a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/jobs.csv`)}" download>Jobs CSV</a>` : ""}
+            ${rerunButton}
             ${stopButton}
           </div>
         </article>
@@ -273,6 +277,22 @@ function renderProcesses(payload) {
           method: "POST",
         });
         showAlert(response.message || "Stop requested.", "info");
+        await loadProcesses();
+      } catch (error) {
+        button.disabled = false;
+        showAlert(error.message, "error");
+      }
+    });
+  }
+
+  for (const button of list.querySelectorAll(".rerun-process-button")) {
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        const response = await apiFetch(`/processes/${encodeURIComponent(button.dataset.processId)}/rerun`, {
+          method: "POST",
+        });
+        showAlert(`Rerun started: ${response.process_id}`, "success");
         await loadProcesses();
       } catch (error) {
         button.disabled = false;

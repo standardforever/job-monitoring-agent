@@ -516,6 +516,34 @@ async def create_process_from_file(
     }
 
 
+@router.post("/processes/{process_id}/rerun")
+async def rerun_process(
+    process_id: str,
+    background_tasks: BackgroundTasks,
+) -> dict[str, str]:
+    log_event(
+        logger,
+        "info",
+        "process_rerun_requested process_id=%s",
+        process_id,
+        domain="api",
+        process_id=process_id,
+    )
+    try:
+        process_document = await job_process_service.submit_rerun_process(process_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    background_tasks.add_task(
+        job_process_service.execute_rerun_process,
+        process_document["process_id"],
+    )
+    return {
+        "process_id": process_document["process_id"],
+        "status": process_document["status"],
+    }
+
+
 @router.post("/processes/{process_id}/stop")
 async def stop_process(process_id: str) -> dict[str, Any]:
     log_event(

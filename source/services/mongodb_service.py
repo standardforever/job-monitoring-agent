@@ -4,7 +4,7 @@ import asyncio
 from datetime import datetime
 from typing import Any
 
-from pymongo import MongoClient
+from pymongo import ASCENDING, DESCENDING, MongoClient
 
 from core.config import get_settings
 from models.process import RequestedCapability
@@ -58,6 +58,126 @@ class MongoDBService:
 
     def _get_collection(self, key: str):
         return self._get_database()[self._collection_names[key]]
+
+    async def ensure_indexes(self) -> None:
+        await asyncio.to_thread(self._ensure_indexes_sync)
+
+    def _ensure_indexes_sync(self) -> None:
+        log_event(
+            logger,
+            "info",
+            "mongodb_ensure_indexes_started database=%s",
+            self._database_name,
+            domain="mongodb",
+            database=self._database_name,
+        )
+
+        self._get_collection("clients").create_index(
+            [("client_key", ASCENDING)],
+            unique=True,
+            name="clients_client_key_unique",
+        )
+        self._get_collection("clients").create_index(
+            [("updated_at", DESCENDING)],
+            name="clients_updated_at_desc",
+        )
+
+        self._get_collection("client_domains").create_index(
+            [("client_key", ASCENDING), ("domain_key", ASCENDING)],
+            unique=True,
+            name="client_domains_client_domain_unique",
+        )
+
+        self._get_collection("domains").create_index(
+            [("domain_key", ASCENDING)],
+            unique=True,
+            name="domains_domain_key_unique",
+        )
+
+        self._get_collection("process_runs").create_index(
+            [("process_id", ASCENDING)],
+            unique=True,
+            name="process_runs_process_id_unique",
+        )
+        self._get_collection("process_runs").create_index(
+            [("client_key", ASCENDING), ("created_at", DESCENDING)],
+            name="process_runs_client_created_desc",
+        )
+        self._get_collection("process_runs").create_index(
+            [("status", ASCENDING)],
+            name="process_runs_status",
+        )
+
+        self._get_collection("process_run_items").create_index(
+            [("process_id", ASCENDING), ("raw_url", ASCENDING)],
+            unique=True,
+            name="process_run_items_process_url_unique",
+        )
+        self._get_collection("process_run_items").create_index(
+            [("process_id", ASCENDING)],
+            name="process_run_items_process_id",
+        )
+        self._get_collection("process_run_items").create_index(
+            [("client_key", ASCENDING), ("domain_key", ASCENDING)],
+            name="process_run_items_client_domain",
+        )
+
+        self._get_collection("domain_checks").create_index(
+            [("domain_check_id", ASCENDING)],
+            unique=True,
+            name="domain_checks_domain_check_id_unique",
+        )
+        self._get_collection("domain_checks").create_index(
+            [("domain_key", ASCENDING), ("created_at", DESCENDING)],
+            name="domain_checks_domain_created_desc",
+        )
+        self._get_collection("domain_checks").create_index(
+            [("client_key", ASCENDING), ("created_at", DESCENDING)],
+            name="domain_checks_client_created_desc",
+        )
+        self._get_collection("domain_checks").create_index(
+            [("process_id", ASCENDING)],
+            name="domain_checks_process_id",
+        )
+
+        self._get_collection("jobs").create_index(
+            [("job_key", ASCENDING)],
+            unique=True,
+            name="jobs_job_key_unique",
+        )
+        self._get_collection("jobs").create_index(
+            [("domain_key", ASCENDING), ("updated_at", DESCENDING)],
+            name="jobs_domain_updated_desc",
+        )
+
+        self._get_collection("client_jobs").create_index(
+            [("client_key", ASCENDING), ("job_key", ASCENDING)],
+            unique=True,
+            name="client_jobs_client_job_unique",
+        )
+        self._get_collection("client_jobs").create_index(
+            [("client_key", ASCENDING), ("updated_at", DESCENDING)],
+            name="client_jobs_client_updated_desc",
+        )
+        self._get_collection("client_jobs").create_index(
+            [("process_id", ASCENDING)],
+            name="client_jobs_process_id",
+        )
+
+        self._get_collection("job_extraction_cache").create_index(
+            [("cache_key", ASCENDING)],
+            unique=True,
+            name="job_extraction_cache_cache_key_unique",
+        )
+
+        log_event(
+            logger,
+            "info",
+            "mongodb_ensure_indexes_completed database=%s",
+            self._database_name,
+            domain="mongodb",
+            database=self._database_name,
+        )
 
     async def ensure_client(self, client_key: str, client_name: str) -> None:
         await asyncio.to_thread(self._ensure_client_sync, client_key, client_name)

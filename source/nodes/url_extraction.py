@@ -163,6 +163,32 @@ async def career_url_extraction_node(navigate_to: str, browser_session: Any) -> 
     non_domain_career_urls = _dedupe_career_items(list(non_domain_careers_result.get("result", []) or []))
 
     if not combined_job_urls:
+        downstream_failures: list[str] = []
+        if not bool(non_domain_careers_result.get("success", True)):
+            downstream_failures.append(
+                f"page_url_extraction_failed: {str(non_domain_careers_result.get('error') or non_domain_careers_result.get('status') or 'unknown_error')}"
+            )
+        if not bool(search_result.get("success", True)):
+            downstream_failures.append(
+                f"search_discovery_failed: {str(search_result.get('error') or search_result.get('status') or 'unknown_error')}"
+            )
+
+        if downstream_failures:
+            return_dict["status"] = "career_page_discovery_failed"
+            return_dict["error_message"] = " | ".join(downstream_failures)
+            log_event(
+                logger,
+                "warning",
+                "url_extraction_discovery_failed input=%s reason=%s",
+                active_url,
+                return_dict["error_message"],
+                domain=active_url,
+                input_url=active_url,
+                status=return_dict["status"],
+                error=return_dict["error_message"],
+            )
+            return return_dict
+
         return_dict["status"] = "no_career_page_found"
         return_dict["error_message"] = "no_job_or_career_candidates_found"
         log_event(
