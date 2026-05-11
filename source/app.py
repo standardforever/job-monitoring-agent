@@ -47,7 +47,7 @@ def _render_ui_html(request: Request) -> HTMLResponse:
     return HTMLResponse(content=html)
 
 
-@app.get("/dashboard", include_in_schema=False)
+@app.get("/", include_in_schema=False)
 async def ui_index(request: Request) -> HTMLResponse:
     return _render_ui_html(request)
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import zipfile
 from datetime import datetime
 from typing import Any
 
@@ -38,6 +39,15 @@ def _downloadable_json_response(payload: Any, filename: str) -> StreamingRespons
 
 
 def _downloadable_csv_response(rows: list[dict[str, Any]], filename: str) -> StreamingResponse:
+    content = _csv_content(rows)
+    return StreamingResponse(
+        iter([content.encode("utf-8")]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+def _csv_content(rows: list[dict[str, Any]]) -> str:
     output = io.StringIO()
     fieldnames = list(rows[0].keys()) if rows else []
     writer = csv.DictWriter(output, fieldnames=fieldnames)
@@ -47,11 +57,7 @@ def _downloadable_csv_response(rows: list[dict[str, Any]], filename: str) -> Str
             writer.writerow({key: _json_default(value) for key, value in row.items()})
     content = output.getvalue()
     output.close()
-    return StreamingResponse(
-        iter([content.encode("utf-8")]),
-        media_type="text/csv",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
-    )
+    return content
 
 
 def _safe_filename(value: str) -> str:
@@ -239,40 +245,80 @@ def _build_process_important_export(process: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _build_career_outcome_reason_with_pagination(career_overview: dict[str, Any]) -> str | None:
+    reason = str(career_overview.get("outcome_reason") or "").strip() or None
+    listing_ui = career_overview.get("listing_ui")
+    pagination_present = None
+    if isinstance(listing_ui, dict):
+        pagination_present = listing_ui.get("pagination_present")
+    if pagination_present is True:
+        suffix = " Pagination detected on the page: yes."
+    elif pagination_present is False:
+        suffix = " Pagination detected on the page: no."
+    else:
+        suffix = " Pagination detected on the page: unknown."
+    return f"{reason or ''}{suffix}".strip() or None
+
+
 def _build_process_important_csv_rows(process: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for item in list(process.get("items") or []):
         result_payload = dict(item.get("result_payload") or {})
         career_page_result = dict(result_payload.get("career_page_result") or {})
-        ats_detection = dict(result_payload.get("ats_detection") or {})
         result_summary = dict(item.get("result_summary") or {})
         career_overview = dict(career_page_result.get("overview") or {})
         rows.append(
             {
-                "process_id": process.get("process_id"),
                 "client_name": process.get("client_name"),
-                "raw_url": item.get("raw_url"),
-                "requested_capability": item.get("requested_capability"),
                 "status": item.get("status"),
+                "raw_url": item.get("raw_url"),
                 "result_summary_career_url_status": result_summary.get("career_url_status"),
-                "result_summary_career_url_count": result_summary.get("career_url_count"),
                 "career_page_overview_outcome": career_overview.get("outcome"),
-                "career_page_overview_outcome_reason": career_overview.get("outcome_reason"),
-                "career_page_overview_jobs_found": career_overview.get("jobs_found"),
-                "career_page_overview_total_jobs_found": career_overview.get("total_jobs_found"),
-                "career_page_overview_job_alert": career_overview.get("job_alert"),
-                "career_page_overview_job_alert_note": career_overview.get("job_alert_note"),
-                "career_page_overview_career_page_confirmed": career_overview.get("career_page_confirmed"),
-                "career_page_overview_total_urls_processed": career_overview.get("total_urls_processed"),
-                "career_page_overview_job_urls": _flatten_csv_list(career_overview.get("job_urls")),
+                "career_page_overview_outcome_reason": _build_career_outcome_reason_with_pagination(career_overview),
                 "career_page_overview_job_found_on_urls": _flatten_csv_list(career_overview.get("job_found_on_urls")),
-                "career_page_overview_job_alert_urls": _flatten_csv_list(career_overview.get("job_alert_urls")),
-                "ats_detected": ats_detection.get("ats_detected"),
-                "ats_provider": ats_detection.get("ats_provider"),
-                "ats_confidence": ats_detection.get("confidence"),
-                "ats_reason": _extract_ats_reason(ats_detection),
             }
         )
+    return rows
+
+
+def _build_process_roles_csv_rows(process: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str, str]] = set()
+    for item in list(process.get("items") or []):
+        result_payload = dict(item.get("result_payload") or {})
+        career_page_result = dict(result_payload.get("career_page_result") or {})
+        for page in list(career_page_result.get("career_pages_analysis") or []):
+            career_url = str(
+                page.get("extracted_url")
+                or page.get("current_url")
+                or page.get("url")
+                or page.get("navigation_url")
+                or ""
+            ).strip()
+            llm_analysis = dict(page.get("llm_analysis") or {})
+            for job in list(llm_analysis.get("jobs_listed_on_page") or []):
+                if not isinstance(job, dict):
+                    continue
+                title = str(job.get("title") or "").strip() or None
+                job_url = str(job.get("job_url") or "").strip() or None
+                if not title and not job_url:
+                    continue
+                row = {
+                    "company_url": item.get("raw_url"),
+                    "career_url": career_url or None,
+                    "job_url": job_url,
+                    "title": title,
+                }
+                marker = (
+                    str(row["company_url"] or ""),
+                    str(row["career_url"] or ""),
+                    str(row["job_url"] or ""),
+                    str(row["title"] or ""),
+                )
+                if marker in seen:
+                    continue
+                seen.add(marker)
+                rows.append(row)
     return rows
 
 
@@ -780,4 +826,60 @@ async def get_process_important_csv(process_id: str) -> StreamingResponse:
     return _downloadable_csv_response(
         rows,
         f"process_{_safe_filename(process_id)}_important.csv",
+    )
+
+
+@router.get("/processes/{process_id}/important-roles.csv")
+async def get_process_roles_csv(process_id: str) -> StreamingResponse:
+    log_event(
+        logger,
+        "info",
+        "process_roles_csv_requested process_id=%s",
+        process_id,
+        domain="api",
+        process_id=process_id,
+    )
+    process = await job_process_service.get_process(process_id)
+    if process is None:
+        raise HTTPException(status_code=404, detail="Process not found")
+    rows = _build_process_roles_csv_rows(process)
+    return _downloadable_csv_response(
+        rows,
+        f"process_{_safe_filename(process_id)}_roles.csv",
+    )
+
+
+@router.get("/processes/{process_id}/csv-bundle.zip")
+async def download_process_csv_bundle(process_id: str) -> StreamingResponse:
+    log_event(
+        logger,
+        "info",
+        "process_csv_bundle_requested process_id=%s",
+        process_id,
+        domain="api",
+        process_id=process_id,
+    )
+    process = await job_process_service.get_process(process_id)
+    if process is None:
+        raise HTTPException(status_code=404, detail="Process not found")
+
+    important_rows = _build_process_important_csv_rows(process)
+    roles_rows = _build_process_roles_csv_rows(process)
+
+    bundle = io.BytesIO()
+    safe_process_id = _safe_filename(process_id)
+    with zipfile.ZipFile(bundle, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            f"process_{safe_process_id}_important.csv",
+            _csv_content(important_rows),
+        )
+        archive.writestr(
+            f"process_{safe_process_id}_roles.csv",
+            _csv_content(roles_rows),
+        )
+    bundle.seek(0)
+    return StreamingResponse(
+        iter([bundle.getvalue()]),
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="process_{safe_process_id}_csv_bundle.zip"'},
     )

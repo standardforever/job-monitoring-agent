@@ -258,9 +258,8 @@ function renderProcesses(payload) {
           <p class="muted">Capability: ${escapeHtml(metadata.requested_capability || "career_page")} | ATS: ${escapeHtml(metadata.ats_check)} | Jobs: ${escapeHtml(metadata.job_extract)}</p>
           <div class="process-actions">
             <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/important`)}" download>Career/ATS JSON</a>
-            <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/important.csv`)}" download>Career/ATS CSV</a>
+            <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/csv-bundle.zip`)}" download>Career/ATS CSV</a>
             ${showJobDownloads ? `<a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/jobs.json`)}" download>Jobs JSON</a>` : ""}
-            ${showJobDownloads ? `<a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/jobs.csv`)}" download>Jobs CSV</a>` : ""}
             ${rerunButton}
             ${stopButton}
           </div>
@@ -300,6 +299,7 @@ function renderProcesses(payload) {
       }
     });
   }
+
 }
 
 async function loadProcesses() {
