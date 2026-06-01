@@ -1,0 +1,338 @@
+{
+    _id: ObjectId('6a06179f3ed54aeaba37ab14'),
+    process_id: '21c45c80-bc24-4793-9cec-f448620bd593',
+    client_key: 'single_user',
+    client_name: 'single_user',
+    raw_url: 'barhale.co.uk',
+    domain_key: 'barhale.co.uk',
+    provided_career_page_url: null,
+    resolved_career_page_url: 'https://www.barhale.co.uk/careers',
+    requested_capability: 'ats_check',
+    status: 'completed',
+    error: null,
+    agent_index: 0,
+    result_summary: {
+        status: 'completed',
+        main_domain: 'barhale.co.uk',
+        career_url_status: 'career_urls_found',
+        career_url_count: 1,
+        ats_detected: true,
+        ats_provider: 'barhale.kallidusrecruit.com',
+        job_extract_requested: false,
+        job_count: 0,
+        reused_career_discovery: false,
+        reused_ats_detection: false,
+        content_changed: true,
+        job_monitoring: false
+    },
+    result_payload: {
+        domain: 'barhale.co.uk',
+        main_domain: 'barhale.co.uk',
+        career_url_extraction: {
+            status: 'career_urls_found',
+            error_message: null,
+            career_urls: [
+                'https://www.barhale.co.uk/careers'
+            ],
+            non_domain_career_urls: [],
+            provided_career_page_url: 'https://www.barhale.co.uk/careers',
+            discovery_method: 'provided_by_upload',
+            used_previous_career_urls: false
+        },
+        career_page_result: {
+            overview: {
+                outcome: 'jobs_found',
+                outcome_reason: '20 job(s) found across 1 career page(s).',
+                jobs_found: true,
+                total_jobs_found: 20,
+                job_urls: [
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1218',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1535',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1590',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1578',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1370',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1417',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1517',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1583',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1604',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1429',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1524',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=55',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1342',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1404',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1446',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1450',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1455',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1503',
+                    'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1505'
+                ],
+                job_found_on_urls: [
+                    'https://www.barhale.co.uk/careers'
+                ],
+                "listing_ui": {
+                    "ui_category": 'linked_cards',
+                    "filter_present": true,
+                    "filter_types": [
+                        'Keyword',
+                        'Location'
+                    ],
+                    "sort_present": true,
+                    "sort_types": [
+                        'Closing Date',
+                        'Company',
+                        'Location',
+                        'Ref',
+                        'Vacancy'
+                    ],
+                    "pagination_present": true,
+                    "pagination_type": 'numbered',
+                    "next_page_url": null
+                },
+                "job_alert": true,
+                "job_alert_note": '1 page(s) offer a job alert signup: https://www.barhale.co.uk/careers',
+                "job_alert_urls": [
+                    'https://www.barhale.co.uk/careers'
+                ],
+                "career_page_confirmed": true,
+                no_vacancy_urls: [],
+                general_job_info_urls: [],
+                blocked_platform_urls: {},
+                external_redirect_urls: [],
+                embedded_urls: [],
+                navigation_blocked_urls: [],
+                navigation_issues: [],
+                not_job_related_urls: [],
+                access_issue_urls: [],
+                unknown_urls: [],
+                total_urls_processed: 1
+            },
+            career_pages_analysis: [
+                {
+                    agent_index: 0,
+                    handle: 'ws://chrome:4444/session/067155becbff09ba93fd6d16c7ae6ddd/se/cdp',
+                    url: 'https://www.barhale.co.uk/careers',
+                    status: 'jobs_listed_on_page',
+                    current_url: 'https://www.barhale.co.uk/careers',
+                    error: null,
+                    extracted_content: 'H1: Current vacancies\n\nKeyword(s)\nLocation\n[BUTTON: Search]\n[BUTTON: Clear filters]\nShowing 1 - 20 of 62 vacancies\nSort by\nClosing Date\nCompany\nLocation\nRef\nVacancy\nCurrent vacancies\nRef\nCompany\nVacancy\nLocation\nClosing Date\nRef:\n1615\nCompany:\nVacancy:\nSkilled Operative → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615\nLocation:\nBarhale Site, Bidduplh, ST8\nClosing Date:\n22/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615\nRef:\n1218\nCompany:\nVacancy:\nProject Manager → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1218\nLocation:\nBarhale (Sites located within a 50/60 mile radius of WS1 4NN)\nClosing Date:\n29/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1218\nRef:\n1535\nCompany:\nVacancy:\nSite Engineer → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1535\nLocation:\nSt Albans\nClosing Date:\n29/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1535\nRef:\n1590\nCompany:\nVacancy:\nHealth, Safety and Environmental Advisor → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1590\nLocation:\nTo cover Barhale Sites across - Cheshire/Manchester and Merseyside regions\nClosing Date:\n29/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1590\nRef:\n1578\nCompany:\nVacancy:\nSenior Hire Controller → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1578\nLocation:\nBarhale House, Bescot Crescent, Walsall, WS1 4NN\nClosing Date:\n30/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1578\nRef:\n1370\nCompany:\nVacancy:\nSenior Quantity Surveyor → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1370\nLocation:\nNorth/ West/ Central London\nClosing Date:\n31/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1370\nRef:\n1417\nCompany:\nVacancy:\nQuantity Surveyor → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1417\nLocation:\nThorpe Wood House, Thorpe Wood, Peterborough, PE3 6WT\nClosing Date:\n31/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1417\nRef:\n1517\nCompany:\nVacancy:\nSenior Quantity Surveyor → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1517\nLocation:\nThorpe Wood House, Thorpe Wood, Peterborough, PE3 6WT\nClosing Date:\n31/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1517\nRef:\n1583\nCompany:\nVacancy:\nSenior Quantity Surveyor - Thames Water (Freelance) → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1583\nLocation:\nVarious sites across Northern London\nClosing Date:\n31/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1583\nRef:\n1604\nCompany:\nVacancy:\nSenior Buyer → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1604\nLocation:\nBarhale House, Bescot Crescent, Walsall, WS1 4NN\nClosing Date:\n31/05/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1604\nRef:\n1429\nCompany:\nVacancy:\nMEICA Manager → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1429\nLocation:\nSite-based: Working across our United Utilities framework within 50 miles of Manchester M32 0RS\nClosing Date:\n01/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1429\nRef:\n1524\nCompany:\nVacancy:\nPlanner → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1524\nLocation:\nBarhale, Anglian Water IOS, Thorpe Wood House, Thorpe Wood, Peterborough, PE3 6WT\nClosing Date:\n01/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1524\nRef:\n55\nCompany:\nVacancy:\nMEICA Estimator → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=55\nLocation:\nBarhale, The Coach House, Tyttenhanger Park, Coursers, St Albans, Hertfordshire, AL4 0PG\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=55\nRef:\n1342\nCompany:\nVacancy:\nSite Manager → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1342\nLocation:\nBarhale, IED Sites, Nottinghamshire, DE13 0DA\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1342\nRef:\n1404\nCompany:\nVacancy:\nSenior Estimator → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1404\nLocation:\nBarhale, Trafford House, Chester Road, Old Trafford, Manchester, M32 0RS\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1404\nRef:\n1446\nCompany:\nVacancy:\nMEICA Project Engineer → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1446\nLocation:\nRickmansworth\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1446\nRef:\n1450\nCompany:\nVacancy:\nSenior Engineer (Perm) → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1450\nLocation:\nStratford, London\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1450\nRef:\n1455\nCompany:\nVacancy:\nProject Manager (Perm) → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1455\nLocation:\nStratford, East London\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1455\nRef:\n1503\nCompany:\nVacancy:\nStreetworks Coordinator → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1503\nLocation:\nSt Albans\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1503\nRef:\n1505\nCompany:\nVacancy:\nStreetworks Coordinator (freelance) → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1505\nLocation:\nSt Albans\nClosing Date:\n05/06/2026\nView → https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1505\n1\n2\n3\n4\n\nH2: Join our talent community\n\nWe\'re always on the look out for the best talent! If there isn\'t a role which is suitable for you at the moment, you can make a general application.\n[BUTTON: Apply]\n\nH2: Create job alert\n\nTell us what you’re looking for and we\'ll send you an email when something relevant comes up.\n[BUTTON: Create job alert]\n\nH2: Extracted selector links\n- [link] 4 -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Page$4\')\n- [link] Ref -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Sort$Vacancy.VacancyId\')\n- [link] Vacancy -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Sort$Vacancy.Title\')\n- [link] 2 -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Page$2\')\n- [link] 3 -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Page$3\')\n- [link] Closing Date -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Sort$Vacancy.ClosingDate\')\n- [link] Location -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Sort$Vacancy.VacancyText.Advertised location\')\n- [link] Company -> javascript:__doPostBack(\'ctl01$MainPlaceholder$VacancyList$SearchableDataTable$DataGrid$DataGrid\',\'Sort$Vacancy.Classifier.Company\')',
+                    extracted_url: 'https://barhale.kallidusrecruit.com/Search.aspx',
+                    token_used: {
+                        input_token: 5599,
+                        output_token: 5390,
+                        total_token: 10989
+                    },
+                    llm_analysis: {
+                        page_category: 'jobs_listed',
+                        confidence: 0.85,
+                        reasoning: 'The page shows current vacancies with a list of 20 job titles (1-20 of 62) and per-item \'View\' links to detailed job pages, plus pagination (1-4) and filters/search controls, indicating a listing of multiple jobs.',
+                        job_alert: true,
+                        page_access_status: 'accessible',
+                        page_access_issue_detail: null,
+                        next_action_target: {
+                            url: null,
+                            button: null,
+                            element_type: null
+                        },
+                        jobs_listed_on_page: [
+                            {
+                                title: 'Skilled Operative',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615'
+                            },
+                            {
+                                title: 'Project Manager',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1218'
+                            },
+                            {
+                                title: 'Site Engineer',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1535'
+                            },
+                            {
+                                title: 'Health, Safety and Environmental Advisor',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1590'
+                            },
+                            {
+                                title: 'Senior Hire Controller',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1578'
+                            },
+                            {
+                                title: 'Senior Quantity Surveyor',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1370'
+                            },
+                            {
+                                title: 'Quantity Surveyor',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1417'
+                            },
+                            {
+                                title: 'Senior Quantity Surveyor',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1517'
+                            },
+                            {
+                                title: 'Senior Quantity Surveyor - Thames Water (Freelance)',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1583'
+                            },
+                            {
+                                title: 'Senior Buyer',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1604'
+                            },
+                            {
+                                title: 'MEICA Manager',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1429'
+                            },
+                            {
+                                title: 'Planner',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1524'
+                            },
+                            {
+                                title: 'MEICA Estimator',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=55'
+                            },
+                            {
+                                title: 'Site Manager',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1342'
+                            },
+                            {
+                                title: 'Senior Estimator',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1404'
+                            },
+                            {
+                                title: 'MEICA Project Engineer',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1446'
+                            },
+                            {
+                                title: 'Senior Engineer (Perm)',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1450'
+                            },
+                            {
+                                title: 'Project Manager (Perm)',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1455'
+                            },
+                            {
+                                title: 'Streetworks Coordinator',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1503'
+                            },
+                            {
+                                title: 'Streetworks Coordinator (freelance)',
+                                job_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1505'
+                            }
+                        ],
+                        listing_ui: {
+                            ui_category: 'linked_cards',
+                            filter_present: true,
+                            filter_types: [
+                                'Keyword',
+                                'Location'
+                            ],
+                            sort_present: true,
+                            sort_types: [
+                                'Closing Date',
+                                'Company',
+                                'Location',
+                                'Ref',
+                                'Vacancy'
+                            ],
+                            pagination_present: true,
+                            pagination_type: 'numbered',
+                            next_page_url: null
+                        }
+                    },
+                    job_alert: true,
+                    page_access_status: 'accessible',
+                    page_access_issue_detail: null,
+                    jobs_listed_on_page: [
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1218',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1535',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1590',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1578',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1370',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1417',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1517',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1583',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1604',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1429',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1524',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=55',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1342',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1404',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1446',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1450',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1455',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1503',
+                        'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1505'
+                    ],
+                    embedded_jobs_present: false,
+                    navigation_history: [
+                        {
+                            step: 0,
+                            from_url: 'https://www.barhale.co.uk/careers',
+                            target_url: 'https://barhale.kallidusrecruit.com/Search.aspx',
+                            target_button: 'Explore our Vacancies',
+                            reasoning: 'This Careers page is an overview with no listed jobs; it provides an explicit clickable link to the vacancies portal (Explore our Vacancies) which points to the job listings site.',
+                            status: 'external_domain_redirect — navigated',
+                            landed_url: 'https://barhale.kallidusrecruit.com/Search.aspx',
+                            error: null
+                        }
+                    ],
+                    external_domain_redirect: 'https://barhale.kallidusrecruit.com/Search.aspx',
+                    listing_ui: {
+                        ui_category: 'linked_cards',
+                        filter_present: true,
+                        filter_types: [
+                            'Keyword',
+                            'Location'
+                        ],
+                        sort_present: true,
+                        sort_types: [
+                            'Closing Date',
+                            'Company',
+                            'Location',
+                            'Ref',
+                            'Vacancy'
+                        ],
+                        pagination_present: true,
+                        pagination_type: 'numbered',
+                        next_page_url: null
+                    }
+                }
+            ]
+        },
+        ats_detection: {
+            ats_detected: true,
+            ats_provider: 'barhale.kallidusrecruit.com',
+            ats_provider_known: false,
+            ats_category: 'external_ats',
+            confidence: 'medium',
+            detection_method: 'job_url_external_domain',
+            reasoning: 'Job URL \'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615\' is on external domain \'barhale.kallidusrecruit.com\', not the company domain \'barhale.co.uk\' — likely an ATS.',
+            non_ats_reason: null,
+            requires_scraping: false,
+            apply_url: 'https://barhale.kallidusrecruit.com/VacancyInformation.aspx?VId=1615',
+            indicators_found: [],
+            page_access_status: null,
+            external_job_boards: [],
+            checked_urls: [],
+            raw_checks: []
+        },
+        jobs_extraction: {
+            status: 'skipped',
+            requested: false,
+            job_count: 0,
+            jobs: [],
+            sources: []
+        },
+        status: 'completed',
+        error: null,
+        created_at: '2026-05-14T18:46:41.051899',
+        rerun_metadata: {
+            reused_analysis_count: 0,
+            changed_page_count: 1,
+            content_changed: true
+        }
+    },
+    domain_check_id: '3c69707a-10b7-4fd8-830f-3da6f84fc1cc',
+    created_at: '2026-05-14T18:42:39.548476',
+    updated_at: ISODate('2026-05-14T18:46:41.052Z'),
+    started_at: ISODate('2026-05-14T18:45:06.951Z'),
+    completed_at: ISODate('2026-05-14T18:46:41.052Z')
+}

@@ -562,6 +562,9 @@ async def career_page_category_node(career_page_url: List[str], browser_session:
 
         career_pages_analysis.append(navigation_result)
 
+        if navigation_result.get("status") == "jobs_listed_on_page":
+            break
+
     overview = _build_career_page_overview(career_pages_analysis)
 
     return {

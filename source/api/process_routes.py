@@ -3,21 +3,19 @@ from __future__ import annotations
 import csv
 import io
 import json
-import zipfile
 from datetime import datetime
 from typing import Any
 
-from fastapi import APIRouter, BackgroundTasks, File, Form, Header, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 
-from core.config import get_settings
-from models.process import ClientRegistrationRequest, ClientUpdateRequest, JobProcessRequest
+from models.process import JobProcessRequest
+from services.flow_safety import extract_domain
 from services.file_input_service import FileInputService
 from services.job_process_service import JobProcessService
 from utils.logging import get_logger, log_event
 
 router = APIRouter()
-settings = get_settings()
 job_process_service = JobProcessService()
 file_input_service = FileInputService()
 logger = get_logger("process_routes")
@@ -82,43 +80,7 @@ def _extract_ats_reason(ats_detection: dict[str, Any]) -> str | None:
     )
 
 
-def _validate_admin_password(x_registration_password: str | None) -> None:
-    configured_password = str(settings.client_registration_password or "").strip()
-    provided_password = str(x_registration_password or "").strip()
-    
-    
-    if not configured_password:
-        raise HTTPException(status_code=500, detail="Client registration password is not configured")
-
-    if provided_password != configured_password:
-        raise HTTPException(status_code=401, detail="Invalid registration password")
-
-
-def _build_client_summary_export(client_name: str, overview: dict[str, Any]) -> dict[str, Any]:
-    process_runs = list(overview.get("process_runs") or [])
-    return {
-        "client_key": overview.get("client_key"),
-        "client_name": client_name,
-        "process_count": len(process_runs),
-        "runs": [
-            {
-                "process_id": process.get("process_id"),
-                "client_key": process.get("client_key"),
-                "client_name": process.get("client_name"),
-                "status": process.get("status"),
-                "summary": process.get("summary") or {},
-                "metadata": process.get("metadata") or {},
-                "created_at": process.get("created_at"),
-                "updated_at": process.get("updated_at"),
-                "started_at": process.get("started_at"),
-                "completed_at": process.get("completed_at"),
-            }
-            for process in process_runs
-        ],
-    }
-
-
-def _build_client_jobs_csv_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
+def _build_jobs_csv_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for item in list(payload.get("jobs") or []):
         job_data = dict(item.get("job_data") or {})
@@ -199,7 +161,7 @@ def _build_client_jobs_csv_rows(payload: dict[str, Any]) -> list[dict[str, Any]]
 
 
 def _build_process_jobs_csv_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
-    return _build_client_jobs_csv_rows(payload)
+    return _build_jobs_csv_rows(payload)
 
 
 def _build_process_item_important_export(process: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
@@ -267,15 +229,35 @@ def _build_process_important_csv_rows(process: dict[str, Any]) -> list[dict[str,
         career_page_result = dict(result_payload.get("career_page_result") or {})
         result_summary = dict(item.get("result_summary") or {})
         career_overview = dict(career_page_result.get("overview") or {})
+        ats_detection = dict(result_payload.get("ats_detection") or {})
+        apply_url = dict(result_payload.get("apply_url_detection") or {})
         rows.append(
             {
-                "client_name": process.get("client_name"),
                 "status": item.get("status"),
                 "raw_url": item.get("raw_url"),
-                "result_summary_career_url_status": result_summary.get("career_url_status"),
-                "career_page_overview_outcome": career_overview.get("outcome"),
-                "career_page_overview_outcome_reason": _build_career_outcome_reason_with_pagination(career_overview),
-                "career_page_overview_job_found_on_urls": _flatten_csv_list(career_overview.get("job_found_on_urls")),
+                "provided_career_page_url": item.get("provided_career_page_url"),
+                "resolved_career_page_url": item.get("resolved_career_page_url"),
+                "result_summary.career_url_status": result_summary.get("career_url_status"),
+                "career_page_result.overview.outcome": career_overview.get("outcome"),
+                "career_page_result.overview.outcome_reason": _build_career_outcome_reason_with_pagination(career_overview),
+                "career_page_result.overview.total_jobs_found": career_overview.get("total_jobs_found"),
+                "career_page_result.overview.job_alert": career_overview.get("job_alert"),
+                "career_page_result.overview.job_alert_note": career_overview.get("job_alert_note"),
+                "ats_detection.ats_detected": ats_detection.get("ats_detected"),
+                "ats_detection.ats_provider": ats_detection.get("ats_provider"),
+                "ats_detection.confidence": ats_detection.get("confidence"),
+                "ats_detection.detection_method": ats_detection.get("detection_method"),
+                "ats_detection.reasoning": ats_detection.get("reasoning"),
+                "ats_detection.non_ats_reason": ats_detection.get("non_ats_reason"),
+                "ats_detection.apply_url": ats_detection.get("apply_url"),
+                "apply_url_detection.status": apply_url.get("status"),
+                "apply_url_detection.means_of_application": apply_url.get("means_of_application"),
+                "apply_url_detection.apply_url": apply_url.get("apply_url"),
+                "apply_url_detection.apply_email": apply_url.get("apply_email"),
+                "apply_url_detection.apply_document_url": apply_url.get("apply_document_url"),
+                "apply_url_detection.source_url": apply_url.get("source_url"),
+                "apply_url_detection.confidence": apply_url.get("confidence"),
+                "apply_url_detection.reasoning": apply_url.get("reasoning"),
             }
         )
     return rows
@@ -328,99 +310,16 @@ async def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@router.post("/clients")
-async def register_client(
-    request: ClientRegistrationRequest,
-    x_registration_password: str | None = Header(default=None),
-) -> dict[str, Any]:
-    _validate_admin_password(x_registration_password)
-    log_event(
-        logger,
-        "info",
-        "client_registration_requested client_name=%s model=%s",
-        request.client_name,
-        request.model,
-        domain=request.client_name,
-        client_name=request.client_name,
-        model=request.model,
-    )
-    try:
-        client = await job_process_service.register_client(
-            client_name=request.client_name,
-            api_key=request.api_key,
-            model=request.model,
-            grid_url=request.grid_url,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return {
-        "status": "ready",
-        "client": client,
-        "message": "API key is active and ready to use.",
-    }
-
-
-@router.get("/clients")
-async def list_clients(
-    x_registration_password: str | None = Header(default=None),
-) -> dict[str, Any]:
-    _validate_admin_password(x_registration_password)
-    log_event(logger, "info", "client_list_requested", domain="admin")
-    return await job_process_service.list_clients()
-
-
-@router.patch("/clients/{client_name}/config")
-async def update_client(
-    client_name: str,
-    request: ClientUpdateRequest,
-    x_registration_password: str | None = Header(default=None),
-) -> dict[str, Any]:
-    _validate_admin_password(x_registration_password)
-    log_event(
-        logger,
-        "info",
-        "client_update_requested client_name=%s",
-        client_name,
-        domain=client_name,
-        client_name=client_name,
-    )
-    try:
-        client = await job_process_service.update_client(
-            client_name,
-            new_client_name=request.client_name,
-            api_key=request.api_key,
-            model=request.model,
-            grid_url=request.grid_url,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return {
-        "status": "updated",
-        "client": client,
-    }
-
-
-@router.get("/clients/{client_name}/config")
-async def get_client_config(client_name: str) -> dict[str, Any]:
-    log_event(
-        logger,
-        "info",
-        "client_config_requested client_name=%s",
-        client_name,
-        domain=client_name,
-        client_name=client_name,
-    )
-    try:
-        return await job_process_service.get_client_configuration(client_name)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-
-
 @router.post("/processes")
 async def create_process(
     request: JobProcessRequest,
     background_tasks: BackgroundTasks,
 ) -> dict[str, str]:
+    if job_process_service.is_process_running():
+        raise HTTPException(
+            status_code=409,
+            detail=f"Process {job_process_service.get_active_process_id()} is already running. Only one process can run at a time.",
+        )
     log_event(
         logger,
         "info",
@@ -428,7 +327,6 @@ async def create_process(
         len(request.urls),
         request.agent_count,
         domain=request.urls[0] if request.urls else "unknown",
-        client_name=request.client_name,
         url_count=len(request.urls),
         agent_count=request.agent_count,
         job_monitoring=request.job_monitoring,
@@ -460,46 +358,44 @@ async def create_process(
 
 
 @router.get("/processes")
-async def list_processes(client_name: str, page: int = 1, page_size: int = 10) -> dict[str, Any]:
+async def list_processes(page: int = 1, page_size: int = 10) -> dict[str, Any]:
     log_event(
         logger,
         "info",
-        "process_list_requested client_name=%s page=%s page_size=%s",
-        client_name,
+        "process_list_requested page=%s page_size=%s",
         page,
         page_size,
-        domain=client_name,
-        client_name=client_name,
+        domain="processes",
         page=page,
         page_size=page_size,
     )
-    try:
-        return await job_process_service.list_processes(
-            client_name=client_name,
-            page=page,
-            page_size=page_size,
-        )
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return await job_process_service.list_processes(
+        page=page,
+        page_size=page_size,
+    )
 
 
 @router.post("/processes/upload")
 async def create_process_from_file(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    client_name: str = Form("default_client"),
     agent_count: int = Form(1),
     ats_check: bool = Form(True),
     job_extract: bool = Form(False),
     job_monitoring: bool = Form(False),
     task_id: str | None = Form(None),
 ) -> dict[str, str]:
+    if job_process_service.is_process_running():
+        raise HTTPException(
+            status_code=409,
+            detail=f"Process {job_process_service.get_active_process_id()} is already running. Only one process can run at a time.",
+        )
     if not file.filename:
         raise HTTPException(status_code=400, detail="Uploaded file must have a filename")
 
     content = await file.read()
     try:
-        urls = file_input_service.extract_domains(file.filename, content)
+        upload_rows = file_input_service.extract_upload_rows(file.filename, content)
     except ValueError as exc:
         log_event(
             logger,
@@ -513,9 +409,16 @@ async def create_process_from_file(
         )
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
+    urls = [row.domain for row in upload_rows]
+    career_page_urls = {
+        (extract_domain(row.domain) or row.domain.strip().lower().rstrip("/")): row.career_page_url
+        for row in upload_rows
+        if row.career_page_url
+    }
+
     request = JobProcessRequest(
-        client_name=client_name,
         urls=urls,
+        career_page_urls=career_page_urls,
         agent_count=agent_count,
         ats_check=ats_check,
         job_extract=job_extract,
@@ -531,7 +434,6 @@ async def create_process_from_file(
         agent_count,
         domain=urls[0] if urls else file.filename,
         upload_filename=file.filename,
-        client_name=client_name,
         url_count=len(urls),
         agent_count=agent_count,
         ats_check=ats_check,
@@ -567,6 +469,11 @@ async def rerun_process(
     process_id: str,
     background_tasks: BackgroundTasks,
 ) -> dict[str, str]:
+    if job_process_service.is_process_running():
+        raise HTTPException(
+            status_code=409,
+            detail=f"Process {job_process_service.get_active_process_id()} is already running. Only one process can run at a time.",
+        )
     log_event(
         logger,
         "info",
@@ -582,10 +489,10 @@ async def rerun_process(
 
     background_tasks.add_task(
         job_process_service.execute_rerun_process,
-        process_document["process_id"],
+        process_id,
     )
     return {
-        "process_id": process_document["process_id"],
+        "process_id": process_id,
         "status": process_document["status"],
     }
 
@@ -638,110 +545,6 @@ async def get_process(process_id: str) -> StreamingResponse:
         status=process.get("status"),
     )
     return _downloadable_json_response(process, f"process_{_safe_filename(process_id)}.json")
-
-
-@router.get("/clients/{client_name}")
-async def get_client_overview(client_name: str) -> StreamingResponse:
-    log_event(
-        logger,
-        "info",
-        "client_overview_requested client_name=%s",
-        client_name,
-        domain=client_name,
-        client_name=client_name,
-    )
-    try:
-        overview = await job_process_service.get_client_overview(client_name)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    return _downloadable_json_response(
-        overview,
-        f"client_{_safe_filename(client_name)}.json",
-    )
-
-
-@router.get("/clients/{client_name}/summary")
-async def get_client_summary(client_name: str) -> StreamingResponse:
-    log_event(
-        logger,
-        "info",
-        "client_summary_requested client_name=%s",
-        client_name,
-        domain=client_name,
-        client_name=client_name,
-    )
-    try:
-        overview = await job_process_service.get_client_overview(client_name)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    summary_payload = _build_client_summary_export(client_name, overview)
-    return _downloadable_json_response(
-        summary_payload,
-        f"client_{_safe_filename(client_name)}_summary.json",
-    )
-
-
-@router.get("/clients/{client_name}/jobs")
-async def get_client_jobs(client_name: str, limit: int = 500) -> dict[str, Any]:
-    log_event(
-        logger,
-        "info",
-        "client_jobs_requested client_name=%s limit=%s",
-        client_name,
-        limit,
-        domain=client_name,
-        client_name=client_name,
-        limit=limit,
-    )
-    try:
-        return await job_process_service.get_client_jobs(client_name, limit=limit)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-
-
-@router.get("/clients/{client_name}/jobs.json")
-async def download_client_jobs_json(client_name: str, limit: int = 500) -> StreamingResponse:
-    log_event(
-        logger,
-        "info",
-        "client_jobs_json_requested client_name=%s limit=%s",
-        client_name,
-        limit,
-        domain=client_name,
-        client_name=client_name,
-        limit=limit,
-    )
-    try:
-        payload = await job_process_service.get_client_jobs(client_name, limit=limit)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    return _downloadable_json_response(
-        payload,
-        f"client_{_safe_filename(client_name)}_jobs.json",
-    )
-
-
-@router.get("/clients/{client_name}/jobs.csv")
-async def download_client_jobs_csv(client_name: str, limit: int = 500) -> StreamingResponse:
-    log_event(
-        logger,
-        "info",
-        "client_jobs_csv_requested client_name=%s limit=%s",
-        client_name,
-        limit,
-        domain=client_name,
-        client_name=client_name,
-        limit=limit,
-    )
-    try:
-        payload = await job_process_service.get_client_jobs(client_name, limit=limit)
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    rows = _build_client_jobs_csv_rows(payload)
-    return _downloadable_csv_response(
-        rows,
-        f"client_{_safe_filename(client_name)}_jobs.csv",
-    )
 
 
 @router.get("/processes/{process_id}/jobs.json")
@@ -846,40 +649,4 @@ async def get_process_roles_csv(process_id: str) -> StreamingResponse:
     return _downloadable_csv_response(
         rows,
         f"process_{_safe_filename(process_id)}_roles.csv",
-    )
-
-
-@router.get("/processes/{process_id}/csv-bundle.zip")
-async def download_process_csv_bundle(process_id: str) -> StreamingResponse:
-    log_event(
-        logger,
-        "info",
-        "process_csv_bundle_requested process_id=%s",
-        process_id,
-        domain="api",
-        process_id=process_id,
-    )
-    process = await job_process_service.get_process(process_id)
-    if process is None:
-        raise HTTPException(status_code=404, detail="Process not found")
-
-    important_rows = _build_process_important_csv_rows(process)
-    roles_rows = _build_process_roles_csv_rows(process)
-
-    bundle = io.BytesIO()
-    safe_process_id = _safe_filename(process_id)
-    with zipfile.ZipFile(bundle, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr(
-            f"process_{safe_process_id}_important.csv",
-            _csv_content(important_rows),
-        )
-        archive.writestr(
-            f"process_{safe_process_id}_roles.csv",
-            _csv_content(roles_rows),
-        )
-    bundle.seek(0)
-    return StreamingResponse(
-        iter([bundle.getvalue()]),
-        media_type="application/zip",
-        headers={"Content-Disposition": f'attachment; filename="process_{safe_process_id}_csv_bundle.zip"'},
     )

@@ -7,7 +7,6 @@ from typing import Any
 from pymongo import ASCENDING, DESCENDING, MongoClient
 
 from core.config import get_settings
-from models.process import RequestedCapability
 from utils.logging import get_logger, log_event
 
 logger = get_logger("mongodb_service")
@@ -19,14 +18,9 @@ class MongoDBService:
         self._uri = settings.mongodb_uri
         self._database_name = settings.mongodb_database
         self._collection_names = {
-            "clients": settings.mongodb_clients_collection,
-            "client_domains": settings.mongodb_client_domains_collection,
-            "domains": settings.mongodb_domains_collection,
             "process_runs": settings.mongodb_process_runs_collection,
             "process_run_items": settings.mongodb_process_run_items_collection,
-            "domain_checks": settings.mongodb_domain_checks_collection,
             "jobs": settings.mongodb_jobs_collection,
-            "client_jobs": settings.mongodb_client_jobs_collection,
             "job_extraction_cache": settings.mongodb_job_extraction_cache_collection,
         }
         self._client: MongoClient | None = None
@@ -62,6 +56,29 @@ class MongoDBService:
     async def ensure_indexes(self) -> None:
         await asyncio.to_thread(self._ensure_indexes_sync)
 
+    async def recover_stale_running_processes(self) -> int:
+        return await asyncio.to_thread(self._recover_stale_running_processes_sync)
+
+    def _recover_stale_running_processes_sync(self) -> int:
+        now = datetime.utcnow()
+        result = self._get_collection("process_runs").update_many(
+            {"status": {"$in": ["running", "stop_requested"]}},
+            {"$set": {
+                "status": "failed",
+                "completed_at": now,
+                "updated_at": now,
+                "errors": ["Process interrupted by application restart"],
+            }},
+        )
+        count = result.modified_count
+        if count:
+            log_event(logger, "warning", "stale_running_processes_recovered count=%s", count, domain="mongodb", count=count)
+        self._get_collection("process_run_items").update_many(
+            {"status": "running"},
+            {"$set": {"status": "failed", "updated_at": now, "error": "Process interrupted by application restart"}},
+        )
+        return count
+
     def _ensure_indexes_sync(self) -> None:
         log_event(
             logger,
@@ -72,36 +89,10 @@ class MongoDBService:
             database=self._database_name,
         )
 
-        self._get_collection("clients").create_index(
-            [("client_key", ASCENDING)],
-            unique=True,
-            name="clients_client_key_unique",
-        )
-        self._get_collection("clients").create_index(
-            [("updated_at", DESCENDING)],
-            name="clients_updated_at_desc",
-        )
-
-        self._get_collection("client_domains").create_index(
-            [("client_key", ASCENDING), ("domain_key", ASCENDING)],
-            unique=True,
-            name="client_domains_client_domain_unique",
-        )
-
-        self._get_collection("domains").create_index(
-            [("domain_key", ASCENDING)],
-            unique=True,
-            name="domains_domain_key_unique",
-        )
-
         self._get_collection("process_runs").create_index(
             [("process_id", ASCENDING)],
             unique=True,
             name="process_runs_process_id_unique",
-        )
-        self._get_collection("process_runs").create_index(
-            [("client_key", ASCENDING), ("created_at", DESCENDING)],
-            name="process_runs_client_created_desc",
         )
         self._get_collection("process_runs").create_index(
             [("status", ASCENDING)],
@@ -118,26 +109,8 @@ class MongoDBService:
             name="process_run_items_process_id",
         )
         self._get_collection("process_run_items").create_index(
-            [("client_key", ASCENDING), ("domain_key", ASCENDING)],
-            name="process_run_items_client_domain",
-        )
-
-        self._get_collection("domain_checks").create_index(
-            [("domain_check_id", ASCENDING)],
-            unique=True,
-            name="domain_checks_domain_check_id_unique",
-        )
-        self._get_collection("domain_checks").create_index(
-            [("domain_key", ASCENDING), ("created_at", DESCENDING)],
-            name="domain_checks_domain_created_desc",
-        )
-        self._get_collection("domain_checks").create_index(
-            [("client_key", ASCENDING), ("created_at", DESCENDING)],
-            name="domain_checks_client_created_desc",
-        )
-        self._get_collection("domain_checks").create_index(
-            [("process_id", ASCENDING)],
-            name="domain_checks_process_id",
+            [("domain_key", ASCENDING), ("updated_at", DESCENDING)],
+            name="process_run_items_domain_updated_desc",
         )
 
         self._get_collection("jobs").create_index(
@@ -148,20 +121,6 @@ class MongoDBService:
         self._get_collection("jobs").create_index(
             [("domain_key", ASCENDING), ("updated_at", DESCENDING)],
             name="jobs_domain_updated_desc",
-        )
-
-        self._get_collection("client_jobs").create_index(
-            [("client_key", ASCENDING), ("job_key", ASCENDING)],
-            unique=True,
-            name="client_jobs_client_job_unique",
-        )
-        self._get_collection("client_jobs").create_index(
-            [("client_key", ASCENDING), ("updated_at", DESCENDING)],
-            name="client_jobs_client_updated_desc",
-        )
-        self._get_collection("client_jobs").create_index(
-            [("process_id", ASCENDING)],
-            name="client_jobs_process_id",
         )
 
         self._get_collection("job_extraction_cache").create_index(
@@ -177,252 +136,6 @@ class MongoDBService:
             self._database_name,
             domain="mongodb",
             database=self._database_name,
-        )
-
-    async def ensure_client(self, client_key: str, client_name: str) -> None:
-        await asyncio.to_thread(self._ensure_client_sync, client_key, client_name)
-
-    def _ensure_client_sync(self, client_key: str, client_name: str) -> None:
-        now = datetime.utcnow()
-        log_event(
-            logger,
-            "info",
-            "mongodb_ensure_client client_key=%s",
-            client_key,
-            domain=client_key,
-            client_key=client_key,
-        )
-        self._get_collection("clients").update_one(
-            {"client_key": client_key},
-            {
-                "$set": {
-                    "client_name": client_name,
-                    "updated_at": now,
-                },
-                "$setOnInsert": {
-                    "client_key": client_key,
-                    "created_at": now,
-                },
-            },
-            upsert=True,
-        )
-
-    async def get_client(self, client_key: str) -> dict[str, Any] | None:
-        return await asyncio.to_thread(self._get_client_sync, client_key)
-
-    def _get_client_sync(self, client_key: str) -> dict[str, Any] | None:
-        return self._get_collection("clients").find_one({"client_key": client_key}, {"_id": 0})
-
-    async def list_clients(self) -> list[dict[str, Any]]:
-        return await asyncio.to_thread(self._list_clients_sync)
-
-    def _list_clients_sync(self) -> list[dict[str, Any]]:
-        cursor = (
-            self._get_collection("clients")
-            .find({}, {"_id": 0})
-            .sort("updated_at", -1)
-        )
-        return list(cursor)
-
-    async def upsert_client_configuration(
-        self,
-        *,
-        client_key: str,
-        client_name: str,
-        api_key: str,
-        model: str,
-        grid_url: str | None,
-        api_key_status: str,
-        api_key_validation_error: str | None,
-    ) -> dict[str, Any]:
-        return await asyncio.to_thread(
-            self._upsert_client_configuration_sync,
-            client_key,
-            client_name,
-            api_key,
-            model,
-            grid_url,
-            api_key_status,
-            api_key_validation_error,
-        )
-
-    def _upsert_client_configuration_sync(
-        self,
-        client_key: str,
-        client_name: str,
-        api_key: str,
-        model: str,
-        grid_url: str | None,
-        api_key_status: str,
-        api_key_validation_error: str | None,
-    ) -> dict[str, Any]:
-        now = datetime.utcnow()
-        self._get_collection("clients").update_one(
-            {"client_key": client_key},
-            {
-                "$set": {
-                    "client_name": client_name,
-                    "api_key": api_key,
-                    "model": model,
-                    "grid_url": grid_url,
-                    "api_key_status": api_key_status,
-                    "api_key_last_validated_at": now,
-                    "api_key_validation_error": api_key_validation_error,
-                    "updated_at": now,
-                },
-                "$setOnInsert": {
-                    "client_key": client_key,
-                    "created_at": now,
-                },
-            },
-            upsert=True,
-        )
-        return self._get_client_sync(client_key) or {}
-
-    async def update_client_configuration(
-        self,
-        *,
-        current_client_key: str,
-        new_client_key: str,
-        client_name: str,
-        api_key: str,
-        model: str,
-        grid_url: str | None,
-        api_key_status: str,
-        api_key_validation_error: str | None,
-    ) -> dict[str, Any] | None:
-        return await asyncio.to_thread(
-            self._update_client_configuration_sync,
-            current_client_key,
-            new_client_key,
-            client_name,
-            api_key,
-            model,
-            grid_url,
-            api_key_status,
-            api_key_validation_error,
-        )
-
-    def _update_client_configuration_sync(
-        self,
-        current_client_key: str,
-        new_client_key: str,
-        client_name: str,
-        api_key: str,
-        model: str,
-        grid_url: str | None,
-        api_key_status: str,
-        api_key_validation_error: str | None,
-    ) -> dict[str, Any] | None:
-        existing = self._get_client_sync(current_client_key)
-        if existing is None:
-            return None
-
-        now = datetime.utcnow()
-        self._get_collection("clients").update_one(
-            {"client_key": current_client_key},
-            {
-                "$set": {
-                    "client_key": new_client_key,
-                    "client_name": client_name,
-                    "api_key": api_key,
-                    "model": model,
-                    "grid_url": grid_url,
-                    "api_key_status": api_key_status,
-                    "api_key_last_validated_at": now,
-                    "api_key_validation_error": api_key_validation_error,
-                    "updated_at": now,
-                },
-            },
-        )
-
-        if new_client_key != current_client_key:
-            rename_filter = {"client_key": current_client_key}
-            rename_update = {"$set": {"client_key": new_client_key, "client_name": client_name}}
-            self._get_collection("client_domains").update_many(rename_filter, rename_update)
-            self._get_collection("process_runs").update_many(
-                rename_filter,
-                {"$set": {"client_key": new_client_key, "client_name": client_name, "request.client_name": client_name}},
-            )
-            self._get_collection("process_run_items").update_many(rename_filter, rename_update)
-            self._get_collection("domain_checks").update_many(rename_filter, rename_update)
-            self._get_collection("client_jobs").update_many(rename_filter, rename_update)
-        else:
-            rename_filter = {"client_key": current_client_key}
-            rename_update = {"$set": {"client_name": client_name}}
-            self._get_collection("client_domains").update_many(rename_filter, rename_update)
-            self._get_collection("process_runs").update_many(
-                rename_filter,
-                {"$set": {"client_name": client_name, "request.client_name": client_name}},
-            )
-            self._get_collection("process_run_items").update_many(rename_filter, rename_update)
-            self._get_collection("domain_checks").update_many(rename_filter, rename_update)
-            self._get_collection("client_jobs").update_many(rename_filter, rename_update)
-
-        return self._get_client_sync(new_client_key)
-
-    async def upsert_client_domain(
-        self,
-        client_key: str,
-        client_name: str,
-        domain_key: str,
-        requested_capability: RequestedCapability,
-        ats_check: bool,
-        job_extract: bool,
-        job_monitoring: bool,
-    ) -> None:
-        await asyncio.to_thread(
-            self._upsert_client_domain_sync,
-            client_key,
-            client_name,
-            domain_key,
-            requested_capability,
-            ats_check,
-            job_extract,
-            job_monitoring,
-        )
-
-    def _upsert_client_domain_sync(
-        self,
-        client_key: str,
-        client_name: str,
-        domain_key: str,
-        requested_capability: RequestedCapability,
-        ats_check: bool,
-        job_extract: bool,
-        job_monitoring: bool,
-    ) -> None:
-        now = datetime.utcnow()
-        log_event(
-            logger,
-            "info",
-            "mongodb_upsert_client_domain client_key=%s domain_key=%s capability=%s",
-            client_key,
-            domain_key,
-            requested_capability,
-            domain=domain_key,
-            client_key=client_key,
-            domain_key=domain_key,
-            requested_capability=requested_capability,
-        )
-        self._get_collection("client_domains").update_one(
-            {"client_key": client_key, "domain_key": domain_key},
-            {
-                "$set": {
-                    "client_name": client_name,
-                    "requested_capability": requested_capability,
-                    "ats_check": ats_check,
-                    "job_extract": job_extract,
-                    "job_monitoring": job_monitoring,
-                    "updated_at": now,
-                },
-                "$setOnInsert": {
-                    "client_key": client_key,
-                    "domain_key": domain_key,
-                    "created_at": now,
-                },
-            },
-            upsert=True,
         )
 
     async def insert_process_run(self, document: dict[str, Any]) -> None:
@@ -496,34 +209,6 @@ class MongoDBService:
         run["items"] = items
         return run
 
-    async def list_process_runs_for_client(
-        self,
-        client_key: str,
-        *,
-        page: int = 1,
-        page_size: int = 50,
-    ) -> tuple[list[dict[str, Any]], int]:
-        return await asyncio.to_thread(self._list_process_runs_for_client_sync, client_key, page, page_size)
-
-    def _list_process_runs_for_client_sync(
-        self,
-        client_key: str,
-        page: int,
-        page_size: int,
-    ) -> tuple[list[dict[str, Any]], int]:
-        normalized_page = max(1, int(page or 1))
-        normalized_page_size = max(1, min(int(page_size or 50), 200))
-        skip = (normalized_page - 1) * normalized_page_size
-        total = self._get_collection("process_runs").count_documents({"client_key": client_key})
-        cursor = (
-            self._get_collection("process_runs")
-            .find({"client_key": client_key}, {"_id": 0})
-            .sort("created_at", -1)
-            .skip(skip)
-            .limit(normalized_page_size)
-        )
-        return list(cursor), total
-
     async def list_all_process_runs(self, limit: int = 100) -> list[dict[str, Any]]:
         return await asyncio.to_thread(self._list_all_process_runs_sync, limit)
 
@@ -536,24 +221,36 @@ class MongoDBService:
         )
         return list(cursor)
 
-    async def get_client_domains(self, client_key: str) -> list[dict[str, Any]]:
-        return await asyncio.to_thread(self._get_client_domains_sync, client_key)
+    async def get_latest_process_items_by_domain_keys(
+        self,
+        domain_keys: list[str],
+    ) -> dict[str, dict[str, Any]]:
+        if not domain_keys:
+            return {}
+        return await asyncio.to_thread(self._get_latest_process_items_by_domain_keys_sync, domain_keys)
 
-    def _get_client_domains_sync(self, client_key: str) -> list[dict[str, Any]]:
-        cursor = self._get_collection("client_domains").find({"client_key": client_key}, {"_id": 0})
-        return list(cursor)
+    def _get_latest_process_items_by_domain_keys_sync(
+        self,
+        domain_keys: list[str],
+    ) -> dict[str, dict[str, Any]]:
+        normalized_domain_keys = [str(domain_key or "").strip() for domain_key in domain_keys if str(domain_key or "").strip()]
+        if not normalized_domain_keys:
+            return {}
 
-    async def list_client_jobs(self, client_key: str, limit: int = 500) -> list[dict[str, Any]]:
-        return await asyncio.to_thread(self._list_client_jobs_sync, client_key, limit)
+        cursor = self._get_collection("process_run_items").find(
+            {"domain_key": {"$in": normalized_domain_keys}},
+            {"_id": 0},
+        ).sort("updated_at", -1)
 
-    def _list_client_jobs_sync(self, client_key: str, limit: int) -> list[dict[str, Any]]:
-        cursor = (
-            self._get_collection("client_jobs")
-            .find({"client_key": client_key}, {"_id": 0})
-            .sort("updated_at", -1)
-            .limit(limit)
-        )
-        return list(cursor)
+        latest_items: dict[str, dict[str, Any]] = {}
+        for item in cursor:
+            domain_key = str(item.get("domain_key") or "").strip()
+            if not domain_key or domain_key in latest_items:
+                continue
+            latest_items[domain_key] = item
+            if len(latest_items) >= len(set(normalized_domain_keys)):
+                break
+        return latest_items
 
     async def update_assignment_status(self, process_id: str, agent_index: int, status: str) -> None:
         await asyncio.to_thread(self._update_assignment_status_sync, process_id, agent_index, status)
@@ -581,6 +278,70 @@ class MongoDBService:
                 "$set": {
                     "status": "stop_requested",
                     "updated_at": now,
+                }
+            },
+        )
+        return self._get_process_run_sync(process_id)
+
+    async def reset_process_run_for_rerun(
+        self,
+        process_id: str,
+        *,
+        queued_urls: list[str],
+        assignments: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
+        return await asyncio.to_thread(
+            self._reset_process_run_for_rerun_sync,
+            process_id,
+            queued_urls,
+            assignments,
+        )
+
+    def _reset_process_run_for_rerun_sync(
+        self,
+        process_id: str,
+        queued_urls: list[str],
+        assignments: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
+        now = datetime.utcnow()
+        self._get_collection("process_runs").update_one(
+            {"process_id": process_id},
+            {
+                "$set": {
+                    "status": "queued",
+                    "assignments": assignments,
+                    "queued_urls": list(queued_urls),
+                    "running_urls": [],
+                    "completed_urls": [],
+                    "failed_urls": [],
+                    "stopped_urls": [],
+                    "errors": [],
+                    "started_at": None,
+                    "completed_at": None,
+                    "updated_at": now,
+                    "summary.processed_url_count": 0,
+                    "summary.completed_domain_count": 0,
+                    "summary.failed_domain_count": 0,
+                    "summary.queued_url_count": len(queued_urls),
+                    "summary.running_url_count": 0,
+                    "summary.stopped_url_count": 0,
+                    "summary.assigned_agent_count": len(assignments),
+                    "summary.total_urls": len(queued_urls),
+                }
+            },
+        )
+        self._get_collection("process_run_items").update_many(
+            {"process_id": process_id},
+            {
+                "$set": {
+                    "status": "queued",
+                    "error": None,
+                    "agent_index": None,
+                    "result_summary": {},
+                    "result_payload": {},
+                    "updated_at": now,
+                    "started_at": None,
+                    "completed_at": None,
                 }
             },
         )
@@ -635,7 +396,7 @@ class MongoDBService:
         url: str,
         result_summary: dict[str, Any],
         result_payload: dict[str, Any],
-        domain_check_id: str,
+        resolved_career_page_url: str | None = None,
     ) -> None:
         await asyncio.to_thread(
             self._mark_url_completed_sync,
@@ -643,7 +404,7 @@ class MongoDBService:
             url,
             result_summary,
             result_payload,
-            domain_check_id,
+            resolved_career_page_url,
         )
 
     def _mark_url_completed_sync(
@@ -652,7 +413,7 @@ class MongoDBService:
         url: str,
         result_summary: dict[str, Any],
         result_payload: dict[str, Any],
-        domain_check_id: str,
+        resolved_career_page_url: str | None,
     ) -> None:
         now = datetime.utcnow()
         self._get_collection("process_runs").update_one(
@@ -674,9 +435,9 @@ class MongoDBService:
                 "$set": {
                     "status": "completed",
                     "error": None,
+                    "resolved_career_page_url": resolved_career_page_url,
                     "result_summary": result_summary,
                     "result_payload": result_payload,
-                    "domain_check_id": domain_check_id,
                     "completed_at": now,
                     "updated_at": now,
                 }
@@ -802,51 +563,6 @@ class MongoDBService:
             {"$set": item_updates},
         )
 
-    async def list_client_jobs_for_process(self, process_id: str, limit: int = 500) -> list[dict[str, Any]]:
-        return await asyncio.to_thread(self._list_client_jobs_for_process_sync, process_id, limit)
-
-    def _list_client_jobs_for_process_sync(self, process_id: str, limit: int) -> list[dict[str, Any]]:
-        cursor = (
-            self._get_collection("client_jobs")
-            .find({"process_id": process_id}, {"_id": 0})
-            .sort("updated_at", -1)
-            .limit(limit)
-        )
-        return list(cursor)
-
-    async def get_domain(self, domain_key: str) -> dict[str, Any] | None:
-        return await asyncio.to_thread(self._get_domain_sync, domain_key)
-
-    def _get_domain_sync(self, domain_key: str) -> dict[str, Any] | None:
-        return self._get_collection("domains").find_one({"domain_key": domain_key}, {"_id": 0})
-
-    async def upsert_domain(self, domain_key: str, updates: dict[str, Any]) -> None:
-        await asyncio.to_thread(self._upsert_domain_sync, domain_key, updates)
-
-    def _upsert_domain_sync(self, domain_key: str, updates: dict[str, Any]) -> None:
-        now = datetime.utcnow()
-        self._get_collection("domains").update_one(
-            {"domain_key": domain_key},
-            {
-                "$set": {
-                    **updates,
-                    "updated_at": now,
-                },
-                "$setOnInsert": {
-                    "domain_key": domain_key,
-                    "normalized_domain": domain_key,
-                    "created_at": now,
-                },
-            },
-            upsert=True,
-        )
-
-    async def insert_domain_check(self, document: dict[str, Any]) -> None:
-        await asyncio.to_thread(self._insert_domain_check_sync, document)
-
-    def _insert_domain_check_sync(self, document: dict[str, Any]) -> None:
-        self._get_collection("domain_checks").insert_one(document)
-
     async def get_job_extraction_cache(self, cache_key: str) -> dict[str, Any] | None:
         return await asyncio.to_thread(self._get_job_extraction_cache_sync, cache_key)
 
@@ -893,59 +609,11 @@ class MongoDBService:
             upsert=True,
         )
 
-    async def upsert_client_job(
-        self,
-        *,
-        client_key: str,
-        client_name: str,
-        domain_key: str,
-        raw_url: str,
-        process_id: str,
-        job_key: str,
-        document: dict[str, Any],
-    ) -> None:
-        await asyncio.to_thread(
-            self._upsert_client_job_sync,
-            client_key,
-            client_name,
-            domain_key,
-            raw_url,
-            process_id,
-            job_key,
-            document,
-        )
+    async def list_jobs_by_keys(self, job_keys: list[str]) -> list[dict[str, Any]]:
+        if not job_keys:
+            return []
+        return await asyncio.to_thread(self._list_jobs_by_keys_sync, job_keys)
 
-    def _upsert_client_job_sync(
-        self,
-        client_key: str,
-        client_name: str,
-        domain_key: str,
-        raw_url: str,
-        process_id: str,
-        job_key: str,
-        document: dict[str, Any],
-    ) -> None:
-        now = datetime.utcnow()
-        self._get_collection("client_jobs").update_one(
-            {
-                "client_key": client_key,
-                "domain_key": domain_key,
-                "job_key": job_key,
-            },
-            {
-                "$set": {
-                    **document,
-                    "client_name": client_name,
-                    "raw_url": raw_url,
-                    "process_id": process_id,
-                    "updated_at": now,
-                },
-                "$setOnInsert": {
-                    "client_key": client_key,
-                    "domain_key": domain_key,
-                    "job_key": job_key,
-                    "created_at": now,
-                },
-            },
-            upsert=True,
-        )
+    def _list_jobs_by_keys_sync(self, job_keys: list[str]) -> list[dict[str, Any]]:
+        cursor = self._get_collection("jobs").find({"job_key": {"$in": list(job_keys)}}, {"_id": 0})
+        return list(cursor)

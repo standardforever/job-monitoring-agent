@@ -11,179 +11,71 @@
     <header class="hero">
       <div>
         <p class="eyebrow">Job Monitoring Agent</p>
-        <h1>Simple Admin and Client Dashboard</h1>
-        <p class="lede">Register clients, launch process runs, watch status, stop active work, and download reports without leaving the browser.</p>
-      </div>
-      <div class="hero-actions">
-        <button id="show-admin" class="button">Admin</button>
-        <button id="show-client" class="button button-secondary">Client</button>
+        <h1>Single User Process Dashboard</h1>
+        <p class="lede">Upload a CSV/XLSX with `domain` and optional `career_page_url`, launch process runs, rerun in place, and download reports.</p>
       </div>
     </header>
 
     <section id="alerts" class="alerts"></section>
 
-    <section id="admin-panel" class="panel hidden">
-      <div class="panel-header">
-        <div>
-          <h2>Admin</h2>
-          <p>Use the shared registration password to create and update clients.</p>
-        </div>
-      </div>
-
-      <div id="admin-auth-gate" class="card auth-card">
-        <h3>Unlock Admin</h3>
-        <p class="muted">Enter the shared registration password first. Once it is confirmed, the admin dashboard will open for this browser session.</p>
-        <form id="admin-auth-form" class="stack">
-          <label>
-            Registration Password
-            <input id="admin-password" name="admin_password" type="password" placeholder="Enter shared password" required>
-          </label>
-          <button class="button" type="submit">Continue</button>
-        </form>
-      </div>
-
-      <div id="admin-dashboard" class="hidden">
-        <div class="card admin-toolbar">
-          <div class="card-header">
-            <div>
-              <h3>Admin Dashboard</h3>
-              <p class="muted">Create clients, update settings, and review all registered accounts.</p>
+    <section class="panel">
+      <div class="grid two">
+        <div class="card">
+          <h3>Submit URL List</h3>
+          <form id="manual-process-form" class="stack">
+            <label>
+              URLs
+              <textarea id="manual-urls" rows="8" placeholder="Paste one domain per line or separate with commas"></textarea>
+            </label>
+            <label>
+              Agent Count
+              <input id="manual-agent-count" type="number" min="1" value="2">
+            </label>
+            <div class="checkbox-grid">
+              <label><input id="manual-ats-check" type="checkbox" checked> ATS Check</label>
+              <label><input id="manual-job-extract" type="checkbox"> Job Extract</label>
+              <label><input id="manual-job-monitoring" type="checkbox"> Job Monitoring</label>
             </div>
-            <div class="inline-actions">
-              <button id="refresh-clients" class="button button-secondary" type="button">Refresh</button>
-              <button id="admin-logout" class="button button-secondary" type="button">Lock Admin</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid two">
-          <div class="card">
-            <h3 id="client-form-title">Create Client</h3>
-            <form id="client-form" class="stack" autocomplete="off">
-              <input id="editing-client-name" type="hidden">
-              <label>
-                Client Name
-                <input id="client-name" name="client_name" type="text" placeholder="Acme" required>
-              </label>
-              <label>
-                OpenAI API Key
-                <input id="client-api-key" name="api_key" type="password" placeholder="sk-..." required>
-              </label>
-              <label>
-                Model
-                <input id="client-model" name="model" type="text" value="gpt-5-nano" required>
-              </label>
-              <label>
-                Grid URL
-                <input id="client-grid-url" name="grid_url" type="text" placeholder="Optional. Defaults to server config">
-              </label>
-              <div class="inline-actions">
-                <button id="client-form-submit" class="button" type="submit">Create Client</button>
-                <button id="client-form-reset" class="button button-secondary hidden" type="button">Cancel Edit</button>
-              </div>
-            </form>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3>Clients</h3>
-            </div>
-            <div id="clients-empty" class="empty-state hidden">No clients yet.</div>
-            <div id="clients-list" class="table-list"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="client-panel" class="panel hidden">
-      <div class="panel-header">
-        <div>
-          <h2>Client</h2>
-          <p>Enter a registered client name to view recent process runs and launch new ones.</p>
-        </div>
-      </div>
-
-      <div id="client-entry-card" class="card">
-        <h3>Client Access</h3>
-        <form id="client-access-form" class="stack">
-          <label>
-            Client Name
-            <input id="dashboard-client-name" name="client_name" type="text" placeholder="Acme" required>
-          </label>
-          <button class="button" type="submit">Open Dashboard</button>
-        </form>
-      </div>
-
-      <div id="client-dashboard" class="hidden">
-        <div class="dashboard-top">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <h3 id="active-client-name">Client Dashboard</h3>
-                <p id="active-client-meta" class="muted"></p>
-              </div>
-              <button id="change-client" class="button button-secondary" type="button">Change Client</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid two">
-          <div class="card">
-            <h3>Submit URL List</h3>
-            <form id="manual-process-form" class="stack">
-              <label>
-                URLs
-                <textarea id="manual-urls" rows="8" placeholder="Paste one domain per line or separate with commas"></textarea>
-              </label>
-              <label>
-                Agent Count
-                <input id="manual-agent-count" type="number" min="1" value="2">
-              </label>
-              <div class="checkbox-grid">
-                <label><input id="manual-ats-check" type="checkbox" checked> ATS Check</label>
-                <label><input id="manual-job-extract" type="checkbox"> Job Extract</label>
-                <label><input id="manual-job-monitoring" type="checkbox"> Job Monitoring</label>
-              </div>
-              <button class="button" type="submit">Start Process</button>
-            </form>
-          </div>
-
-          <div class="card">
-            <h3>Upload CSV or XLSX</h3>
-            <form id="upload-process-form" class="stack">
-              <label>
-                File
-                <input id="upload-file" type="file" accept=".csv,.xlsx" required>
-              </label>
-              <label>
-                Agent Count
-                <input id="upload-agent-count" type="number" min="1" value="2">
-              </label>
-              <div class="checkbox-grid">
-                <label><input id="upload-ats-check" type="checkbox" checked> ATS Check</label>
-                <label><input id="upload-job-extract" type="checkbox"> Job Extract</label>
-                <label><input id="upload-job-monitoring" type="checkbox"> Job Monitoring</label>
-              </div>
-              <button class="button" type="submit">Upload and Start</button>
-            </form>
-          </div>
+            <button class="button" type="submit">Start Process</button>
+          </form>
         </div>
 
         <div class="card">
-          <div class="card-header">
-            <div>
-              <h3>Processes</h3>
-              <p class="muted">Most recent first. Use the stop button for queued or running work.</p>
+          <h3>Upload CSV or XLSX</h3>
+          <p class="muted">Expected columns: <strong>domain</strong> and optional <strong>career_page_url</strong>.</p>
+          <form id="upload-process-form" class="stack">
+            <label>
+              File
+              <input id="upload-file" type="file" accept=".csv,.xlsx" required>
+            </label>
+            <label>
+              Agent Count
+              <input id="upload-agent-count" type="number" min="1" value="2">
+            </label>
+            <div class="checkbox-grid">
+              <label><input id="upload-ats-check" type="checkbox" checked> ATS Check</label>
+              <label><input id="upload-job-extract" type="checkbox"> Job Extract</label>
+              <label><input id="upload-job-monitoring" type="checkbox"> Job Monitoring</label>
             </div>
-            <button id="refresh-processes" class="button button-secondary" type="button">Refresh</button>
+            <button class="button" type="submit">Upload and Start</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Processes</h3>
+            <p class="muted">Most recent first. Stop queued/running work or rerun completed work in place.</p>
           </div>
-          <div id="processes-empty" class="empty-state hidden">No process runs found for this client.</div>
-          <div id="processes-list" class="process-list"></div>
-          <div class="pagination">
-            <button id="previous-page" class="button button-secondary" type="button">Previous</button>
-            <span id="page-indicator">Page 1</span>
-            <button id="next-page" class="button button-secondary" type="button">Next</button>
-          </div>
+          <button id="refresh-processes" class="button button-secondary" type="button">Refresh</button>
+        </div>
+        <div id="processes-empty" class="empty-state hidden">No process runs yet.</div>
+        <div id="processes-list" class="process-list"></div>
+        <div class="pagination">
+          <button id="previous-page" class="button button-secondary" type="button">Previous</button>
+          <span id="page-indicator">Page 1</span>
+          <button id="next-page" class="button button-secondary" type="button">Next</button>
         </div>
       </div>
     </section>

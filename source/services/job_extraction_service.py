@@ -199,22 +199,6 @@ class JobExtractionService:
                             "structured_job": normalized_job,
                         },
                     )
-                    await self._mongodb_service.upsert_client_job(
-                        client_key=client_key,
-                        client_name=client_name,
-                        domain_key=domain_key,
-                        raw_url=raw_url,
-                        process_id=process_id,
-                        job_key=job_key,
-                        document={
-                            "source_type": source.source_type,
-                            "source_url": source.source_url,
-                            "page_fingerprint": source.page_fingerprint,
-                            "title": normalized_job.get("title"),
-                            "company_name": normalized_job.get("company_name"),
-                            "job_data": normalized_job,
-                        },
-                    )
                     extracted_jobs.append(
                         {
                             "job_key": job_key,
@@ -222,6 +206,10 @@ class JobExtractionService:
                             "company_name": normalized_job.get("company_name"),
                             "source_type": source.source_type,
                             "source_url": source.source_url,
+                            "page_fingerprint": source.page_fingerprint,
+                            "process_id": process_id,
+                            "domain_key": domain_key,
+                            "raw_url": raw_url,
                             "reused_source": bool(source_summary["reused"]),
                         }
                     )

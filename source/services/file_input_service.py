@@ -6,18 +6,19 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
+from models.process import UploadDomainRow
 from utils.logging import get_logger, log_event
 
 logger = get_logger("file_input_service")
 
 
 class FileInputService:
-    def extract_domains(self, filename: str, content: bytes) -> list[str]:
+    def extract_upload_rows(self, filename: str, content: bytes) -> list[UploadDomainRow]:
         suffix = Path(filename).suffix.lower()
         log_event(
             logger,
             "info",
-            "file_domain_extraction_started filename=%s suffix=%s",
+            "file_upload_row_extraction_started filename=%s suffix=%s",
             filename,
             suffix,
             domain=filename,
@@ -26,33 +27,36 @@ class FileInputService:
         )
 
         if suffix == ".csv":
-            domains = self._extract_domains_from_csv(content)
+            rows = self._extract_rows_from_csv(content)
         elif suffix == ".xlsx":
-            domains = self._extract_domains_from_xlsx(content)
+            rows = self._extract_rows_from_xlsx(content)
         else:
             raise ValueError("Only .csv and .xlsx files are supported")
 
-        if not domains:
+        if not rows:
             raise ValueError("No valid values found in the 'domain' column")
 
         log_event(
             logger,
             "info",
-            "file_domain_extraction_completed filename=%s domain_count=%s",
+            "file_upload_row_extraction_completed filename=%s row_count=%s",
             filename,
-            len(domains),
-            domain=domains[0],
+            len(rows),
+            domain=rows[0].domain if rows else filename,
             upload_filename=filename,
-            domain_count=len(domains),
+            row_count=len(rows),
         )
-        return domains
+        return rows
 
-    def _extract_domains_from_csv(self, content: bytes) -> list[str]:
+    def extract_domains(self, filename: str, content: bytes) -> list[str]:
+        return [row.domain for row in self.extract_upload_rows(filename, content)]
+
+    def _extract_rows_from_csv(self, content: bytes) -> list[UploadDomainRow]:
         text_stream = StringIO(content.decode("utf-8-sig"))
         reader = csv.DictReader(text_stream)
-        return self._collect_domain_column(reader)
+        return self._collect_rows(reader)
 
-    def _extract_domains_from_xlsx(self, content: bytes) -> list[str]:
+    def _extract_rows_from_xlsx(self, content: bytes) -> list[UploadDomainRow]:
         workbook = load_workbook(BytesIO(content), read_only=True, data_only=True)
         try:
             sheet = workbook.active
@@ -69,7 +73,8 @@ class FileInputService:
             raise ValueError("Uploaded file must contain a 'domain' column")
 
         domain_index = normalized_headers.index("domain")
-        domains: list[str] = []
+        career_page_index = normalized_headers.index("career_page_url") if "career_page_url" in normalized_headers else None
+        upload_rows: list[UploadDomainRow] = []
         seen: set[str] = set()
         for row in rows[1:]:
             if row is None or domain_index >= len(row):
@@ -78,10 +83,13 @@ class FileInputService:
             if not value or value in seen:
                 continue
             seen.add(value)
-            domains.append(value)
-        return domains
+            career_page_url = None
+            if career_page_index is not None and career_page_index < len(row):
+                career_page_url = str(row[career_page_index] or "").strip() or None
+            upload_rows.append(UploadDomainRow(domain=value, career_page_url=career_page_url))
+        return upload_rows
 
-    def _collect_domain_column(self, reader: csv.DictReader) -> list[str]:
+    def _collect_rows(self, reader: csv.DictReader) -> list[UploadDomainRow]:
         if reader.fieldnames is None:
             return []
 
@@ -90,12 +98,14 @@ class FileInputService:
             raise ValueError("Uploaded file must contain a 'domain' column")
 
         domain_key = normalized_fieldnames["domain"]
-        domains: list[str] = []
+        career_page_key = normalized_fieldnames.get("career_page_url")
+        upload_rows: list[UploadDomainRow] = []
         seen: set[str] = set()
         for row in reader:
             value = str((row or {}).get(domain_key) or "").strip()
             if not value or value in seen:
                 continue
             seen.add(value)
-            domains.append(value)
-        return domains
+            career_page_url = str((row or {}).get(career_page_key) or "").strip() or None if career_page_key else None
+            upload_rows.append(UploadDomainRow(domain=value, career_page_url=career_page_url))
+        return upload_rows

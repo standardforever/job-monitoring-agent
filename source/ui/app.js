@@ -1,11 +1,7 @@
 const API_BASE = String(window.__FASTAPI_API_BASE__ || "/api/").replace(/\/?$/, "/");
 const state = {
-  adminPassword: sessionStorage.getItem("adminPassword") || "",
-  activeClientName: sessionStorage.getItem("activeClientName") || "",
   processesPage: 1,
   pageSize: 10,
-  processesTimer: null,
-  editingClientName: "",
 };
 
 function buildApiUrl(path) {
@@ -47,168 +43,12 @@ async function apiFetch(path, options = {}) {
   return payload;
 }
 
-function togglePanel(panelId) {
-  byId("admin-panel").classList.toggle("hidden", panelId !== "admin-panel");
-  byId("client-panel").classList.toggle("hidden", panelId !== "client-panel");
-}
-
-function setAdminPassword(value) {
-  state.adminPassword = value.trim();
-  sessionStorage.setItem("adminPassword", state.adminPassword);
-}
-
-function clearAdminPassword() {
-  state.adminPassword = "";
-  sessionStorage.removeItem("adminPassword");
-}
-
-function setAdminAccess(isUnlocked) {
-  byId("admin-auth-gate").classList.toggle("hidden", isUnlocked);
-  byId("admin-dashboard").classList.toggle("hidden", !isUnlocked);
-}
-
-function clearClientForm() {
-  state.editingClientName = "";
-  byId("client-form-title").textContent = "Create Client";
-  byId("client-form-submit").textContent = "Create Client";
-  byId("client-form-reset").classList.add("hidden");
-  byId("editing-client-name").value = "";
-  byId("client-name").value = "";
-  byId("client-api-key").value = "";
-  byId("client-api-key").required = true;
-  byId("client-model").value = "gpt-5-nano";
-  byId("client-grid-url").value = "";
-}
-
-function setClientEditMode(client) {
-  state.editingClientName = client.client_name;
-  byId("client-form-title").textContent = `Update ${client.client_name}`;
-  byId("client-form-submit").textContent = "Update Client";
-  byId("client-form-reset").classList.remove("hidden");
-  byId("editing-client-name").value = client.client_name;
-  byId("client-name").value = client.client_name || "";
-  byId("client-api-key").value = "";
-  byId("client-api-key").required = false;
-  byId("client-api-key").placeholder = "Leave blank to keep current key";
-  byId("client-model").value = client.model || "gpt-5-nano";
-  byId("client-grid-url").value = client.grid_url || "";
-}
-
-async function loadClients() {
-  if (!state.adminPassword) {
-    setAdminAccess(false);
-    return;
-  }
-  const payload = await apiFetch("/clients", {
-    headers: { "x-registration-password": state.adminPassword },
-  });
-  setAdminAccess(true);
-  const clients = payload.clients || [];
-  const list = byId("clients-list");
-  const empty = byId("clients-empty");
-  empty.classList.toggle("hidden", clients.length > 0);
-  list.innerHTML = clients
-    .map(
-      (client) => `
-        <article class="client-row">
-          <div class="client-row-header">
-            <div>
-              <h3>${escapeHtml(client.client_name)}</h3>
-              <p class="muted">Model: ${escapeHtml(client.model || "gpt-5-nano")} | Grid: ${escapeHtml(client.grid_url || "default")}</p>
-            </div>
-            <span class="status-pill ${escapeHtml(client.api_key_status || "queued")}">${escapeHtml(client.api_key_status || "unknown")}</span>
-          </div>
-          <p class="muted">API Key: ${escapeHtml(client.api_key || "")}</p>
-          <p class="muted">Updated: ${escapeHtml(client.updated_at || "")}</p>
-          <div class="inline-actions">
-            <button class="button button-secondary client-edit-button" type="button" data-client='${escapeHtml(JSON.stringify(client))}'>Update</button>
-          </div>
-        </article>
-      `
-    )
-    .join("");
-
-  for (const button of list.querySelectorAll(".client-edit-button")) {
-    button.addEventListener("click", () => {
-      const client = JSON.parse(button.dataset.client || "{}");
-      setClientEditMode(client);
-      byId("client-name").focus();
-    });
-  }
-}
-
-async function submitClientForm(event) {
-  event.preventDefault();
-  if (!state.adminPassword) {
-    showAlert("Enter the registration password first.", "error");
-    return;
-  }
-
-  const payload = {
-    client_name: byId("client-name").value.trim(),
-    model: byId("client-model").value.trim() || "gpt-5-nano",
-  };
-  const apiKey = byId("client-api-key").value.trim();
-  const gridUrl = byId("client-grid-url").value.trim();
-  if (apiKey) {
-    payload.api_key = apiKey;
-  }
-  if (gridUrl) {
-    payload.grid_url = gridUrl;
-  }
-
-  const isEdit = Boolean(state.editingClientName);
-  if (!isEdit && !payload.api_key) {
-    showAlert("API key is required when creating a client.", "error");
-    return;
-  }
-
-  const path = isEdit
-    ? `/clients/${encodeURIComponent(state.editingClientName)}/config`
-    : "/clients";
-  const method = isEdit ? "PATCH" : "POST";
-
-  const response = await apiFetch(path, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      "x-registration-password": state.adminPassword,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  showAlert(response.message || response.status || "Client saved.", "success");
-  clearClientForm();
-  await loadClients();
-}
-
-async function unlockAdmin(event) {
-  event.preventDefault();
-  const password = byId("admin-password").value;
-  setAdminPassword(password);
-  try {
-    await loadClients();
-  } catch (error) {
-    clearAdminPassword();
-    setAdminAccess(false);
-    throw error;
-  }
-  showAlert("Admin dashboard unlocked.", "success");
-}
-
-function lockAdmin() {
-  clearAdminPassword();
-  clearClientForm();
-  byId("admin-password").value = "";
-  setAdminAccess(false);
-  showAlert("Admin dashboard locked.", "info");
-}
-
-function setActiveClient(name) {
-  state.activeClientName = name.trim();
-  state.processesPage = 1;
-  sessionStorage.setItem("activeClientName", state.activeClientName);
-  byId("dashboard-client-name").value = state.activeClientName;
+function collectManualUrls() {
+  return byId("manual-urls")
+    .value
+    .split(/[\n,]+/)
+    .map((value) => value.trim())
+    .filter(Boolean);
 }
 
 function renderProcesses(payload) {
@@ -258,8 +98,9 @@ function renderProcesses(payload) {
           <p class="muted">Capability: ${escapeHtml(metadata.requested_capability || "career_page")} | ATS: ${escapeHtml(metadata.ats_check)} | Jobs: ${escapeHtml(metadata.job_extract)}</p>
           <div class="process-actions">
             <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/important`)}" download>Career/ATS JSON</a>
-            <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/csv-bundle.zip`)}" download>Career/ATS CSV</a>
+            <a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/important.csv`)}" download>Career/ATS CSV</a>
             ${showJobDownloads ? `<a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/jobs.json`)}" download>Jobs JSON</a>` : ""}
+            ${showJobDownloads ? `<a class="button button-secondary" href="${buildApiUrl(`processes/${processId}/jobs.csv`)}" download>Jobs CSV</a>` : ""}
             ${rerunButton}
             ${stopButton}
           </div>
@@ -299,54 +140,11 @@ function renderProcesses(payload) {
       }
     });
   }
-
 }
 
 async function loadProcesses() {
-  if (!state.activeClientName) {
-    return;
-  }
-  const clientName = encodeURIComponent(state.activeClientName);
-  const payload = await apiFetch(`/processes?client_name=${clientName}&page=${state.processesPage}&page_size=${state.pageSize}`);
+  const payload = await apiFetch(`/processes?page=${state.processesPage}&page_size=${state.pageSize}`);
   renderProcesses(payload);
-}
-
-function startProcessesRefresh() {
-  if (state.processesTimer) {
-    window.clearInterval(state.processesTimer);
-  }
-  // state.processesTimer = window.setInterval(() => {
-  //   if (!byId("client-dashboard").classList.contains("hidden")) {
-  //     loadProcesses().catch((error) => showAlert(error.message, "error"));
-  //   }
-  // }, 15000);
-}
-
-async function openClientDashboard(event) {
-  event.preventDefault();
-  const clientName = byId("dashboard-client-name").value.trim();
-  if (!clientName) {
-    showAlert("Enter a client name first.", "error");
-    return;
-  }
-
-  const client = await apiFetch(`/clients/${encodeURIComponent(clientName)}/config`);
-  setActiveClient(client.client_name || clientName);
-  byId("active-client-name").textContent = `${state.activeClientName} Dashboard`;
-  byId("active-client-meta").textContent = `Model: ${client.model || "gpt-5-nano"} | Grid: ${client.grid_url || "default"}`;
-  byId("client-entry-card").classList.add("hidden");
-  byId("client-dashboard").classList.remove("hidden");
-  await loadProcesses();
-  startProcessesRefresh();
-  showAlert("Client dashboard ready.", "success");
-}
-
-function collectManualUrls() {
-  return byId("manual-urls")
-    .value
-    .split(/[\n,]+/)
-    .map((value) => value.trim())
-    .filter(Boolean);
 }
 
 async function submitManualProcess(event) {
@@ -358,7 +156,6 @@ async function submitManualProcess(event) {
   }
 
   const payload = {
-    client_name: state.activeClientName,
     urls,
     agent_count: Number(byId("manual-agent-count").value || 1),
     ats_check: byId("manual-ats-check").checked,
@@ -379,13 +176,14 @@ async function submitManualProcess(event) {
 async function submitUploadProcess(event) {
   event.preventDefault();
   const fileInput = byId("upload-file");
-  if (!fileInput.files.length) {
+  const file = fileInput.files?.[0];
+  if (!file) {
     showAlert("Choose a CSV or XLSX file first.", "error");
     return;
   }
+
   const formData = new FormData();
-  formData.append("file", fileInput.files[0]);
-  formData.append("client_name", state.activeClientName);
+  formData.append("file", file);
   formData.append("agent_count", String(Number(byId("upload-agent-count").value || 1)));
   formData.append("ats_check", String(byId("upload-ats-check").checked));
   formData.append("job_extract", String(byId("upload-job-extract").checked));
@@ -395,74 +193,43 @@ async function submitUploadProcess(event) {
     method: "POST",
     body: formData,
   });
-  showAlert(`Process ${response.process_id} started from upload.`, "success");
+  showAlert(`Upload accepted. Process ${response.process_id} started.`, "success");
   fileInput.value = "";
   await loadProcesses();
 }
 
 function bindEvents() {
-  byId("show-admin").addEventListener("click", () => togglePanel("admin-panel"));
-  byId("show-client").addEventListener("click", () => togglePanel("client-panel"));
-  byId("admin-auth-form").addEventListener("submit", (event) => {
-    unlockAdmin(event).catch((error) => showAlert(error.message, "error"));
-  });
-  byId("client-form").addEventListener("submit", (event) => {
-    submitClientForm(event).catch((error) => showAlert(error.message, "error"));
-  });
-  byId("client-form-reset").addEventListener("click", clearClientForm);
-  byId("admin-logout").addEventListener("click", lockAdmin);
-  byId("refresh-clients").addEventListener("click", () => {
-    loadClients().catch((error) => showAlert(error.message, "error"));
-  });
-  byId("client-access-form").addEventListener("submit", (event) => {
-    openClientDashboard(event).catch((error) => showAlert(error.message, "error"));
-  });
-  byId("change-client").addEventListener("click", () => {
-    byId("client-dashboard").classList.add("hidden");
-    byId("client-entry-card").classList.remove("hidden");
-    if (state.processesTimer) {
-      window.clearInterval(state.processesTimer);
-      state.processesTimer = null;
-    }
-  });
   byId("manual-process-form").addEventListener("submit", (event) => {
     submitManualProcess(event).catch((error) => showAlert(error.message, "error"));
   });
+
   byId("upload-process-form").addEventListener("submit", (event) => {
     submitUploadProcess(event).catch((error) => showAlert(error.message, "error"));
   });
+
   byId("refresh-processes").addEventListener("click", () => {
     loadProcesses().catch((error) => showAlert(error.message, "error"));
   });
+
   byId("previous-page").addEventListener("click", () => {
     if (state.processesPage > 1) {
       state.processesPage -= 1;
       loadProcesses().catch((error) => showAlert(error.message, "error"));
     }
   });
+
   byId("next-page").addEventListener("click", () => {
     state.processesPage += 1;
-    loadProcesses().catch((error) => showAlert(error.message, "error"));
+    loadProcesses().catch((error) => {
+      state.processesPage -= 1;
+      showAlert(error.message, "error");
+    });
   });
 }
 
-async function bootstrap() {
+async function init() {
   bindEvents();
-  togglePanel("client-panel");
-  setAdminAccess(false);
-
-  if (state.adminPassword) {
-    byId("admin-password").value = state.adminPassword;
-    loadClients().catch((error) => {
-      clearAdminPassword();
-      setAdminAccess(false);
-      showAlert(error.message, "error");
-    });
-  }
-
-  if (state.activeClientName) {
-    byId("dashboard-client-name").value = state.activeClientName;
-  }
+  await loadProcesses();
 }
 
-bootstrap().catch((error) => showAlert(error.message, "error"));
+init().catch((error) => showAlert(error.message, "error"));

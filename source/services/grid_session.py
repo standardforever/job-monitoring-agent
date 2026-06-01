@@ -136,6 +136,7 @@ def _build_stealth_options() -> Options:
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--allow-running-insecure-content")
     options.add_argument("--test-type")
+    options.add_argument("--user-data-dir=/home/seluser/chrome-profile")
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -362,6 +363,20 @@ async def close_agent_tab(session: BrowserSession | None) -> None:
             )
     except Exception:
         pass
+
+
+async def create_domain_tab(session: BrowserSession) -> BrowserSession:
+    """Create a fresh page in the existing browser context for one domain. Close with close_agent_tab when done."""
+    page = await session.context.new_page()
+    await page.bring_to_front()
+    return BrowserSession(
+        session_id=session.session_id,
+        cdp_url=session.cdp_url,
+        playwright=session.playwright,
+        browser=session.browser,
+        context=session.context,
+        page=page,
+    )
 
 
 async def close_browser_attachment(session: BrowserSession | None) -> None:

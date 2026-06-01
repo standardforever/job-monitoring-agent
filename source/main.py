@@ -11,8 +11,8 @@ logger = get_logger("main")
 
 async def run_job_pipeline(
     *,
-    client_name: str = "default_client",
     urls: list[str],
+    career_page_urls: dict[str, str] | None = None,
     agent_count: int = 1,
     ats_check: bool = True,
     job_extract: bool = False,
@@ -26,7 +26,6 @@ async def run_job_pipeline(
         len(urls),
         agent_count,
         domain=urls[0] if urls else "unknown",
-        client_name=client_name,
         url_count=len(urls),
         agent_count=agent_count,
         ats_check=ats_check,
@@ -36,8 +35,8 @@ async def run_job_pipeline(
     )
     service = JobProcessService()
     request = JobProcessRequest(
-        client_name=client_name,
         urls=urls,
+        career_page_urls=career_page_urls or {},
         agent_count=agent_count,
         ats_check=ats_check,
         job_extract=job_extract,

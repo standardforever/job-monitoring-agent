@@ -32,20 +32,16 @@ load_environment()
 
 @dataclass(slots=True)
 class Settings:
+    openai_api_key: str = os.getenv("OPENAI_API_KEY", "")
+    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-5-nano")
     selenium_remote_url: str = os.getenv("SELENIUM_REMOTE_URL", "http://127.0.0.1:4445/wd/hub")
-    client_registration_password: str = os.getenv("CLIENT_REGISTRATION_PASSWORD", "")
     default_agent_count: int = int(os.getenv("DEFAULT_AGENT_COUNT", "1"))
     post_navigation_delay_ms: int = int(os.getenv("POST_NAVIGATION_DELAY_MS", "5000"))
     mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://admin:secret@127.0.0.1:27017")
     mongodb_database: str = os.getenv("MONGODB_DATABASE", "job_monitoring_agent")
-    mongodb_clients_collection: str = os.getenv("MONGODB_CLIENTS_COLLECTION", "clients")
-    mongodb_client_domains_collection: str = os.getenv("MONGODB_CLIENT_DOMAINS_COLLECTION", "client_domains")
-    mongodb_domains_collection: str = os.getenv("MONGODB_DOMAINS_COLLECTION", "domains")
     mongodb_process_runs_collection: str = os.getenv("MONGODB_PROCESS_RUNS_COLLECTION", "process_runs")
     mongodb_process_run_items_collection: str = os.getenv("MONGODB_PROCESS_RUN_ITEMS_COLLECTION", "process_run_items")
-    mongodb_domain_checks_collection: str = os.getenv("MONGODB_DOMAIN_CHECKS_COLLECTION", "domain_checks")
     mongodb_jobs_collection: str = os.getenv("MONGODB_JOBS_COLLECTION", "jobs")
-    mongodb_client_jobs_collection: str = os.getenv("MONGODB_CLIENT_JOBS_COLLECTION", "client_jobs")
     mongodb_job_extraction_cache_collection: str = os.getenv("MONGODB_JOB_EXTRACTION_CACHE_COLLECTION", "job_extraction_cache")
 
 

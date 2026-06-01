@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
@@ -29,7 +29,8 @@ log_event(
 @app.on_event("startup")
 async def ensure_mongodb_indexes() -> None:
     await mongodb_service.ensure_indexes()
-    log_event(logger, "info", "fastapi_startup_indexes_ensured", domain="mongodb")
+    recovered = await mongodb_service.recover_stale_running_processes()
+    log_event(logger, "info", "fastapi_startup_indexes_ensured recovered_dead_runs=%s", recovered, domain="mongodb", recovered_dead_runs=recovered)
 
 
 def _render_ui_html(request: Request) -> HTMLResponse:
