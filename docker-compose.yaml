@@ -61,6 +61,7 @@ services:
       - ME_CONFIG_MONGODB_URL=mongodb://admin:secret@mongo:27017/
       - ME_CONFIG_BASICAUTH_USERNAME=admin # UI login
       - ME_CONFIG_BASICAUTH_PASSWORD=secret # UI login
+      - ME_CONFIG_SITE_BASEURL= /ats/mongo
     depends_on:
       - mongo
     restart: unless-stopped
