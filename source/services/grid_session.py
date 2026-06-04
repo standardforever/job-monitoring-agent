@@ -161,7 +161,7 @@ def create_session(
     reuse_existing: bool = False,
     preferred_session_id: str | None = None,
 ) -> SessionBootstrapResult | None:
-    raw_grid = grid_url or os.getenv("SELENIUM_REMOTE_URL") or "http://127.0.0.1:4445/wd/hub"
+    raw_grid = grid_url or os.getenv("SELENIUM_REMOTE_URL") or "http://127.0.0.1:4444/wd/hub"
 
     try:
         executor_url, base_url, cdp_base = _normalize_grid_url(raw_grid)
