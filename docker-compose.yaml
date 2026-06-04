@@ -28,8 +28,8 @@ services:
     image: selenium/standalone-chromium:latest # Development
     shm_size: "2g"
     ports:
-      - "4445:4444" # WebDriver / Selenium Grid
-      - "7901:7900" # noVNC live view (password: secret)
+      - "4444:4444" # WebDriver / Selenium Grid
+      - "7900:7900" # noVNC live view (password: secret)
     environment:
       - SE_NODE_SESSION_TIMEOUT=999999999
       - SE_SESSION_REQUEST_TIMEOUT=999999999
